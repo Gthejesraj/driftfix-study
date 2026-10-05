@@ -1,0 +1,10 @@
+{
+ "id": "vllm-project__llm-compressor",
+ "repo": "vllm-project/llm-compressor",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 3846,
+ "sha": "af206d991b518d454c4b056aa98bd90fa06a58fa",
+ "old": "3.0.6",
+ "status": "not_on_old_version"
+}

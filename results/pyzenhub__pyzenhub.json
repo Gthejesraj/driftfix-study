@@ -1,0 +1,28 @@
+{
+ "id": "pyzenhub__pyzenhub",
+ "repo": "pyzenhub/pyzenhub",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 11,
+ "sha": "d73fd45cf2dd436363a166ec5b6ae5a7abc1abd6",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 24
+  },
+  "failing": [],
+  "tail": "........................                                                 [100%]\n24 passed, 51 deselected in 1.68s",
+  "preexisting_failures": 51
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 24
+  },
+  "failing": [],
+  "tail": "........................                                                 [100%]\n=============================== warnings summary ===============================\ntests/zenhub/core/test_rate.py::test_rate_limit_exceptions\ntests/zenhub/core/test_rate.py::test_rate_limit_exceptions\ntests/zenhub/core/test_rate.py::test_rate_limit_exceptions\n  /tmp/study/repo/zenhub/core/rate.py:97: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    return model if self._output_models else model.dict()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n24 passed, 51 deselected, 3 warnings in 1.80s"
+ },
+ "status": "not_broken"
+}

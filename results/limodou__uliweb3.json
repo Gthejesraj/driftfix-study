@@ -1,0 +1,22 @@
+{
+ "id": "limodou__uliweb3",
+ "repo": "limodou/uliweb3",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 17,
+ "sha": "18bff635afbed8df65704920cf1b21b0959057bd",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 1,
+  "counts": {
+   "failed": 1,
+   "passed": 134
+  },
+  "failing": [
+   "test/test_manage.py::TestMakeProject::test_makeapp"
+  ],
+  "tail": "    execute_command_line(args or sys.argv, get_commands, 'uliweb', callback)\n/tmp/study/repo/uliweb/core/commands.py:417: in execute_command_line\n    m.execute(callback)\n/tmp/study/repo/uliweb/core/commands.py:353: in execute\n    self.do_command(args, global_options)\n/tmp/study/repo/uliweb/core/commands.py:386: in do_command\n    cmd.run_from_argv(self.prog_name, subcommand, global_options, args[1:])\n/tmp/study/repo/uliweb/core/commands.py:192: in run_from_argv\n    self.execute(args, options, global_options)\n/tmp/study/repo/uliweb/core/commands.py:214: in execute\n    self.handle(options, global_options, *args)\n/tmp/study/repo/uliweb/manage.py:229: in handle\n    ans = input('The app directory has been existed, do you want to overwrite it?(y/n)[n]')\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <_pytest.capture.DontReadFromInput object at 0x7f53fc625110>, size = -1\n\n    def read(self, size: int = -1) -> str:\n>       raise OSError(\n            \"pytest: reading from stdin while output is captured!  Consider using `-s`.\"\n        )\nE       OSError: pytest: reading from stdin while output is captured!  Consider using `-s`.\n\n/tmp/study/venv/lib/python3.11/site-packages/_pytest/capture.py:229: OSError\n----------------------------- Captured stdout call -----------------------------\nThe app directory has been existed, do you want to overwrite it?(y/n)[n]\n=============================== warnings summary ===============================\nuliweb/utils/_compat.py:30\n  /tmp/study/repo/uliweb/utils/_compat.py:30: DeprecationWarning: 'cgi' is deprecated and slated for removal in Python 3.13\n    from cgi import escape\n\nuliweb/utils/pyini.py:41\n  /tmp/study/repo/uliweb/utils/pyini.py:41: DeprecationWarning: 'locale.getdefaultlocale' is deprecated and slated for removal in Python 3.15. Use setlocale(), getencoding() and getlocale() instead.\n    defaultencoding = locale.getdefaultlocale()[1]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED test/test_manage.py::TestMakeProject::test_makeapp - OSError: pytest: reading from stdin while output is captured!  Consider using `-s`.\n1 failed, 134 passed, 2 warnings in 0.37s",
+  "preexisting_failures": 0
+ },
+ "status": "unstable_baseline"
+}

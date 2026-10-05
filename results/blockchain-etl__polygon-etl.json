@@ -1,0 +1,10 @@
+{
+ "id": "blockchain-etl__polygon-etl",
+ "repo": "blockchain-etl/polygon-etl",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 106,
+ "sha": "45c0c7cc44fe545d36c9d77517611626639e3ff8",
+ "old": "",
+ "status": "not_on_old_version"
+}

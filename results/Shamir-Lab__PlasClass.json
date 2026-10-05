@@ -1,0 +1,10 @@
+{
+ "id": "Shamir-Lab__PlasClass",
+ "repo": "Shamir-Lab/PlasClass",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 35,
+ "sha": "bcf19c7de9022344afc075edbfa2facf8bf38c57",
+ "old": "",
+ "status": "not_on_old_version"
+}

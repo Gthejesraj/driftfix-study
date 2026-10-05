@@ -1,0 +1,16 @@
+{
+ "id": "CNES__S1Tiling",
+ "repo": "CNES/S1Tiling",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 23,
+ "sha": "6048ded48039c0d6bca750b43fb6300d5e819129",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ERROR: usage: python -m pytest [options] [file_or_dir] [file_or_dir] [...]\npython -m pytest: error: argument --demdir: $SRTM_DIR is not a valid directory\n  inifile: /tmp/study/repo/pyproject.toml\n  rootdir: /tmp/study/repo\n"
+ }
+}

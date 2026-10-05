@@ -1,0 +1,10 @@
+{
+ "id": "salvadorgarciamunoz__kipet",
+ "repo": "salvadorgarciamunoz/kipet",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 23,
+ "sha": "6c90ff70f8e85dc30e5ef296edc36ca9aebb520f",
+ "old": "",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,28 @@
+{
+ "id": "warmshao__ChatTTSPlus",
+ "repo": "warmshao/ChatTTSPlus",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 179,
+ "sha": "5ada59126fe2e7b61c78f75dd2b7190d44cb5d8f",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 1,
+  "counts": {
+   "failed": 9
+  },
+  "failing": [
+   "tests/test_models.py::test_tokenizer",
+   "tests/test_models.py::test_dvae_encode",
+   "tests/test_models.py::test_dvae_decode",
+   "tests/test_models.py::test_vocos",
+   "tests/test_models.py::test_gpt",
+   "tests/test_pipelines.py::test_chattts_plus_pipeline",
+   "tests/test_pipelines.py::test_chattts_plus_trt_pipeline",
+   "tests/test_pipelines.py::test_chattts_plus_zero_shot_pipeline",
+   "tests/test_pipelines.py::test_chattts_plus_zero_shot_trt_pipeline"
+  ],
+  "tail": "        import torchaudio\n    \n>       from chattts_plus.pipelines.chattts_plus_pipeline import ChatTTSPlusPipeline\n\ntests/test_pipelines.py:188: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nchattts_plus/pipelines/chattts_plus_pipeline.py:18: in <module>\n    from .. import models\nchattts_plus/models/__init__.py:7: in <module>\n    from .gpt import GPT\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    import pdb\n    import platform\n    from dataclasses import dataclass\n    import logging\n    from typing import Union, List, Optional, Tuple\n    import gc\n    \n    import torch\n    import torch.nn as nn\n    import torch.nn.functional as F\n    import torch.nn.utils.parametrize as P\n    from torch.nn.utils.parametrizations import weight_norm\n    from tqdm import tqdm\n>   from transformers import LlamaConfig, LogitsWarper\nE   ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\n\nchattts_plus/models/gpt.py:14: ImportError\n=========================== short test summary info ============================\nFAILED tests/test_models.py::test_tokenizer - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\nFAILED tests/test_models.py::test_dvae_encode - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\nFAILED tests/test_models.py::test_dvae_decode - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\nFAILED tests/test_models.py::test_vocos - RuntimeError: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx\nFAILED tests/test_models.py::test_gpt - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\nFAILED tests/test_pipelines.py::test_chattts_plus_pipeline - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\nFAILED tests/test_pipelines.py::test_chattts_plus_trt_pipeline - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\nFAILED tests/test_pipelines.py::test_chattts_plus_zero_shot_pipeline - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\nFAILED tests/test_pipelines.py::test_chattts_plus_zero_shot_trt_pipeline - ImportError: cannot import name 'LogitsWarper' from 'transformers' (/tmp/study/venv/lib/python3.11/site-packages/transformers/__init__.py)\n9 failed in 8.55s"
+ }
+}

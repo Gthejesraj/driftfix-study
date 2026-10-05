@@ -1,0 +1,10 @@
+{
+ "id": "scherroman__mugen",
+ "repo": "scherroman/mugen",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 244,
+ "sha": "d85c082a0ec0b68e458d7060d19d9b84893aa2ea",
+ "old": "",
+ "status": "not_on_old_version"
+}

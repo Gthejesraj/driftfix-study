@@ -1,0 +1,10 @@
+{
+ "id": "abhijithneilabraham__tableQA",
+ "repo": "abhijithneilabraham/tableQA",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 320,
+ "sha": "70313e73a195084bf0bd80f2e57a5b3df1dfa470",
+ "old": "",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "MICS-Lab__thunder",
+ "repo": "MICS-Lab/thunder",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 50,
+ "sha": "3d1cc9513fb2cfd8c4afb0d7bb9f5c4f6b69117f",
+ "old": "2.11.10",
+ "status": "not_on_old_version"
+}

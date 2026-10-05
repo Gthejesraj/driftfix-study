@@ -1,0 +1,10 @@
+{
+ "id": "AHolliday__transit_learning",
+ "repo": "AHolliday/transit_learning",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 12,
+ "sha": "39656ba7a570f9efa23aa0c8847db368cf6eeb30",
+ "status": "install_failed",
+ "error": "requirements cc_requirements.txt: error: No solution found when resolving dependencies\n  cause: Because torch==1.12.0 has no wheels with a matching Python ABI tag (e.g., `cp311`) and you require torch==1.12, we can conclude that your requirements are unsatisfiable.\n\nhint: You require CPython 3.11 (`cp311`), but we only found wheels for `torch` (v1.12.0) with the following Python ABI tags: `cp37m`, `cp38`, `cp39`, `cp310`\n"
+}

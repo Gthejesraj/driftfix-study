@@ -1,0 +1,10 @@
+{
+ "id": "dtunai__Griffin-Jax",
+ "repo": "dtunai/Griffin-Jax",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 16,
+ "sha": "7c8c6bef8eeba64fab817fde5d0bd2aab4e7e6f3",
+ "status": "install_failed",
+ "error": "requirements setup-requirements.txt: error: No solution found when resolving dependencies\n  cause: Because flas was not found in the package registry and you require flas==0.8.1, we can conclude that your requirements are unsatisfiable.\n"
+}

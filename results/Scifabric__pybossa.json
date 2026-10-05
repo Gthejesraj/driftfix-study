@@ -1,0 +1,10 @@
+{
+ "id": "Scifabric__pybossa",
+ "repo": "Scifabric/pybossa",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 760,
+ "sha": "d6409eeaf5a88ef36d509e70175905e1b8b834e2",
+ "old": "",
+ "status": "not_on_old_version"
+}

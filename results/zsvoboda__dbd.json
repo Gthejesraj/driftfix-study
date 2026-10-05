@@ -1,0 +1,10 @@
+{
+ "id": "zsvoboda__dbd",
+ "repo": "zsvoboda/dbd",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 56,
+ "sha": "ac2c6fb673861321b23fbf2a57d9e39fa5cb5352",
+ "old": "",
+ "status": "not_on_old_version"
+}

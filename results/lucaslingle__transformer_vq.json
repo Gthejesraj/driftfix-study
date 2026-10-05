@@ -1,0 +1,10 @@
+{
+ "id": "lucaslingle__transformer_vq",
+ "repo": "lucaslingle/transformer_vq",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 199,
+ "sha": "21943e4eea124fa1eec0939a24f36cfa6fe9c499",
+ "old": "",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "smousavi05__EQTransformer",
+ "repo": "smousavi05/EQTransformer",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 418,
+ "sha": "a589da6504b11df8341fe1dc859a025f49955409",
+ "old": "",
+ "status": "not_on_old_version"
+}

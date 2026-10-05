@@ -1,0 +1,10 @@
+{
+ "id": "aidanscannell__mogpe",
+ "repo": "aidanscannell/mogpe",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 13,
+ "sha": "e124e8b50725c6517cfe0ad872376e07ecbe6313",
+ "old": "",
+ "status": "not_on_old_version"
+}

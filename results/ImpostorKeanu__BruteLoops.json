@@ -1,0 +1,16 @@
+{
+ "id": "ImpostorKeanu__BruteLoops",
+ "repo": "ImpostorKeanu/BruteLoops",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 85,
+ "sha": "af66d5619bc8232b79f262f4d7da4ec8038adc7b",
+ "old": "1.4.0",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:2: in <module>\n    import bruteloops as BL\nbruteloops/__init__.py:2: in <module>\n    from . import brute\nbruteloops/brute.py:15: in <module>\n    from . import models\nbruteloops/models.py:146: in <module>\n    class Jitter(BaseModel, extra=Extra.allow):\nbruteloops/models.py:152: in Jitter\n    min: constr(regex=JITTER_RE)\n         ^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: constr() got an unexpected keyword argument 'regex'"
+ }
+}

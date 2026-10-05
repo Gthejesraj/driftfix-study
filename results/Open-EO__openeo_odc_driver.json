@@ -1,0 +1,20 @@
+{
+ "id": "Open-EO__openeo_odc_driver",
+ "repo": "Open-EO/openeo_odc_driver",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 11,
+ "sha": "0ec7998ff54d116662df2af38bb2b98952a5578f",
+ "old": "1.5.3",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/test_process_graph.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n_________________ ERROR collecting tests/test_process_graph.py _________________\ntests/test_process_graph.py:12: in <module>\n    raise ValueError('Please provide process graph.')\nE   ValueError: Please provide process graph.\n=========================== short test summary info ============================\nERROR tests/test_process_graph.py - ValueError: Please provide process graph.\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.22s"
+ }
+}

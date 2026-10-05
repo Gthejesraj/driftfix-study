@@ -1,0 +1,16 @@
+{
+ "id": "Teoroo-CMC__PiNN",
+ "repo": "Teoroo-CMC/PiNN",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 130,
+ "sha": "b166b8635a3ace9497ff34a80928a3a8d2b8eb01",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:5: in <module>\n    from pinn.io import load_numpy, sparse_batch\npinn/__init__.py:6: in <module>\n    from pinn.models import get as get_model\npinn/models/__init__.py:3: in <module>\n    from pinn.models.AC import AC_dipole_model\npinn/models/AC.py:24: in <module>\n    import tensorflow as tf\nE   ModuleNotFoundError: No module named 'tensorflow'"
+ }
+}

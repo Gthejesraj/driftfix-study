@@ -1,0 +1,10 @@
+{
+ "id": "TariqAHassan__wav2rec",
+ "repo": "TariqAHassan/wav2rec",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 18,
+ "sha": "dbb604245cfaa0e9ecec25c27158d7da49953836",
+ "status": "install_failed",
+ "error": "requirements dev_requirements.txt: runner/work/_temp/setup-uv-cache/builds-v0/.tmp3XWMKD/include', '-I/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/include/python3.11', '-c', 'ast27/Custom/typed_ast.c', '-o', 'build/temp.linux-x86_64-cpython-311/ast27/Custom/typed_ast.o']' returned non-zero exit status 1.\n\nhint: `typed-ast` (v1.4.3) was included because `black` (v20.8b1) depends on `typed-ast`\n\nhint: This error likely indicates that you need to install a library that provides `code.h` for `typed-ast@1.4.3`\n"
+}

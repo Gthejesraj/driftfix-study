@@ -1,0 +1,28 @@
+{
+ "id": "particledatagroup__api",
+ "repo": "particledatagroup/api",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 19,
+ "sha": "bad368a8e628827ebe29b50d028328f24a563576",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 53
+  },
+  "failing": [],
+  "tail": ".....................................................                    [100%]\n53 passed in 2.98s",
+  "preexisting_failures": 0
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 53
+  },
+  "failing": [],
+  "tail": ".....................................................                    [100%]\n=============================== warnings summary ===============================\ntests/test_00_metadata.py::TestMetaData::test_api_version\ntests/test_02_data.py::TestData::test_charged_pion_2022\ntests/test_03_particle.py::TestData::test_mass_2022\n  /tmp/study/repo/pdg/api.py:115: SAWarning: Column-expression-level unary distinct() should not be used outside of an aggregate function. For general 'SELECT DISTINCT' supportuse select().distinct().\n    return [e[0] for e in conn.execute(query).fetchall()]\n\ntests/test_03_particle.py::TestData::test_Kstar_892\ntests/test_04_pedantic.py::TestData::test_properties\ntests/test_05_examples.py::TestData::test_dm\ntests/test_06_measurements.py::TestMeasurements::test_muon\n  /tmp/study/repo/pdg/particle.py:375: SAWarning: Column-expression-level unary distinct() should not be used outside of an aggregate function. For general 'SELECT DISTINCT' supportuse select().distinct().\n    for entry in conn.execute(query, {'parent_id': self.baseid+'%',\n\ntests/test_03_particle.py::TestData::test_Kstar_892\n  /tmp/study/repo/pdg/api.py:287: SAWarning: Column-expression-level unary distinct() should not be used outside of an aggregate function. For general 'SELECT DISTINCT' supportuse select().distinct().\n    matches = [p.pdgid for p in conn.execute(query, {'mcid': mcid})]\n\ntests/test_03_particle.py::TestData::test_all_particle_data\n  /tmp/study/repo/pdg/api.py:311: SAWarning: Column-expression-level unary distinct() should not be used outside of an aggregate function. For general 'SELECT DISTINCT' supportuse select().distinct().\n    for item in conn.execute(query):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n53 passed, 9 warnings in 1.97s"
+ },
+ "status": "not_broken"
+}

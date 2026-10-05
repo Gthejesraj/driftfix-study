@@ -1,0 +1,10 @@
+{
+ "id": "dbt-labs__dbt-core-bundles",
+ "repo": "dbt-labs/dbt-core-bundles",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 19,
+ "sha": "a7d4b6676304f296263971d88c70ee2cc6b647eb",
+ "status": "install_failed",
+ "error": "requirements release_creation/bundle/requirements/v1.0.latest.requirements.txt: error: Expected `--hash`, found `\"--no-binary\"`: release_creation/bundle/requirements/v1.0.latest.requirements.txt:1:88\n"
+}

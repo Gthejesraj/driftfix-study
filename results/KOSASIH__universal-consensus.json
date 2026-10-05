@@ -1,0 +1,44 @@
+{
+ "id": "KOSASIH__universal-consensus",
+ "repo": "KOSASIH/universal-consensus",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 30,
+ "sha": "e3c0653add9a6e9204214bf14e68b5cc5832e65c",
+ "old": "1.4.25",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 25
+  },
+  "failing": [
+   "blockchain-network-interface/bitcoin/bitcoin_test.py",
+   "blockchain-network-interface/celestia/celestia_test.py",
+   "blockchain-network-interface/chainlink/chainlink_test.py",
+   "blockchain-network-interface/corda/corda_test.py",
+   "blockchain-network-interface/cosmos/cosmos_test.py",
+   "blockchain-network-interface/elysium/elysium_test.py",
+   "blockchain-network-interface/ethereum/ethereum_test.py",
+   "blockchain-network-interface/galactic_consensus_nexus/galactic_consensus_nexus_test.py",
+   "blockchain-network-interface/hyperledger/hyperledger_test.py",
+   "blockchain-network-interface/hyperledger_fabric/hyperledger_fabric_test.py",
+   "blockchain-network-interface/luminari/luminari_test.py",
+   "blockchain-network-interface/nexusphere/nexusphere_test.py",
+   "blockchain-network-interface/nova_spire/nova_spire_test.py",
+   "blockchain-network-interface/ocean_protocol/ocean_protocol_test.py",
+   "blockchain-network-interface/omni_chain/omni_chain_test.py",
+   "blockchain-network-interface/paragon_net/paragon_net_test.py",
+   "blockchain-network-interface/quorum/quorum_test.py",
+   "blockchain-network-interface/stellar/stellar_test.py",
+   "distributed-storage-layer/storage_test.py",
+   "interoperability-layer/data-serialization/serializer_test.py",
+   "tests/test_blockchain_network_interface.py",
+   "tests/test_consensus_algorithms.py",
+   "tests/test_integration.py",
+   "tests/test_interoperability_layer.py",
+   "tests/test_smart_contract_engine.py"
+  ],
+  "tail": "    from interoperability_layer.data_serialization import DataSerialization\nE   ModuleNotFoundError: No module named 'interoperability_layer'\n_____________ ERROR collecting tests/test_smart_contract_engine.py _____________\nImportError while importing test module '/tmp/study/repo/tests/test_smart_contract_engine.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_smart_contract_engine.py:3: in <module>\n    from smart_contract_engine.solidity import Solidity\nE   ModuleNotFoundError: No module named 'smart_contract_engine'\n=========================== short test summary info ============================\nERROR blockchain-network-interface/bitcoin/bitcoin_test.py\nERROR blockchain-network-interface/celestia/celestia_test.py\nERROR blockchain-network-interface/chainlink/chainlink_test.py\nERROR blockchain-network-interface/corda/corda_test.py\nERROR blockchain-network-interface/cosmos/cosmos_test.py\nERROR blockchain-network-interface/elysium/elysium_test.py\nERROR blockchain-network-interface/ethereum/ethereum_test.py\nERROR blockchain-network-interface/galactic_consensus_nexus/galactic_consensus_nexus_test.py\nERROR blockchain-network-interface/hyperledger/hyperledger_test.py\nERROR blockchain-network-interface/hyperledger_fabric/hyperledger_fabric_test.py\nERROR blockchain-network-interface/luminari/luminari_test.py\nERROR blockchain-network-interface/nexusphere/nexusphere_test.py\nERROR blockchain-network-interface/nova_spire/nova_spire_test.py\nERROR blockchain-network-interface/ocean_protocol/ocean_protocol_test.py\nERROR blockchain-network-interface/omni_chain/omni_chain_test.py\nERROR blockchain-network-interface/paragon_net/paragon_net_test.py\nERROR blockchain-network-interface/quorum/quorum_test.py\nERROR blockchain-network-interface/stellar/stellar_test.py\nERROR distributed-storage-layer/storage_test.py\nERROR interoperability-layer/data-serialization/serializer_test.py\nERROR tests/test_blockchain_network_interface.py\nERROR tests/test_consensus_algorithms.py\nERROR tests/test_integration.py\nERROR tests/test_interoperability_layer.py\nERROR tests/test_smart_contract_engine.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 25 errors during collection !!!!!!!!!!!!!!!!!!!\n25 errors in 0.26s"
+ }
+}

@@ -1,0 +1,23 @@
+{
+ "id": "huggingface__evaluate",
+ "repo": "huggingface/evaluate",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 2487,
+ "sha": "51383b3dc3730ff33f437e8a1388e85ae38060af",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "metrics/cer/test_cer.py",
+   "tests/test_evaluation_suite.py",
+   "tests/test_evaluator.py",
+   "tests/test_trainer_evaluator_parity.py"
+  ],
+  "tail": "../venv/lib/python3.11/site-packages/transformers/dependency_versions_check.py:57: in <module>\n    require_version_core(deps[pkg])\n../venv/lib/python3.11/site-packages/transformers/utils/versions.py:117: in require_version_core\n    return require_version(requirement, hint)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/transformers/utils/versions.py:111: in require_version\n    _compare_versions(op, got_ver, want_ver, requirement, pkg, hint)\n../venv/lib/python3.11/site-packages/transformers/utils/versions.py:44: in _compare_versions\n    raise ImportError(\nE   ImportError: huggingface-hub>=0.34.0,<1.0 is required for a normal functioning of this module, but found huggingface-hub==2.1.1.\nE   Try: `pip install transformers -U` or `pip install -e '.[dev]'` if you're working with git main\n___________ ERROR collecting tests/test_trainer_evaluator_parity.py ____________\nImportError while importing test module '/tmp/study/repo/tests/test_trainer_evaluator_parity.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_trainer_evaluator_parity.py:10: in <module>\n    import transformers\n../venv/lib/python3.11/site-packages/transformers/__init__.py:27: in <module>\n    from . import dependency_versions_check\n../venv/lib/python3.11/site-packages/transformers/dependency_versions_check.py:57: in <module>\n    require_version_core(deps[pkg])\n../venv/lib/python3.11/site-packages/transformers/utils/versions.py:117: in require_version_core\n    return require_version(requirement, hint)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/transformers/utils/versions.py:111: in require_version\n    _compare_versions(op, got_ver, want_ver, requirement, pkg, hint)\n../venv/lib/python3.11/site-packages/transformers/utils/versions.py:44: in _compare_versions\n    raise ImportError(\nE   ImportError: huggingface-hub>=0.34.0,<1.0 is required for a normal functioning of this module, but found huggingface-hub==2.1.1.\nE   Try: `pip install transformers -U` or `pip install -e '.[dev]'` if you're working with git main\n=========================== short test summary info ============================\nERROR metrics/cer/test_cer.py\nERROR tests/test_evaluation_suite.py\nERROR tests/test_evaluator.py\nERROR tests/test_trainer_evaluator_parity.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n4 errors in 7.45s"
+ }
+}

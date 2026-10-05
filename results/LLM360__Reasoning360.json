@@ -1,0 +1,38 @@
+{
+ "id": "LLM360__Reasoning360",
+ "repo": "LLM360/Reasoning360",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 154,
+ "sha": "13158341d2a0dfe5f3bb80e7126ff21de0d16676",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 19
+  },
+  "failing": [
+   "recipe/langgraph_agent/test_react_agent_loop.py",
+   "tests/experimental/agent_loop/test_basic_agent_loop.py",
+   "tests/models/test_transformer.py",
+   "tests/models/test_transformers_ulysses.py",
+   "tests/utils/megatron/test_pipeline_parallel.py",
+   "tests/utils/reward_score/test_sandbox_on_cpu.py",
+   "tests/utils/test_nvtx_profile.py",
+   "tests/workers/rollout/rollout_vllm/test_vllm_chat_scheduler.py",
+   "tests/workers/rollout/rollout_vllm/test_vllm_model_rope_scaling.py",
+   "tests/workers/rollout/rollout_vllm/test_vllm_spmd.py",
+   "tests/workers/rollout/test_custom_completion_callback.py",
+   "tests/workers/rollout/test_sglang_async_rollout_mcp_tools.py",
+   "tests/workers/rollout/test_sglang_async_rollout_search_tools.py",
+   "tests/workers/rollout/test_sglang_async_rollout_sf_tools.py",
+   "tests/workers/rollout/test_sglang_async_rollout_w_interaction.py",
+   "tests/workers/rollout/test_sglang_async_rollout_w_tools.py",
+   "tests/workers/rollout/test_sglang_multi_interaction.py",
+   "tests/workers/rollout/test_sglang_rollout_sharding_manager.py",
+   "tests/workers/rollout/test_sglang_spmd.py"
+  ],
+  "tail": "\ntests/utils/test_config_on_cpu.py:23\n  /tmp/study/repo/tests/utils/test_config_on_cpu.py:23: PytestCollectionWarning: cannot collect test class 'TestDataclass' because it has a __init__ constructor (from: tests/utils/test_config_on_cpu.py)\n    @dataclass\n\ntests/utils/test_config_on_cpu.py:29\n  /tmp/study/repo/tests/utils/test_config_on_cpu.py:29: PytestCollectionWarning: cannot collect test class 'TestTrainConfig' because it has a __init__ constructor (from: tests/utils/test_config_on_cpu.py)\n    @dataclass\n\ntests/utils/test_linear_cross_entropy.py:99\n  /tmp/study/repo/tests/utils/test_linear_cross_entropy.py:99: PytestCollectionWarning: cannot collect test class 'TestLinearCrossEntropy' because it has a __init__ constructor (from: tests/utils/test_linear_cross_entropy.py)\n    class TestLinearCrossEntropy:\n\ntests/utils/test_linear_cross_entropy_tp.py:181\n  /tmp/study/repo/tests/utils/test_linear_cross_entropy_tp.py:181: PytestCollectionWarning: cannot collect test class 'TestLinearCrossEntropy_TensorParallel' because it has a __init__ constructor (from: tests/utils/test_linear_cross_entropy_tp.py)\n    class TestLinearCrossEntropy_TensorParallel:\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR recipe/langgraph_agent/test_react_agent_loop.py\nERROR tests/experimental/agent_loop/test_basic_agent_loop.py\nERROR tests/models/test_transformer.py\nERROR tests/models/test_transformers_ulysses.py\nERROR tests/utils/megatron/test_pipeline_parallel.py\nERROR tests/utils/reward_score/test_sandbox_on_cpu.py\nERROR tests/utils/test_nvtx_profile.py\nERROR tests/workers/rollout/rollout_vllm/test_vllm_chat_scheduler.py\nERROR tests/workers/rollout/rollout_vllm/test_vllm_model_rope_scaling.py\nERROR tests/workers/rollout/rollout_vllm/test_vllm_spmd.py\nERROR tests/workers/rollout/test_custom_completion_callback.py\nERROR tests/workers/rollout/test_sglang_async_rollout_mcp_tools.py\nERROR tests/workers/rollout/test_sglang_async_rollout_search_tools.py\nERROR tests/workers/rollout/test_sglang_async_rollout_sf_tools.py\nERROR tests/workers/rollout/test_sglang_async_rollout_w_interaction.py\nERROR tests/workers/rollout/test_sglang_async_rollout_w_tools.py\nERROR tests/workers/rollout/test_sglang_multi_interaction.py\nERROR tests/workers/rollout/test_sglang_rollout_sharding_manager.py\nERROR tests/workers/rollout/test_sglang_spmd.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 19 errors during collection !!!!!!!!!!!!!!!!!!!\n5 warnings, 19 errors in 16.92s"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "wbawakate__fairtorch",
+ "repo": "wbawakate/fairtorch",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 72,
+ "sha": "8a4473ad122201fb76c143ae24289803692c3acb",
+ "old": "",
+ "status": "not_on_old_version"
+}

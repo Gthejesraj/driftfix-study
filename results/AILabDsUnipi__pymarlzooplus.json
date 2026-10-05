@@ -1,0 +1,10 @@
+{
+ "id": "AILabDsUnipi__pymarlzooplus",
+ "repo": "AILabDsUnipi/pymarlzooplus",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 59,
+ "sha": "d0f778d930fe8a54ef01063fdf5047802de3dea1",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: ile \"/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/subprocess.py\", line 413, in check_call\n             raise CalledProcessError(retcode, cmd)\n         subprocess.CalledProcessError: Command '['cmake', '--build', '.']' returned non-zero exit status 2.\n\nhint: `multi-agent-ale-py` (v0.1.11) was included because `pettingzoo[all]` (v1.24.3) depends on `multi-agent-ale-py`\n\nhint: Build failures usually indicate a problem with the package or the build environment\n"
+}

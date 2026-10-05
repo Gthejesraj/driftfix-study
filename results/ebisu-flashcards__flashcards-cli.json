@@ -1,0 +1,10 @@
+{
+ "id": "ebisu-flashcards__flashcards-cli",
+ "repo": "ebisu-flashcards/flashcards-cli",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 13,
+ "sha": "fe70fa56b4390c9a09925eadf104b3875d594bfb",
+ "old": "",
+ "status": "not_on_old_version"
+}

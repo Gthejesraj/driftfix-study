@@ -1,0 +1,10 @@
+{
+ "id": "X-Square-Robot__wall-x",
+ "repo": "X-Square-Robot/wall-x",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 1284,
+ "sha": "ce2a1ae31d9ee1028b97ca40e3f66034cf8c0e5f",
+ "old": "2.13.5",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "mcdelaney__py-tacview-client",
+ "repo": "mcdelaney/py-tacview-client",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 11,
+ "sha": "946fecba2fc2fba767897cfb351c7e6e58472096",
+ "old": "",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "wenet-e2e__wenet",
+ "repo": "wenet-e2e/wenet",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 5242,
+ "sha": "d17059667d6afe0680d19b3a4948ab825ef25105",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

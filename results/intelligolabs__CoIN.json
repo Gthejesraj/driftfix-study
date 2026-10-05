@@ -1,0 +1,21 @@
+{
+ "id": "intelligolabs__CoIN",
+ "repo": "intelligolabs/CoIN",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 32,
+ "sha": "b750a1a6cf6485e513aa4b24d6942fea56f50a51",
+ "old": "1.25.0",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "test/test_setup.py",
+   "test/test_visualization.py"
+  ],
+  "tail": "    return wrap(cls)\n           ^^^^^^^^^\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/dataclasses.py:1222: in wrap\n    return _process_class(cls, init, repr, eq, order, unsafe_hash,\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/dataclasses.py:958: in _process_class\n    cls_fields.append(_get_field(cls, name, type, kw_only))\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/dataclasses.py:815: in _get_field\n    raise ValueError(f'mutable default {type(f.default)} for field '\nE   ValueError: mutable default <class 'habitat.config.default_structured_configs.IteratorOptionsConfig'> for field iterator_options is not allowed: use default_factory\n_________________ ERROR collecting test/test_visualization.py __________________\ntest/test_visualization.py:7: in <module>\n    from vlfm.utils.visualization import generate_text_image\nvlfm/__init__.py:6: in <module>\n    from habitat.config.default_structured_configs import LabSensorConfig\n../venv/lib/python3.11/site-packages/habitat/__init__.py:7: in <module>\n    from habitat.config import get_config, read_write\n../venv/lib/python3.11/site-packages/habitat/config/__init__.py:8: in <module>\n    from habitat.config.default import DictConfig, get_config\n../venv/lib/python3.11/site-packages/habitat/config/default.py:16: in <module>\n    from habitat.config.default_structured_configs import (\n../venv/lib/python3.11/site-packages/habitat/config/default_structured_configs.py:103: in <module>\n    @dataclass\n     ^^^^^^^^^\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/dataclasses.py:1232: in dataclass\n    return wrap(cls)\n           ^^^^^^^^^\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/dataclasses.py:1222: in wrap\n    return _process_class(cls, init, repr, eq, order, unsafe_hash,\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/dataclasses.py:958: in _process_class\n    cls_fields.append(_get_field(cls, name, type, kw_only))\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/dataclasses.py:815: in _get_field\n    raise ValueError(f'mutable default {type(f.default)} for field '\nE   ValueError: mutable default <class 'habitat.config.default_structured_configs.IteratorOptionsConfig'> for field iterator_options is not allowed: use default_factory\n=========================== short test summary info ============================\nERROR test/test_setup.py - ValueError: mutable default <class 'habitat.config.default_structured_configs.IteratorOptionsConfig'> for field iterator_options is not allowed: use default_factory\nERROR test/test_visualization.py - ValueError: mutable default <class 'habitat.config.default_structured_configs.IteratorOptionsConfig'> for field iterator_options is not allowed: use default_factory\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 2.30s"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "Sara-Iftikhar__easy_mpl",
+ "repo": "Sara-Iftikhar/easy_mpl",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 10,
+ "sha": "caa7d1f7de51ece116d6b8345625625bf5dd068c",
+ "old": "2.2.3",
+ "status": "not_on_old_version"
+}

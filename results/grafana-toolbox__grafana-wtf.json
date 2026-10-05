@@ -1,0 +1,10 @@
+{
+ "id": "grafana-toolbox__grafana-wtf",
+ "repo": "grafana-toolbox/grafana-wtf",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 225,
+ "sha": "70275f402a39254361e400cd5576d72ca7d576aa",
+ "old": "2.3.3",
+ "status": "not_on_old_version"
+}

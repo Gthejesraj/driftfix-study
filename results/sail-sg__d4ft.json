@@ -1,0 +1,21 @@
+{
+ "id": "sail-sg__d4ft",
+ "repo": "sail-sg/d4ft",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 57,
+ "sha": "e0b846d99afe599478d67825b93fd06916bb39f2",
+ "old": "1.10.9",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "tests/integral/obara_saika/numerical_test.py",
+   "tests/native/xla/example_test.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n________ ERROR collecting tests/integral/obara_saika/numerical_test.py _________\nImportError while importing test module '/tmp/study/repo/tests/integral/obara_saika/numerical_test.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/integral/obara_saika/numerical_test.py:21: in <module>\n    from obsa.obara_saika import get_coulomb, get_kinetic, get_nuclear, get_overlap\nE   ModuleNotFoundError: No module named 'obsa'\n______________ ERROR collecting tests/native/xla/example_test.py _______________\nImportError while importing test module '/tmp/study/repo/tests/native/xla/example_test.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/native/xla/example_test.py:6: in <module>\n    from d4ft.native.xla.custom_call import CustomCallMeta\nd4ft/native/xla/custom_call.py:21: in <module>\n    from jax.abstract_arrays import ShapedArray\nE   ModuleNotFoundError: No module named 'jax.abstract_arrays'\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/pubchempy.py:563\n  /tmp/study/venv/lib/python3.11/site-packages/pubchempy.py:563: SyntaxWarning: \"is not\" with a literal. Did you mean \"!=\"?\n    if self.charge is not 0:\n\n../venv/lib/python3.11/site-packages/jax_xc/libxc/functional.py:541\n  /tmp/study/venv/lib/python3.11/site-packages/jax_xc/libxc/functional.py:541: DeprecationWarning: invalid escape sequence '\\s'\n    \"\"\"Sets the smallest value allowed for sigma = \\sqrt(\\gamma). Smaller\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/integral/obara_saika/numerical_test.py\nERROR tests/native/xla/example_test.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 warnings, 2 errors in 4.22s"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "Kludex__fastapi-health",
+ "repo": "Kludex/fastapi-health",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 188,
+ "sha": "c81925385d3ffb42b1d81d0bbd5f2e72835249f7",
+ "old": "2.13.5",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,16 @@
+{
+ "id": "ntunlp__LLMSanitize",
+ "repo": "ntunlp/LLMSanitize",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 61,
+ "sha": "8fb443778a791f4f7e7998c513b74fc6ec5902f6",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 5,
+  "counts": {},
+  "failing": [],
+  "tail": "\nno tests ran in 0.02s"
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "id": "CodeGoat24__LiFT",
+ "repo": "CodeGoat24/LiFT",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 85,
+ "sha": "a0d5e56c0d3b3b4d8b6b09a478ff49a67f16f541",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 3
+  },
+  "failing": [
+   "tests/gpu_tests/test_llava_arch.py",
+   "tests/gpu_tests/test_packing.py",
+   "tests/test_tokenizer.py"
+  ],
+  "tail": "    from .language_model.llava_llama import LlavaLlamaConfig, LlavaLlamaModel\nllava/model/language_model/llava_llama.py:26: in <module>\n    from ...train.utils import calculate_loss_weight\nllava/train/utils.py:30: in <module>\n    from llava.train.sequence_parallel.globals import get_pg_manager, get_ulysses_sp_pg\nllava/train/sequence_parallel/__init__.py:1: in <module>\n    from .globals import get_pg_manager, set_pg_manager\nllava/train/sequence_parallel/globals.py:22: in <module>\n    import deepspeed.comm as dist\nE   ModuleNotFoundError: No module named 'deepspeed'\n___________________ ERROR collecting tests/test_tokenizer.py ___________________\nImportError while importing test module '/tmp/study/repo/tests/test_tokenizer.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_tokenizer.py:3: in <module>\n    from llava.data.dataset import preprocess_v1\nllava/__init__.py:1: in <module>\n    from .entry import *\nllava/entry.py:7: in <module>\n    from llava.model.builder import load_pretrained_model\nllava/model/__init__.py:1: in <module>\n    from .language_model.llava_llama import LlavaLlamaConfig, LlavaLlamaModel\nllava/model/language_model/llava_llama.py:26: in <module>\n    from ...train.utils import calculate_loss_weight\nllava/train/utils.py:30: in <module>\n    from llava.train.sequence_parallel.globals import get_pg_manager, get_ulysses_sp_pg\nllava/train/sequence_parallel/__init__.py:1: in <module>\n    from .globals import get_pg_manager, set_pg_manager\nllava/train/sequence_parallel/globals.py:22: in <module>\n    import deepspeed.comm as dist\nE   ModuleNotFoundError: No module named 'deepspeed'\n=========================== short test summary info ============================\nERROR tests/gpu_tests/test_llava_arch.py\nERROR tests/gpu_tests/test_packing.py\nERROR tests/test_tokenizer.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 4.82s"
+ }
+}

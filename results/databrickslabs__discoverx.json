@@ -1,0 +1,10 @@
+{
+ "id": "databrickslabs__discoverx",
+ "repo": "databrickslabs/discoverx",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 142,
+ "sha": "176ae3351be20629e15ced7d251d785f242b5be0",
+ "old": "",
+ "status": "not_on_old_version"
+}

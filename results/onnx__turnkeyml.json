@@ -1,0 +1,16 @@
+{
+ "id": "onnx__turnkeyml",
+ "repo": "onnx/turnkeyml",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 247,
+ "sha": "e87a8968a31a5d2c335c6fbf6fd914a2b4a75a6f",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 5,
+  "counts": {},
+  "failing": [],
+  "tail": "\nno tests ran in 4.12s"
+ }
+}

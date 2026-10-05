@@ -1,0 +1,10 @@
+{
+ "id": "flyteorg__flytekit",
+ "repo": "flyteorg/flytekit",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 320,
+ "sha": "eb227875cc6b644c0e7afd28ea6a300c22de5650",
+ "old": "",
+ "status": "not_on_old_version"
+}

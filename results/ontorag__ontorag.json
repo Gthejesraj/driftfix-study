@@ -1,0 +1,10 @@
+{
+ "id": "ontorag__ontorag",
+ "repo": "ontorag/ontorag",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 28,
+ "sha": "21d98a0a5a83aa2f2b69f2993139cd233fd3bd0e",
+ "status": "install_failed",
+ "error": "requirements _requirements.txt: ools/_distutils/dist.py:318: UserWarning: Unknown distribution option: 'use_2to3_fixers'\n           warnings.warn(msg)\n         /home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpSAlYQ3/lib/python3.11/site-packages/setuptools/_distutils/dist.py:318: UserWarning: Unknown distribution option: 'use_2to3_exclude_fixers'\n           warnings.warn(msg)\n         error in GDAL setup command: use_2to3 is invalid.\n\nhint: Build failures usually indicate a problem with the package or the build environment\n"
+}

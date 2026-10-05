@@ -1,0 +1,37 @@
+{
+ "id": "njustesen__botbowl",
+ "repo": "njustesen/botbowl",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 140,
+ "sha": "3e550bda3666c39efe478fb9465646af24576665",
+ "old": "1.24.3",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 447
+  },
+  "failing": [],
+  "tail": "tests/ai/test_env.py::test_gym_registry[botbowl-5-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-3-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-1-v4]\ntests/ai/test_env.py::test_seed\ntests/ai/test_env.py::test_seed\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:225: DeprecationWarning: `np.bool8` is a deprecated alias for `np.bool_`.  (Deprecated NumPy 1.24)\n    if not isinstance(done, (bool, np.bool8)):\n\ntests/ai/test_env.py::test_gym_registry[botbowl-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-11-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-7-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-5-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-3-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-1-v4]\ntests/ai/test_env.py::test_seed\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:137: UserWarning: \u001b[33mWARN: The obs returned by the `step()` method was expecting a numpy array, actual type: <class 'tuple'>\u001b[0m\n    logger.warn(\n\ntests/ai/test_env.py::test_gym_registry[botbowl-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-11-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-7-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-5-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-3-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-1-v4]\ntests/ai/test_env.py::test_seed\n  /tmp/study/venv/lib/python3.11/site-packages/gym/spaces/box.py:227: UserWarning: \u001b[33mWARN: Casting input x to numpy array.\u001b[0m\n    logger.warn(\"Casting input x to numpy array.\")\n\ntests/ai/test_env.py::test_gym_registry[botbowl-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-11-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-7-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-5-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-3-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-1-v4]\ntests/ai/test_env.py::test_seed\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:165: UserWarning: \u001b[33mWARN: The obs returned by the `step()` method is not within the observation space.\u001b[0m\n    logger.warn(f\"{pre} is not within the observation space.\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n447 passed, 1 deselected, 102 warnings in 68.46s (0:01:08)",
+  "preexisting_failures": 1
+ },
+ "new": "2.4.6",
+ "after": {
+  "code": 1,
+  "counts": {
+   "failed": 7,
+   "passed": 440
+  },
+  "failing": [
+   "tests/ai/test_env.py::test_gym_registry[botbowl-v4]",
+   "tests/ai/test_env.py::test_gym_registry[botbowl-11-v4]",
+   "tests/ai/test_env.py::test_gym_registry[botbowl-7-v4]",
+   "tests/ai/test_env.py::test_gym_registry[botbowl-5-v4]",
+   "tests/ai/test_env.py::test_gym_registry[botbowl-3-v4]",
+   "tests/ai/test_env.py::test_gym_registry[botbowl-1-v4]",
+   "tests/ai/test_env.py::test_seed"
+  ],
+  "tail": "tests/ai/test_env.py: 13 warnings\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:20: UserWarning: \u001b[33mWARN: It seems a Box observation space is an image but the `dtype` is not `np.uint8`, actual type: float32. If the Box observation space is not an image, we recommend flattening the observation to have only a 1D vector.\u001b[0m\n    logger.warn(\n\ntests/ai/test_env.py: 13 warnings\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:25: UserWarning: \u001b[33mWARN: It seems a Box observation space is an image but the upper and lower bounds are not in [0, 255]. Generally, CNN policies assume observations are within that range, so you may encounter an issue if the observation values are not.\u001b[0m\n    logger.warn(\n\ntests/ai/test_env.py: 13 warnings\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:174: UserWarning: \u001b[33mWARN: Future gym versions will require that `Env.reset` can be passed a `seed` instead of using `Env.seed` for resetting the environment random number generator.\u001b[0m\n    logger.warn(\n\ntests/ai/test_env.py: 13 warnings\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:187: UserWarning: \u001b[33mWARN: Future gym versions will require that `Env.reset` can be passed `options` to allow the environment initialisation to be passed additional information.\u001b[0m\n    logger.warn(\n\ntests/ai/test_env.py: 13 warnings\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:199: UserWarning: \u001b[33mWARN: The result returned by `env.reset()` should be `(obs, info)` by default, , where `obs` is a observation and `info` is a dictionary containing additional information.\u001b[0m\n    logger.warn(\n\ntests/ai/test_env.py::test_gym_registry[botbowl-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-11-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-7-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-5-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-3-v4]\ntests/ai/test_env.py::test_gym_registry[botbowl-1-v4]\ntests/ai/test_env.py::test_seed\n  /tmp/study/venv/lib/python3.11/site-packages/gym/utils/passive_env_checker.py:219: DeprecationWarning: \u001b[33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. \u001b[0m\n    logger.deprecation(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/ai/test_env.py::test_gym_registry[botbowl-v4] - AttributeError: module 'numpy' has no attribute 'bool8'\nFAILED tests/ai/test_env.py::test_gym_registry[botbowl-11-v4] - AttributeError: module 'numpy' has no attribute 'bool8'\nFAILED tests/ai/test_env.py::test_gym_registry[botbowl-7-v4] - AttributeError: module 'numpy' has no attribute 'bool8'\nFAILED tests/ai/test_env.py::test_gym_registry[botbowl-5-v4] - AttributeError: module 'numpy' has no attribute 'bool8'\nFAILED tests/ai/test_env.py::test_gym_registry[botbowl-3-v4] - AttributeError: module 'numpy' has no attribute 'bool8'\nFAILED tests/ai/test_env.py::test_gym_registry[botbowl-1-v4] - AttributeError: module 'numpy' has no attribute 'bool8'\nFAILED tests/ai/test_env.py::test_seed - AttributeError: module 'numpy' has no attribute 'bool8'\n7 failed, 440 passed, 1 deselected, 72 warnings in 60.68s (0:01:00)"
+ },
+ "status": "broken"
+}

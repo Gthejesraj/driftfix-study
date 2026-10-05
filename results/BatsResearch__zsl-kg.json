@@ -1,0 +1,10 @@
+{
+ "id": "BatsResearch__zsl-kg",
+ "repo": "BatsResearch/zsl-kg",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 112,
+ "sha": "aa99fd4058e0b65b0631da8ec176da54943af534",
+ "old": "",
+ "status": "not_on_old_version"
+}

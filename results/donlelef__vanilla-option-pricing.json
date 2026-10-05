@@ -1,0 +1,10 @@
+{
+ "id": "donlelef__vanilla-option-pricing",
+ "repo": "donlelef/vanilla-option-pricing",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 24,
+ "sha": "4c8069d69464419c005f3fe690c5aa515a67b421",
+ "old": "",
+ "status": "not_on_old_version"
+}

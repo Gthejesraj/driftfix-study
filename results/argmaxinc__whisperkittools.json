@@ -1,0 +1,10 @@
+{
+ "id": "argmaxinc__whisperkittools",
+ "repo": "argmaxinc/whisperkittools",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 247,
+ "sha": "84f77a83c8f530022ae55fbb1a64b3351ef63c7a",
+ "old": "2.3.5",
+ "status": "not_on_old_version"
+}

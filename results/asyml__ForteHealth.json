@@ -1,0 +1,10 @@
+{
+ "id": "asyml__ForteHealth",
+ "repo": "asyml/ForteHealth",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 14,
+ "sha": "8d463acbabf88f6bcd7096844e9dd20a87159de0",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

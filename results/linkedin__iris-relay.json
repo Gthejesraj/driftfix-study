@@ -1,0 +1,28 @@
+{
+ "id": "linkedin__iris-relay",
+ "repo": "linkedin/iris-relay",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 49,
+ "sha": "609ee35eedf71c021fb0ac211d21f5ddc14a9367",
+ "old": "1.4.36",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 11
+  },
+  "failing": [],
+  "tail": "...........                                                              [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/falcon/media/__init__.py:4\n  /tmp/study/venv/lib/python3.11/site-packages/falcon/media/__init__.py:4: DeprecationWarning: 'cgi' is deprecated and slated for removal in Python 3.13\n    from .handlers import Handlers\n\ntest/test_mobile_auth.py::test_idp_initiated_legacy_relaystate_rejected_when_encryption_enabled\n  /tmp/study/repo/test/test_mobile_auth.py:392: DeprecatedWarning: Calls to HTTPBadRequest.__init__(...) with positional args are deprecated. Please specify them as keyword arguments instead.\n    handler.on_post(mock_req, mock_resp, idp_name=\"linkedin\")\n\ntest/test_mobile_auth.py::test_saml_initiate_with_invalid_key_returns_400\ntest/test_mobile_auth.py::test_saml_initiate_missing_fields_returns_400\n  /home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/wsgiref/validate.py:181: DeprecatedWarning: Calls to HTTPBadRequest.__init__(...) with positional args are deprecated. Please specify them as keyword arguments instead.\n    iterator = application(environ, start_response_wrapper)\n\ntest/test_mobile_auth.py::test_saml_initiate_db_session_limit_returns_429\n  /home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/wsgiref/validate.py:181: DeprecatedWarning: Calls to HTTPTooManyRequests.__init__(...) with positional args are deprecated. Please specify them as keyword arguments instead.\n    iterator = application(environ, start_response_wrapper)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n11 passed, 5 warnings in 1.05s",
+  "preexisting_failures": 0
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 11
+  },
+  "failing": [],
+  "tail": "...........                                                              [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/falcon/media/__init__.py:4\n  /tmp/study/venv/lib/python3.11/site-packages/falcon/media/__init__.py:4: DeprecationWarning: 'cgi' is deprecated and slated for removal in Python 3.13\n    from .handlers import Handlers\n\ntest/test_mobile_auth.py::test_idp_initiated_legacy_relaystate_rejected_when_encryption_enabled\n  /tmp/study/repo/test/test_mobile_auth.py:392: DeprecatedWarning: Calls to HTTPBadRequest.__init__(...) with positional args are deprecated. Please specify them as keyword arguments instead.\n    handler.on_post(mock_req, mock_resp, idp_name=\"linkedin\")\n\ntest/test_mobile_auth.py::test_saml_initiate_with_invalid_key_returns_400\ntest/test_mobile_auth.py::test_saml_initiate_missing_fields_returns_400\n  /home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/wsgiref/validate.py:181: DeprecatedWarning: Calls to HTTPBadRequest.__init__(...) with positional args are deprecated. Please specify them as keyword arguments instead.\n    iterator = application(environ, start_response_wrapper)\n\ntest/test_mobile_auth.py::test_saml_initiate_db_session_limit_returns_429\n  /home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/wsgiref/validate.py:181: DeprecatedWarning: Calls to HTTPTooManyRequests.__init__(...) with positional args are deprecated. Please specify them as keyword arguments instead.\n    iterator = application(environ, start_response_wrapper)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n11 passed, 5 warnings in 1.43s"
+ },
+ "status": "not_broken"
+}

@@ -1,0 +1,31 @@
+{
+ "id": "kage-genotyper__kage",
+ "repo": "kage-genotyper/kage",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 58,
+ "sha": "28616efafe21bf8d250684d0bb8a962ea8f684e8",
+ "old": "1.26.4",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 130,
+   "skipped": 9
+  },
+  "failing": [],
+  "tail": "...s.....................s............................ss................ [ 50%]\n...xX..x.............s......s.........s.....s.................s.....x..  [100%]\n130 passed, 9 skipped, 16 deselected, 3 xfailed, 1 xpassed in 40.18s",
+  "preexisting_failures": 16
+ },
+ "new": "2.4.6",
+ "after": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/integration_test.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n__________________ ERROR collecting tests/integration_test.py __________________\ntests/integration_test.py:5: in <module>\n    from kage.command_line_interface import genotype\nkage/command_line_interface.py:29: in <module>\n    from kmer_mapper.command_line_interface import map_bnp\n../venv/lib/python3.11/site-packages/kmer_mapper/command_line_interface.py:12: in <module>\n    warnings.filterwarnings(\"ignore\", category=np.VisibleDeprecationWarning)\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/numpy/__init__.py:792: in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nE   AttributeError: module 'numpy' has no attribute 'VisibleDeprecationWarning'\n=========================== short test summary info ============================\nERROR tests/integration_test.py - AttributeError: module 'numpy' has no attribute 'VisibleDeprecationWarning'\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n15 deselected, 1 error in 4.27s"
+ },
+ "status": "broken"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "g-make-it__IG_Trading_Algo_Scripts_Python",
+ "repo": "g-make-it/IG_Trading_Algo_Scripts_Python",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 228,
+ "sha": "385536c09f572196254db705e09421aa5e1f524d",
+ "old": "3.0.6",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "JGCRI__pygcam",
+ "repo": "JGCRI/pygcam",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 28,
+ "sha": "b9fa5b995b04f96f50bcb216d16a9784ad011434",
+ "status": "install_failed",
+ "error": "requirements rtd.requirements.txt: error: No solution found when resolving dependencies\n  cause: Because python was not found in the package registry and you require python==3.9.15, we can conclude that your requirements are unsatisfiable.\n"
+}

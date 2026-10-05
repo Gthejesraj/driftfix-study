@@ -1,0 +1,28 @@
+{
+ "id": "olcf__pkpass",
+ "repo": "olcf/pkpass",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 17,
+ "sha": "eafef3886d576964dcc5f817dcf4b9027fa04173",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 6
+  },
+  "failing": [],
+  "tail": "......                                                                   [100%]\n6 passed, 31 deselected in 0.19s",
+  "preexisting_failures": 31
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 6
+  },
+  "failing": [],
+  "tail": "......                                                                   [100%]\n6 passed, 31 deselected in 0.63s"
+ },
+ "status": "not_broken"
+}

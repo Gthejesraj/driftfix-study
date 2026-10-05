@@ -1,0 +1,23 @@
+{
+ "id": "BingqingCheng__cace",
+ "repo": "BingqingCheng/cace",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 140,
+ "sha": "3f1a66552684d7f31710d5f9b98e8d56d53eb6a0",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "tests/test_edge_encoder.py",
+   "tests/test_equivariance.py",
+   "tests/test_ewald.py",
+   "tests/test_neighborhood.py"
+  ],
+  "tail": "cace/modules/interaction.py:85\n  /tmp/study/repo/cace/modules/interaction.py:85: DeprecationWarning: invalid escape sequence '\\m'\n    \"\"\"\n\ncace/modules/interaction.py:156\n  /tmp/study/repo/cace/modules/interaction.py:156: DeprecationWarning: invalid escape sequence '\\m'\n    \"\"\" another message passing mechanism\n\ncace/tasks/loss.py:21\n  /tmp/study/repo/cace/tasks/loss.py:21: DeprecationWarning: invalid escape sequence '\\d'\n    \"\"\"\n\ntests/test_ewald.py:44\n  /tmp/study/repo/tests/test_ewald.py:44: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).\n    ew_1 = ep.compute_potential_optimized(torch.tensor(r), torch.tensor(q).unsqueeze(1), torch.tensor(box))\n\ntests/test_ewald.py:45\n  /tmp/study/repo/tests/test_ewald.py:45: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).\n    ew_1_s = ep.compute_potential(torch.tensor(r), torch.tensor(q).unsqueeze(1), torch.tensor(box))\n\ntests/test_ewald_triclinic.py:48\n  /tmp/study/repo/tests/test_ewald_triclinic.py:48: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).\n    ew_1 = ep.compute_potential_optimized(torch.tensor(r), torch.tensor(q).unsqueeze(1), torch.tensor(box))\n\ntests/test_ewald_triclinic.py:49\n  /tmp/study/repo/tests/test_ewald_triclinic.py:49: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).\n    ew_1_s = ep.compute_potential(torch.tensor(r), torch.tensor(q).unsqueeze(1), torch.tensor(box))\n\ntests/test_ewald_triclinic.py:50\n  /tmp/study/repo/tests/test_ewald_triclinic.py:50: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.detach().clone() or sourceTensor.detach().clone().requires_grad_(True), rather than torch.tensor(sourceTensor).\n    ew_tri = ep.compute_potential_triclinic(torch.tensor(r), torch.tensor(q).unsqueeze(1), torch.tensor(box_3d))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/test_edge_encoder.py - NameError: name 'edge_coding' is not defined\nERROR tests/test_equivariance.py - FileNotFoundError: [Errno 2] No such file or directory: 'test_datasets/water_dimer.xyz'\nERROR tests/test_ewald.py - TypeError: unsupported operand type(s) for /: 'tuple' and 'int'\nERROR tests/test_neighborhood.py - FileNotFoundError: [Errno 2] No such file or directory: '../datasets/water.xyz'\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n14 warnings, 4 errors in 4.57s"
+ }
+}
