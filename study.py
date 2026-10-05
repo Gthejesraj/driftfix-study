@@ -61,7 +61,7 @@ def run_tests(skip: dict) -> dict:
 
 def install(c: dict) -> str | None:
     """Install the project as its own files describe. Returns an error string on failure."""
-    reqs = [f for f in c["pinned_in"] if (REPO / f).exists()]
+    reqs = [f for f in c["pinned_in"] if f.endswith(".txt") and (REPO / f).exists()]
     reqs += sorted(str(p.relative_to(REPO)) for p in REPO.glob("*requirements*.txt")
                    if "doc" not in p.name and str(p.relative_to(REPO)) not in reqs)
     for f in reqs:

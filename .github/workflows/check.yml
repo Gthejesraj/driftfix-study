@@ -1,5 +1,8 @@
 name: check
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      all: { description: "Re-check projects that already have results", type: boolean, default: false }
 permissions: { contents: write }
 jobs:
   list:
@@ -8,7 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: ids
-        run: echo "ids=$(python3 -c 'import json; print(json.dumps([c["id"] for c in json.load(open("candidates.json"))]))')" >> "$GITHUB_OUTPUT"
+        env: { ALL: "${{ inputs.all }}" }
+        run: |
+          echo "ids=$(python3 -c '
+          import json, os, pathlib
+          ids = [c["id"] for c in json.load(open("candidates.json"))]
+          if os.environ["ALL"] != "true":
+              ids = [i for i in ids if not pathlib.Path(f"results/{i}.json").exists()]
+          print(json.dumps(ids))')" >> "$GITHUB_OUTPUT"
 
   check:
     needs: list

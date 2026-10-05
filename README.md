@@ -24,6 +24,8 @@ projects when a major dependency upgrade breaks them?
 Success means: every test that passed before the upgrade passes after it,
 verified by driftfix rerunning the suite, without pinning the package back.
 
+Candidate search was later widened to `pyproject.toml`, `setup.py` and `setup.cfg`, numpy 1 → 2, and ≥10★ (183 candidates total).
+
 Statuses: `clone_failed`, `install_failed`, `not_on_old_version`,
 `no_passing_tests`, `unstable_baseline`, `not_broken`, `broken`.
 
