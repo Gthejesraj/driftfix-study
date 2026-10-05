@@ -37,7 +37,7 @@ TEST = (f"STUDY_SKIP={SKIP} PYTHONPATH={PLUGIN}:. {PY} -m pytest -q -rfE -p no:c
 
 
 def sh(cmd: str, cwd: Path = WORK, timeout: int = 900, secrets: bool = False) -> tuple[int, str]:
-    env = dict(os.environ) if secrets else {k: v for k, v in os.environ.items() if k not in SECRETS}
+    env = {k: v for k, v in os.environ.items() if v and (secrets or k not in SECRETS)}
     try:
         p = subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True, timeout=timeout, env=env)
         return p.returncode, p.stdout + p.stderr
@@ -121,6 +121,7 @@ def fix(c: dict, budget: str, model: str) -> dict:
                    f"--test \"{TEST}\" --model {model} --budget {budget} --timeout 900 --summary {report}",
                    REPO, timeout=3600, secrets=True)
     cost = re.search(r"cost \$([\d.]+)", report.read_text() if report.exists() else out)
+    sh("git add -A --intent-to-add .", REPO)  # so new files show up in the diff
     diff = sh("git diff", REPO)[1]
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / f"{c['id']}.diff").write_text(diff)

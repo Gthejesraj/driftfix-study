@@ -5,6 +5,11 @@ on:
       ids: { description: "Comma-separated candidate ids (status: broken)", required: true }
       model: { default: claude-opus-5 }
       budget: { description: Max USD per project, default: "1.5" }
+      auth:
+        description: "api = ANTHROPIC_API_KEY secret, subscription = CLAUDE_CODE_OAUTH_TOKEN secret (from `claude setup-token`)"
+        type: choice
+        options: [api, subscription]
+        default: api
 permissions: { contents: write }
 jobs:
   list:
@@ -29,12 +34,13 @@ jobs:
       - run: uv tool install git+https://github.com/Gthejesraj/driftfix
       - run: python3 study.py fix "${{ matrix.id }}"
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ inputs.auth == 'api' && secrets.ANTHROPIC_API_KEY || '' }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ inputs.auth == 'subscription' && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
           MODEL: ${{ inputs.model }}
           BUDGET: ${{ inputs.budget }}
       - if: always()
         uses: actions/upload-artifact@v4
-        with: { name: "fix-${{ matrix.id }}", path: results/ }
+        with: { name: "fix-${{ matrix.id }}", path: "results/${{ matrix.id }}.*" }
 
   report:
     needs: fix

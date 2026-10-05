@@ -24,7 +24,7 @@ jobs:
       - run: python3 study.py check "${{ matrix.id }}"
       - if: always()
         uses: actions/upload-artifact@v4
-        with: { name: "result-${{ matrix.id }}", path: results/ }
+        with: { name: "result-${{ matrix.id }}", path: "results/${{ matrix.id }}.*" }
 
   report:
     needs: check
