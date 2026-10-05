@@ -1,0 +1,56 @@
+diff --git a/bdd100k/__init__.py b/bdd100k/__init__.py
+index 464222d..5c3a0ec 100644
+--- a/bdd100k/__init__.py
++++ b/bdd100k/__init__.py
+@@ -1 +1,3 @@
+ """BDD100K python toolkit."""
++
++from bdd100k.common import pydantic_compat as _pydantic_compat  # noqa: F401
+diff --git a/bdd100k/eval/lane.py b/bdd100k/eval/lane.py
+index 8cc610c..5919e01 100644
+--- a/bdd100k/eval/lane.py
++++ b/bdd100k/eval/lane.py
+@@ -174,8 +174,9 @@ class LaneResult(Result):
+     ) -> Scores:
+         """Convert the lane_mark data into a flattened dict as the summary."""
+         summary_dict: Dict[str, Union[int, float]] = {}
+-        for metric, scores_list in self.dict(
+-            include=include, exclude=exclude
++        for metric, scores_list in self.model_dump(
++            include=set(include) if include is not None else None,
++            exclude=set(exclude) if exclude is not None else None,
+         ).items():
+             for category, score in scores_list[-2].items():
+                 summary_dict[f"{metric}/{category}"] = score
+diff --git a/bdd100k/eval/pan_seg.py b/bdd100k/eval/pan_seg.py
+index 9f170e3..3aff295 100644
+--- a/bdd100k/eval/pan_seg.py
++++ b/bdd100k/eval/pan_seg.py
+@@ -80,8 +80,9 @@ class PanSegResult(Result):
+     ) -> Scores:
+         """Convert the pan_seg data into a flattened dict as the summary."""
+         summary_dict: Dict[str, Union[int, float]] = {}
+-        for metric, scores_list in self.dict(
+-            include=include, exclude=exclude
++        for metric, scores_list in self.model_dump(
++            include=set(include) if include is not None else None,
++            exclude=set(exclude) if exclude is not None else None,
+         ).items():
+             summary_dict[f"{metric}/{STUFF}"] = scores_list[1][STUFF]
+             summary_dict[f"{metric}/{THING}"] = scores_list[1][THING]
+diff --git a/bdd100k/eval/seg.py b/bdd100k/eval/seg.py
+index 9e981d2..0e8626a 100644
+--- a/bdd100k/eval/seg.py
++++ b/bdd100k/eval/seg.py
+@@ -44,8 +44,9 @@ class SegResult(Result):
+     ) -> Scores:
+         """Convert the seg result into a flattened dict as the summary."""
+         summary_dict: Dict[str, Union[int, float]] = {}
+-        for metric, scores_list in self.dict(
+-            include=include, exclude=exclude
++        for metric, scores_list in self.model_dump(
++            include=set(include) if include is not None else None,
++            exclude=set(exclude) if exclude is not None else None,
+         ).items():
+             if not isinstance(scores_list, list):
+                 summary_dict[metric] = scores_list

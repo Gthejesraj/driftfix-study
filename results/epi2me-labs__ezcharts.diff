@@ -1,0 +1,5125 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0210de9..99b7708 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
+ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+ 
++## [unreleased]
++### Changed
++- Migrated the eCharts options model to pydantic v2.
++
+ ## [v0.16.1]
+ ### Changed
+ - Replaced usage of `pkg_resources.resource_filename` with `importlib.resources.files` from the standard library.
+diff --git a/ezcharts/plots/__init__.py b/ezcharts/plots/__init__.py
+index e1e0100..c42d5df 100644
+--- a/ezcharts/plots/__init__.py
++++ b/ezcharts/plots/__init__.py
+@@ -1,15 +1,18 @@
+ """Plotting functionality via echarts."""
+ 
++from typing import ClassVar
++
+ from bokeh.plotting import figure
+ import pandas as pd
+ import sigfig
+ 
+ from ezcharts import util as ezutil
+ from ezcharts.plots import util
++from ezcharts.plots._base import json_fallback
+ from ezcharts.plots._model import EChartsOption
+ from ezcharts.plots.util import JSCode
+ 
+-# NOTE: the add_x methods below allow for type checking that pydantic V1 would
++# NOTE: the add_x methods below allow for type checking that pydantic would
+ #       otherwise not perform, e.g. plt.series.append({...}) evades checking
+ #       https://github.com/pydantic/pydantic/issues/496
+ 
+@@ -73,7 +76,9 @@ class AxisLabelFormatter(JSCode):
+ class Plot(EChartsOption):
+     """EChart plotting interface."""
+ 
+-    _logger = ezutil.get_named_logger("EChrtPlotr")
++    # NOTE: must be a `ClassVar`, else pydantic treats this as a private
++    #       attribute and tries (and fails) to deepcopy the logger per-instance
++    _logger: ClassVar = ezutil.get_named_logger("EChrtPlotr")
+ 
+     def __init__(self, *args, **kwargs):
+         """Initialize a plot with defaults."""
+@@ -114,7 +119,8 @@ class Plot(EChartsOption):
+         any javascript code.
+         """
+         self.finalise()
+-        return JSCode._clean(self.json(exclude_unset=True))
++        return JSCode._clean(
++            self.model_dump_json(exclude_unset=True, fallback=json_fallback))
+ 
+     def finalise(self):
+         """Apply a standard set of defaults to patch eCharts.
+diff --git a/ezcharts/plots/_base.py b/ezcharts/plots/_base.py
+index 668dd99..82270b7 100644
+--- a/ezcharts/plots/_base.py
++++ b/ezcharts/plots/_base.py
+@@ -2,7 +2,7 @@
+ 
+ import numpy as np
+ import pandas as pd
+-from pydantic import BaseModel as PyDanticBase, Extra
++from pydantic import BaseModel as PyDanticBase, ConfigDict
+ 
+ from ezcharts.plots.util import JSCode
+ 
+@@ -14,11 +14,31 @@ json_encoders = {
+     JSCode: lambda x: x.to_json()}
+ 
+ 
+-class BaseModel(
+-        PyDanticBase, extra=Extra.forbid, validate_assignment=True,
+-        json_encoders=json_encoders, arbitrary_types_allowed=True):
++def json_fallback(value):
++    """Serialise values that pydantic doesn't know how to handle.
++
++    Most fields of the eCharts model are typed as `Any`, so pydantic cannot
++    infer a serializer for the (third-party) objects which users store in
++    them. This function is handed to pydantic's `fallback` serialization
++    hook to deal with those cases.
++
++    :param value: object which pydantic could not serialise.
++    :returns: a JSON-serialisable representation of `value`.
++    """
++    for type_, encoder in json_encoders.items():
++        if isinstance(value, type_):
++            return encoder(value)
++    raise TypeError(
++        f"Cannot JSON serialise object of type {type(value)}.")
++
++
++class BaseModel(PyDanticBase):
+     """Base class for eCharts Options."""
+     # Note: this class's name in referenced in generate-model.py
+     # TODO: can we overide getting of attributes to allow
+     #       allow setting of children when parent isn't set.
+     #       Simple __getattr__ isn't called :(
++
++    model_config = ConfigDict(
++        extra="forbid", validate_assignment=True,
++        arbitrary_types_allowed=True)
+diff --git a/ezcharts/plots/_model.py b/ezcharts/plots/_model.py
+index 1761583..73695e2 100644
+--- a/ezcharts/plots/_model.py
++++ b/ezcharts/plots/_model.py
+@@ -151,7 +151,7 @@ class Rich(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName] = Field(
++    style_name_: Optional[_StyleName] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -267,7 +267,7 @@ class Rich1(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName1] = Field(
++    style_name_: Optional[_StyleName1] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -677,7 +677,7 @@ class Rich2(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName2] = Field(
++    style_name_: Optional[_StyleName2] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -1123,7 +1123,7 @@ class Rich3(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName3] = Field(
++    style_name_: Optional[_StyleName3] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -1313,7 +1313,7 @@ class Rich4(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName4] = Field(
++    style_name_: Optional[_StyleName4] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -2408,7 +2408,7 @@ class Rich5(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName5] = Field(
++    style_name_: Optional[_StyleName5] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -2815,7 +2815,7 @@ class Rich6(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName6] = Field(
++    style_name_: Optional[_StyleName6] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -3197,7 +3197,7 @@ class Rich7(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName7] = Field(
++    style_name_: Optional[_StyleName7] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -3625,7 +3625,7 @@ class Rich8(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName8] = Field(
++    style_name_: Optional[_StyleName8] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -3988,7 +3988,7 @@ class Rich9(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName9] = Field(
++    style_name_: Optional[_StyleName9] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -4257,7 +4257,7 @@ class Rich10(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName10] = Field(
++    style_name_: Optional[_StyleName10] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -4925,7 +4925,7 @@ class Rich11(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName11] = Field(
++    style_name_: Optional[_StyleName11] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -5280,7 +5280,7 @@ class Rich12(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName12] = Field(
++    style_name_: Optional[_StyleName12] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -5549,7 +5549,7 @@ class Rich13(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName13] = Field(
++    style_name_: Optional[_StyleName13] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -6112,7 +6112,7 @@ class Rich14(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName14] = Field(
++    style_name_: Optional[_StyleName14] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -6377,7 +6377,7 @@ class Rich15(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName15] = Field(
++    style_name_: Optional[_StyleName15] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -6742,7 +6742,7 @@ class Rich16(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName16] = Field(
++    style_name_: Optional[_StyleName16] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -7003,7 +7003,7 @@ class Rich17(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName17] = Field(
++    style_name_: Optional[_StyleName17] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -10400,7 +10400,7 @@ class Rich18(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName18] = Field(
++    style_name_: Optional[_StyleName18] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -10654,7 +10654,7 @@ class Rich19(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName19] = Field(
++    style_name_: Optional[_StyleName19] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -10916,7 +10916,7 @@ class Rich20(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName20] = Field(
++    style_name_: Optional[_StyleName20] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -11119,7 +11119,7 @@ class Rich21(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName21] = Field(
++    style_name_: Optional[_StyleName21] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -11385,7 +11385,7 @@ class Rich22(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName22] = Field(
++    style_name_: Optional[_StyleName22] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -11634,7 +11634,7 @@ class Rich23(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName23] = Field(
++    style_name_: Optional[_StyleName23] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -11833,7 +11833,7 @@ class Rich24(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName24] = Field(
++    style_name_: Optional[_StyleName24] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -12032,7 +12032,7 @@ class Rich25(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName25] = Field(
++    style_name_: Optional[_StyleName25] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -12523,7 +12523,7 @@ class Rich26(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName26] = Field(
++    style_name_: Optional[_StyleName26] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -12878,7 +12878,7 @@ class Rich27(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName27] = Field(
++    style_name_: Optional[_StyleName27] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -13079,7 +13079,7 @@ class Rich28(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName28] = Field(
++    style_name_: Optional[_StyleName28] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -13552,7 +13552,7 @@ class Rich29(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName29] = Field(
++    style_name_: Optional[_StyleName29] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -13819,7 +13819,7 @@ class Rich30(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName30] = Field(
++    style_name_: Optional[_StyleName30] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -14020,7 +14020,7 @@ class Rich31(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName31] = Field(
++    style_name_: Optional[_StyleName31] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -14415,7 +14415,7 @@ class Rich32(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName32] = Field(
++    style_name_: Optional[_StyleName32] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -14770,7 +14770,7 @@ class Rich33(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName33] = Field(
++    style_name_: Optional[_StyleName33] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -15039,7 +15039,7 @@ class Rich34(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName34] = Field(
++    style_name_: Optional[_StyleName34] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -15736,7 +15736,7 @@ class Rich35(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName35] = Field(
++    style_name_: Optional[_StyleName35] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -16276,7 +16276,7 @@ class Rich36(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName36] = Field(
++    style_name_: Optional[_StyleName36] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -16463,7 +16463,7 @@ class Rich37(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName37] = Field(
++    style_name_: Optional[_StyleName37] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -17038,7 +17038,7 @@ class Element(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -17293,7 +17293,7 @@ class Element1(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -17562,7 +17562,7 @@ class Element2(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -17845,7 +17845,7 @@ class Element3(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -18103,7 +18103,7 @@ class Element4(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -18362,7 +18362,7 @@ class Element5(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -18630,7 +18630,7 @@ class Element6(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -18896,7 +18896,7 @@ class Element7(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -19157,7 +19157,7 @@ class Element8(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -19423,7 +19423,7 @@ class Element9(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -19680,7 +19680,7 @@ class Element10(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -19947,7 +19947,7 @@ class Element11(BaseModel):
+         'undefined',
+         description='<p>id is used to specifying element when willing to update it.\nid can be ignored if you do not need it.</p>\n',
+     )
+-    _action: Optional[str] = Field(
++    action_: Optional[str] = Field(
+         'merge',
+         alias='$action',
+         description='<p>Specify the operation should be performed to the element when calling <code class="codespan">setOption</code>.\nDefault value is &#39;merge&#39;, other values can be &#39;replace&#39; or &#39;remove&#39;.</p>\n<p>Optional values:</p>\n<ul>\n<li><code class="codespan">&#39;merge&#39;</code>: merge the given option to existing element (if any), otherwise create a new element.</li>\n<li><code class="codespan">&#39;replace&#39;</code>: create a new element according to the given option and replace the existing element (if any).</li>\n<li><code class="codespan">&#39;remove&#39;</code>: delete the existing element (if any).</li>\n</ul>\n',
+@@ -20551,7 +20551,7 @@ class Rich38(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName38] = Field(
++    style_name_: Optional[_StyleName38] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -20733,7 +20733,7 @@ class Rich39(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName39] = Field(
++    style_name_: Optional[_StyleName39] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -20915,7 +20915,7 @@ class Rich40(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName40] = Field(
++    style_name_: Optional[_StyleName40] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -21540,7 +21540,7 @@ class Rich41(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName41] = Field(
++    style_name_: Optional[_StyleName41] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -21730,7 +21730,7 @@ class Rich42(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName42] = Field(
++    style_name_: Optional[_StyleName42] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -22266,7 +22266,7 @@ class Rich43(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName43] = Field(
++    style_name_: Optional[_StyleName43] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -22600,7 +22600,7 @@ class Rich44(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName44] = Field(
++    style_name_: Optional[_StyleName44] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -22820,7 +22820,7 @@ class Rich45(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName45] = Field(
++    style_name_: Optional[_StyleName45] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -23036,7 +23036,7 @@ class Rich46(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName46] = Field(
++    style_name_: Optional[_StyleName46] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -23233,7 +23233,7 @@ class Rich47(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName47] = Field(
++    style_name_: Optional[_StyleName47] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -23449,7 +23449,7 @@ class Rich48(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName48] = Field(
++    style_name_: Optional[_StyleName48] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -23650,7 +23650,7 @@ class Rich49(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName49] = Field(
++    style_name_: Optional[_StyleName49] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -23879,7 +23879,7 @@ class Rich50(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName50] = Field(
++    style_name_: Optional[_StyleName50] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -24078,7 +24078,7 @@ class Rich51(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName51] = Field(
++    style_name_: Optional[_StyleName51] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -24273,7 +24273,7 @@ class Rich52(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName52] = Field(
++    style_name_: Optional[_StyleName52] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -24581,7 +24581,7 @@ class Rich53(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName53] = Field(
++    style_name_: Optional[_StyleName53] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -24780,7 +24780,7 @@ class Rich54(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName54] = Field(
++    style_name_: Optional[_StyleName54] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -24983,7 +24983,7 @@ class Rich55(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName55] = Field(
++    style_name_: Optional[_StyleName55] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -25194,7 +25194,7 @@ class Rich56(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName56] = Field(
++    style_name_: Optional[_StyleName56] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -25375,7 +25375,7 @@ class Rich57(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName57] = Field(
++    style_name_: Optional[_StyleName57] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -25700,7 +25700,7 @@ class Rich58(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName58] = Field(
++    style_name_: Optional[_StyleName58] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -25931,7 +25931,7 @@ class Rich59(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName59] = Field(
++    style_name_: Optional[_StyleName59] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -26118,7 +26118,7 @@ class Rich60(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName60] = Field(
++    style_name_: Optional[_StyleName60] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -26313,7 +26313,7 @@ class Rich61(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName61] = Field(
++    style_name_: Optional[_StyleName61] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -26491,7 +26491,7 @@ class Rich62(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName62] = Field(
++    style_name_: Optional[_StyleName62] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -26673,7 +26673,7 @@ class Rich63(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName63] = Field(
++    style_name_: Optional[_StyleName63] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -26941,7 +26941,7 @@ class Rich64(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName64] = Field(
++    style_name_: Optional[_StyleName64] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -27119,7 +27119,7 @@ class Rich65(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName65] = Field(
++    style_name_: Optional[_StyleName65] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -27301,7 +27301,7 @@ class Rich66(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName66] = Field(
++    style_name_: Optional[_StyleName66] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -27704,7 +27704,7 @@ class Rich67(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName67] = Field(
++    style_name_: Optional[_StyleName67] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -27899,7 +27899,7 @@ class Rich68(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName68] = Field(
++    style_name_: Optional[_StyleName68] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -28098,7 +28098,7 @@ class Rich69(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName69] = Field(
++    style_name_: Optional[_StyleName69] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -28306,7 +28306,7 @@ class Rich70(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName70] = Field(
++    style_name_: Optional[_StyleName70] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -28497,7 +28497,7 @@ class Rich71(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName71] = Field(
++    style_name_: Optional[_StyleName71] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -28691,7 +28691,7 @@ class Rich72(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName72] = Field(
++    style_name_: Optional[_StyleName72] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -28946,7 +28946,7 @@ class Rich73(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName73] = Field(
++    style_name_: Optional[_StyleName73] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -29137,7 +29137,7 @@ class Rich74(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName74] = Field(
++    style_name_: Optional[_StyleName74] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -29331,7 +29331,7 @@ class Rich75(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName75] = Field(
++    style_name_: Optional[_StyleName75] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -30082,7 +30082,7 @@ class Rich76(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName76] = Field(
++    style_name_: Optional[_StyleName76] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -30404,7 +30404,7 @@ class Rich77(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName77] = Field(
++    style_name_: Optional[_StyleName77] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -30691,7 +30691,7 @@ class Rich78(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName78] = Field(
++    style_name_: Optional[_StyleName78] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -30966,7 +30966,7 @@ class Rich79(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName79] = Field(
++    style_name_: Optional[_StyleName79] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -31210,7 +31210,7 @@ class Rich80(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName80] = Field(
++    style_name_: Optional[_StyleName80] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -31475,7 +31475,7 @@ class Rich81(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName81] = Field(
++    style_name_: Optional[_StyleName81] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -31710,7 +31710,7 @@ class Rich82(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName82] = Field(
++    style_name_: Optional[_StyleName82] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -31944,7 +31944,7 @@ class Rich83(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName83] = Field(
++    style_name_: Optional[_StyleName83] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -32214,7 +32214,7 @@ class Rich84(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName84] = Field(
++    style_name_: Optional[_StyleName84] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -32413,7 +32413,7 @@ class Rich85(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName85] = Field(
++    style_name_: Optional[_StyleName85] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -32616,7 +32616,7 @@ class Rich86(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName86] = Field(
++    style_name_: Optional[_StyleName86] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -32827,7 +32827,7 @@ class Rich87(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName87] = Field(
++    style_name_: Optional[_StyleName87] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -33008,7 +33008,7 @@ class Rich88(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName88] = Field(
++    style_name_: Optional[_StyleName88] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -33333,7 +33333,7 @@ class Rich89(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName89] = Field(
++    style_name_: Optional[_StyleName89] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -33516,7 +33516,7 @@ class Rich90(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName90] = Field(
++    style_name_: Optional[_StyleName90] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -33703,7 +33703,7 @@ class Rich91(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName91] = Field(
++    style_name_: Optional[_StyleName91] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -33898,7 +33898,7 @@ class Rich92(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName92] = Field(
++    style_name_: Optional[_StyleName92] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -34076,7 +34076,7 @@ class Rich93(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName93] = Field(
++    style_name_: Optional[_StyleName93] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -34258,7 +34258,7 @@ class Rich94(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName94] = Field(
++    style_name_: Optional[_StyleName94] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -34526,7 +34526,7 @@ class Rich95(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName95] = Field(
++    style_name_: Optional[_StyleName95] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -34704,7 +34704,7 @@ class Rich96(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName96] = Field(
++    style_name_: Optional[_StyleName96] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -34886,7 +34886,7 @@ class Rich97(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName97] = Field(
++    style_name_: Optional[_StyleName97] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -35289,7 +35289,7 @@ class Rich98(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName98] = Field(
++    style_name_: Optional[_StyleName98] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -35484,7 +35484,7 @@ class Rich99(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName99] = Field(
++    style_name_: Optional[_StyleName99] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -35683,7 +35683,7 @@ class Rich100(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName100] = Field(
++    style_name_: Optional[_StyleName100] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -35891,7 +35891,7 @@ class Rich101(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName101] = Field(
++    style_name_: Optional[_StyleName101] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -36082,7 +36082,7 @@ class Rich102(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName102] = Field(
++    style_name_: Optional[_StyleName102] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -36276,7 +36276,7 @@ class Rich103(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName103] = Field(
++    style_name_: Optional[_StyleName103] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -36531,7 +36531,7 @@ class Rich104(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName104] = Field(
++    style_name_: Optional[_StyleName104] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -36722,7 +36722,7 @@ class Rich105(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName105] = Field(
++    style_name_: Optional[_StyleName105] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -36916,7 +36916,7 @@ class Rich106(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName106] = Field(
++    style_name_: Optional[_StyleName106] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -37668,7 +37668,7 @@ class Rich107(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName107] = Field(
++    style_name_: Optional[_StyleName107] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -38020,7 +38020,7 @@ class Rich108(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName108] = Field(
++    style_name_: Optional[_StyleName108] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -38279,7 +38279,7 @@ class Rich109(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName109] = Field(
++    style_name_: Optional[_StyleName109] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -38521,7 +38521,7 @@ class Rich110(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName110] = Field(
++    style_name_: Optional[_StyleName110] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -38712,7 +38712,7 @@ class Rich111(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName111] = Field(
++    style_name_: Optional[_StyleName111] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -38974,7 +38974,7 @@ class Rich112(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName112] = Field(
++    style_name_: Optional[_StyleName112] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -39153,7 +39153,7 @@ class Rich113(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName113] = Field(
++    style_name_: Optional[_StyleName113] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -39335,7 +39335,7 @@ class Rich114(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName114] = Field(
++    style_name_: Optional[_StyleName114] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -39609,7 +39609,7 @@ class Rich115(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName115] = Field(
++    style_name_: Optional[_StyleName115] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -39808,7 +39808,7 @@ class Rich116(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName116] = Field(
++    style_name_: Optional[_StyleName116] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -40011,7 +40011,7 @@ class Rich117(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName117] = Field(
++    style_name_: Optional[_StyleName117] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -40222,7 +40222,7 @@ class Rich118(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName118] = Field(
++    style_name_: Optional[_StyleName118] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -40403,7 +40403,7 @@ class Rich119(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName119] = Field(
++    style_name_: Optional[_StyleName119] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -40712,7 +40712,7 @@ class Rich120(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName120] = Field(
++    style_name_: Optional[_StyleName120] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -40895,7 +40895,7 @@ class Rich121(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName121] = Field(
++    style_name_: Optional[_StyleName121] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -41082,7 +41082,7 @@ class Rich122(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName122] = Field(
++    style_name_: Optional[_StyleName122] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -41277,7 +41277,7 @@ class Rich123(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName123] = Field(
++    style_name_: Optional[_StyleName123] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -41455,7 +41455,7 @@ class Rich124(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName124] = Field(
++    style_name_: Optional[_StyleName124] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -41637,7 +41637,7 @@ class Rich125(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName125] = Field(
++    style_name_: Optional[_StyleName125] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -41889,7 +41889,7 @@ class Rich126(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName126] = Field(
++    style_name_: Optional[_StyleName126] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -42067,7 +42067,7 @@ class Rich127(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName127] = Field(
++    style_name_: Optional[_StyleName127] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -42249,7 +42249,7 @@ class Rich128(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName128] = Field(
++    style_name_: Optional[_StyleName128] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -42593,7 +42593,7 @@ class Rich129(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName129] = Field(
++    style_name_: Optional[_StyleName129] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -42788,7 +42788,7 @@ class Rich130(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName130] = Field(
++    style_name_: Optional[_StyleName130] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -42987,7 +42987,7 @@ class Rich131(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName131] = Field(
++    style_name_: Optional[_StyleName131] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -43195,7 +43195,7 @@ class Rich132(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName132] = Field(
++    style_name_: Optional[_StyleName132] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -43386,7 +43386,7 @@ class Rich133(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName133] = Field(
++    style_name_: Optional[_StyleName133] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -43580,7 +43580,7 @@ class Rich134(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName134] = Field(
++    style_name_: Optional[_StyleName134] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -43819,7 +43819,7 @@ class Rich135(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName135] = Field(
++    style_name_: Optional[_StyleName135] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -44010,7 +44010,7 @@ class Rich136(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName136] = Field(
++    style_name_: Optional[_StyleName136] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -44204,7 +44204,7 @@ class Rich137(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName137] = Field(
++    style_name_: Optional[_StyleName137] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -44822,7 +44822,7 @@ class Rich138(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName138] = Field(
++    style_name_: Optional[_StyleName138] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -45159,7 +45159,7 @@ class Rich139(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName139] = Field(
++    style_name_: Optional[_StyleName139] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -45397,7 +45397,7 @@ class Rich140(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName140] = Field(
++    style_name_: Optional[_StyleName140] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -45622,7 +45622,7 @@ class Rich141(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName141] = Field(
++    style_name_: Optional[_StyleName141] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -45851,7 +45851,7 @@ class Rich142(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName142] = Field(
++    style_name_: Optional[_StyleName142] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -46075,7 +46075,7 @@ class Rich143(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName143] = Field(
++    style_name_: Optional[_StyleName143] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -46297,7 +46297,7 @@ class Rich144(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName144] = Field(
++    style_name_: Optional[_StyleName144] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -46518,7 +46518,7 @@ class Rich145(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName145] = Field(
++    style_name_: Optional[_StyleName145] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -46850,7 +46850,7 @@ class Rich146(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName146] = Field(
++    style_name_: Optional[_StyleName146] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -47049,7 +47049,7 @@ class Rich147(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName147] = Field(
++    style_name_: Optional[_StyleName147] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -47252,7 +47252,7 @@ class Rich148(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName148] = Field(
++    style_name_: Optional[_StyleName148] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -47463,7 +47463,7 @@ class Rich149(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName149] = Field(
++    style_name_: Optional[_StyleName149] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -47644,7 +47644,7 @@ class Rich150(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName150] = Field(
++    style_name_: Optional[_StyleName150] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -47969,7 +47969,7 @@ class Rich151(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName151] = Field(
++    style_name_: Optional[_StyleName151] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -48152,7 +48152,7 @@ class Rich152(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName152] = Field(
++    style_name_: Optional[_StyleName152] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -48339,7 +48339,7 @@ class Rich153(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName153] = Field(
++    style_name_: Optional[_StyleName153] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -48534,7 +48534,7 @@ class Rich154(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName154] = Field(
++    style_name_: Optional[_StyleName154] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -48712,7 +48712,7 @@ class Rich155(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName155] = Field(
++    style_name_: Optional[_StyleName155] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -48894,7 +48894,7 @@ class Rich156(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName156] = Field(
++    style_name_: Optional[_StyleName156] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -49162,7 +49162,7 @@ class Rich157(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName157] = Field(
++    style_name_: Optional[_StyleName157] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -49340,7 +49340,7 @@ class Rich158(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName158] = Field(
++    style_name_: Optional[_StyleName158] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -49522,7 +49522,7 @@ class Rich159(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName159] = Field(
++    style_name_: Optional[_StyleName159] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -49925,7 +49925,7 @@ class Rich160(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName160] = Field(
++    style_name_: Optional[_StyleName160] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -50120,7 +50120,7 @@ class Rich161(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName161] = Field(
++    style_name_: Optional[_StyleName161] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -50319,7 +50319,7 @@ class Rich162(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName162] = Field(
++    style_name_: Optional[_StyleName162] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -50527,7 +50527,7 @@ class Rich163(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName163] = Field(
++    style_name_: Optional[_StyleName163] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -50718,7 +50718,7 @@ class Rich164(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName164] = Field(
++    style_name_: Optional[_StyleName164] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -50912,7 +50912,7 @@ class Rich165(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName165] = Field(
++    style_name_: Optional[_StyleName165] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -51167,7 +51167,7 @@ class Rich166(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName166] = Field(
++    style_name_: Optional[_StyleName166] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -51358,7 +51358,7 @@ class Rich167(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName167] = Field(
++    style_name_: Optional[_StyleName167] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -51552,7 +51552,7 @@ class Rich168(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName168] = Field(
++    style_name_: Optional[_StyleName168] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -52234,7 +52234,7 @@ class Rich169(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName169] = Field(
++    style_name_: Optional[_StyleName169] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -52571,7 +52571,7 @@ class Rich170(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName170] = Field(
++    style_name_: Optional[_StyleName170] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -52809,7 +52809,7 @@ class Rich171(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName171] = Field(
++    style_name_: Optional[_StyleName171] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -53034,7 +53034,7 @@ class Rich172(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName172] = Field(
++    style_name_: Optional[_StyleName172] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -53263,7 +53263,7 @@ class Rich173(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName173] = Field(
++    style_name_: Optional[_StyleName173] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -53482,7 +53482,7 @@ class Rich174(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName174] = Field(
++    style_name_: Optional[_StyleName174] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -53704,7 +53704,7 @@ class Rich175(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName175] = Field(
++    style_name_: Optional[_StyleName175] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -53925,7 +53925,7 @@ class Rich176(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName176] = Field(
++    style_name_: Optional[_StyleName176] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -54245,7 +54245,7 @@ class Rich177(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName177] = Field(
++    style_name_: Optional[_StyleName177] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -54444,7 +54444,7 @@ class Rich178(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName178] = Field(
++    style_name_: Optional[_StyleName178] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -54647,7 +54647,7 @@ class Rich179(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName179] = Field(
++    style_name_: Optional[_StyleName179] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -54858,7 +54858,7 @@ class Rich180(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName180] = Field(
++    style_name_: Optional[_StyleName180] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -55039,7 +55039,7 @@ class Rich181(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName181] = Field(
++    style_name_: Optional[_StyleName181] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -55364,7 +55364,7 @@ class Rich182(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName182] = Field(
++    style_name_: Optional[_StyleName182] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -55547,7 +55547,7 @@ class Rich183(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName183] = Field(
++    style_name_: Optional[_StyleName183] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -55734,7 +55734,7 @@ class Rich184(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName184] = Field(
++    style_name_: Optional[_StyleName184] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -55929,7 +55929,7 @@ class Rich185(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName185] = Field(
++    style_name_: Optional[_StyleName185] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -56107,7 +56107,7 @@ class Rich186(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName186] = Field(
++    style_name_: Optional[_StyleName186] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -56289,7 +56289,7 @@ class Rich187(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName187] = Field(
++    style_name_: Optional[_StyleName187] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -56557,7 +56557,7 @@ class Rich188(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName188] = Field(
++    style_name_: Optional[_StyleName188] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -56735,7 +56735,7 @@ class Rich189(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName189] = Field(
++    style_name_: Optional[_StyleName189] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -56917,7 +56917,7 @@ class Rich190(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName190] = Field(
++    style_name_: Optional[_StyleName190] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -57320,7 +57320,7 @@ class Rich191(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName191] = Field(
++    style_name_: Optional[_StyleName191] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -57515,7 +57515,7 @@ class Rich192(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName192] = Field(
++    style_name_: Optional[_StyleName192] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -57714,7 +57714,7 @@ class Rich193(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName193] = Field(
++    style_name_: Optional[_StyleName193] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -57922,7 +57922,7 @@ class Rich194(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName194] = Field(
++    style_name_: Optional[_StyleName194] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -58113,7 +58113,7 @@ class Rich195(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName195] = Field(
++    style_name_: Optional[_StyleName195] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -58307,7 +58307,7 @@ class Rich196(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName196] = Field(
++    style_name_: Optional[_StyleName196] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -58562,7 +58562,7 @@ class Rich197(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName197] = Field(
++    style_name_: Optional[_StyleName197] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -58753,7 +58753,7 @@ class Rich198(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName198] = Field(
++    style_name_: Optional[_StyleName198] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -58947,7 +58947,7 @@ class Rich199(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName199] = Field(
++    style_name_: Optional[_StyleName199] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -59574,7 +59574,7 @@ class Rich200(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName200] = Field(
++    style_name_: Optional[_StyleName200] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -59981,7 +59981,7 @@ class Rich201(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName201] = Field(
++    style_name_: Optional[_StyleName201] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -60246,7 +60246,7 @@ class Rich202(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName202] = Field(
++    style_name_: Optional[_StyleName202] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -60458,7 +60458,7 @@ class Rich203(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName203] = Field(
++    style_name_: Optional[_StyleName203] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -60670,7 +60670,7 @@ class Rich204(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName204] = Field(
++    style_name_: Optional[_StyleName204] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -60887,7 +60887,7 @@ class Rich205(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName205] = Field(
++    style_name_: Optional[_StyleName205] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -61092,7 +61092,7 @@ class Rich206(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName206] = Field(
++    style_name_: Optional[_StyleName206] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -61300,7 +61300,7 @@ class Rich207(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName207] = Field(
++    style_name_: Optional[_StyleName207] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -61890,7 +61890,7 @@ class Rich208(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName208] = Field(
++    style_name_: Optional[_StyleName208] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -62184,7 +62184,7 @@ class Rich209(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName209] = Field(
++    style_name_: Optional[_StyleName209] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -62412,7 +62412,7 @@ class Rich210(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName210] = Field(
++    style_name_: Optional[_StyleName210] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -62631,7 +62631,7 @@ class Rich211(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName211] = Field(
++    style_name_: Optional[_StyleName211] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -62836,7 +62836,7 @@ class Rich212(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName212] = Field(
++    style_name_: Optional[_StyleName212] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -63104,7 +63104,7 @@ class Rich213(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName213] = Field(
++    style_name_: Optional[_StyleName213] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -63320,7 +63320,7 @@ class Rich214(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName214] = Field(
++    style_name_: Optional[_StyleName214] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -63535,7 +63535,7 @@ class Rich215(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName215] = Field(
++    style_name_: Optional[_StyleName215] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -63780,7 +63780,7 @@ class Rich216(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName216] = Field(
++    style_name_: Optional[_StyleName216] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -63984,7 +63984,7 @@ class Rich217(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName217] = Field(
++    style_name_: Optional[_StyleName217] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -64200,7 +64200,7 @@ class Rich218(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName218] = Field(
++    style_name_: Optional[_StyleName218] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -64415,7 +64415,7 @@ class Rich219(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName219] = Field(
++    style_name_: Optional[_StyleName219] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -64976,7 +64976,7 @@ class Rich220(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName220] = Field(
++    style_name_: Optional[_StyleName220] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -65184,7 +65184,7 @@ class Rich221(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName221] = Field(
++    style_name_: Optional[_StyleName221] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -65480,7 +65480,7 @@ class Rich222(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName222] = Field(
++    style_name_: Optional[_StyleName222] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -65684,7 +65684,7 @@ class Rich223(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName223] = Field(
++    style_name_: Optional[_StyleName223] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -65903,7 +65903,7 @@ class Rich224(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName224] = Field(
++    style_name_: Optional[_StyleName224] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -66107,7 +66107,7 @@ class Rich225(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName225] = Field(
++    style_name_: Optional[_StyleName225] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -66314,7 +66314,7 @@ class Rich226(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName226] = Field(
++    style_name_: Optional[_StyleName226] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -66518,7 +66518,7 @@ class Rich227(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName227] = Field(
++    style_name_: Optional[_StyleName227] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -66729,7 +66729,7 @@ class Rich228(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName228] = Field(
++    style_name_: Optional[_StyleName228] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -66947,7 +66947,7 @@ class Rich229(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName229] = Field(
++    style_name_: Optional[_StyleName229] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -67290,7 +67290,7 @@ class Rich230(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName230] = Field(
++    style_name_: Optional[_StyleName230] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -67498,7 +67498,7 @@ class Rich231(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName231] = Field(
++    style_name_: Optional[_StyleName231] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -67794,7 +67794,7 @@ class Rich232(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName232] = Field(
++    style_name_: Optional[_StyleName232] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -67998,7 +67998,7 @@ class Rich233(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName233] = Field(
++    style_name_: Optional[_StyleName233] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -68206,7 +68206,7 @@ class Rich234(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName234] = Field(
++    style_name_: Optional[_StyleName234] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -68410,7 +68410,7 @@ class Rich235(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName235] = Field(
++    style_name_: Optional[_StyleName235] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -68617,7 +68617,7 @@ class Rich236(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName236] = Field(
++    style_name_: Optional[_StyleName236] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -68821,7 +68821,7 @@ class Rich237(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName237] = Field(
++    style_name_: Optional[_StyleName237] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -69092,7 +69092,7 @@ class Rich238(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName238] = Field(
++    style_name_: Optional[_StyleName238] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -69300,7 +69300,7 @@ class Rich239(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName239] = Field(
++    style_name_: Optional[_StyleName239] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -69596,7 +69596,7 @@ class Rich240(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName240] = Field(
++    style_name_: Optional[_StyleName240] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -69800,7 +69800,7 @@ class Rich241(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName241] = Field(
++    style_name_: Optional[_StyleName241] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -70008,7 +70008,7 @@ class Rich242(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName242] = Field(
++    style_name_: Optional[_StyleName242] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -70212,7 +70212,7 @@ class Rich243(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName243] = Field(
++    style_name_: Optional[_StyleName243] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -70419,7 +70419,7 @@ class Rich244(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName244] = Field(
++    style_name_: Optional[_StyleName244] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -70623,7 +70623,7 @@ class Rich245(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName245] = Field(
++    style_name_: Optional[_StyleName245] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -71227,7 +71227,7 @@ class Rich246(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName246] = Field(
++    style_name_: Optional[_StyleName246] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -71537,7 +71537,7 @@ class Rich247(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName247] = Field(
++    style_name_: Optional[_StyleName247] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -71838,7 +71838,7 @@ class Rich248(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName248] = Field(
++    style_name_: Optional[_StyleName248] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -72139,7 +72139,7 @@ class Rich249(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName249] = Field(
++    style_name_: Optional[_StyleName249] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -72422,7 +72422,7 @@ class Rich250(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName250] = Field(
++    style_name_: Optional[_StyleName250] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -72785,7 +72785,7 @@ class Rich251(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName251] = Field(
++    style_name_: Optional[_StyleName251] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -73039,7 +73039,7 @@ class Rich252(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName252] = Field(
++    style_name_: Optional[_StyleName252] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -73285,7 +73285,7 @@ class Rich253(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName253] = Field(
++    style_name_: Optional[_StyleName253] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -73531,7 +73531,7 @@ class Rich254(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName254] = Field(
++    style_name_: Optional[_StyleName254] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -73757,7 +73757,7 @@ class Rich255(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName255] = Field(
++    style_name_: Optional[_StyleName255] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -74003,7 +74003,7 @@ class Rich256(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName256] = Field(
++    style_name_: Optional[_StyleName256] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -74249,7 +74249,7 @@ class Rich257(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName257] = Field(
++    style_name_: Optional[_StyleName257] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -75141,7 +75141,7 @@ class Rich258(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName258] = Field(
++    style_name_: Optional[_StyleName258] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -75340,7 +75340,7 @@ class Rich259(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName259] = Field(
++    style_name_: Optional[_StyleName259] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -75543,7 +75543,7 @@ class Rich260(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName260] = Field(
++    style_name_: Optional[_StyleName260] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -75754,7 +75754,7 @@ class Rich261(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName261] = Field(
++    style_name_: Optional[_StyleName261] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -75935,7 +75935,7 @@ class Rich262(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName262] = Field(
++    style_name_: Optional[_StyleName262] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -76260,7 +76260,7 @@ class Rich263(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName263] = Field(
++    style_name_: Optional[_StyleName263] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -76443,7 +76443,7 @@ class Rich264(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName264] = Field(
++    style_name_: Optional[_StyleName264] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -76630,7 +76630,7 @@ class Rich265(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName265] = Field(
++    style_name_: Optional[_StyleName265] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -76825,7 +76825,7 @@ class Rich266(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName266] = Field(
++    style_name_: Optional[_StyleName266] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -77003,7 +77003,7 @@ class Rich267(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName267] = Field(
++    style_name_: Optional[_StyleName267] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -77185,7 +77185,7 @@ class Rich268(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName268] = Field(
++    style_name_: Optional[_StyleName268] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -77453,7 +77453,7 @@ class Rich269(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName269] = Field(
++    style_name_: Optional[_StyleName269] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -77631,7 +77631,7 @@ class Rich270(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName270] = Field(
++    style_name_: Optional[_StyleName270] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -77813,7 +77813,7 @@ class Rich271(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName271] = Field(
++    style_name_: Optional[_StyleName271] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -78216,7 +78216,7 @@ class Rich272(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName272] = Field(
++    style_name_: Optional[_StyleName272] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -78411,7 +78411,7 @@ class Rich273(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName273] = Field(
++    style_name_: Optional[_StyleName273] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -78610,7 +78610,7 @@ class Rich274(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName274] = Field(
++    style_name_: Optional[_StyleName274] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -78818,7 +78818,7 @@ class Rich275(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName275] = Field(
++    style_name_: Optional[_StyleName275] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -79009,7 +79009,7 @@ class Rich276(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName276] = Field(
++    style_name_: Optional[_StyleName276] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -79203,7 +79203,7 @@ class Rich277(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName277] = Field(
++    style_name_: Optional[_StyleName277] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -79458,7 +79458,7 @@ class Rich278(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName278] = Field(
++    style_name_: Optional[_StyleName278] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -79649,7 +79649,7 @@ class Rich279(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName279] = Field(
++    style_name_: Optional[_StyleName279] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -79843,7 +79843,7 @@ class Rich280(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName280] = Field(
++    style_name_: Optional[_StyleName280] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -80756,7 +80756,7 @@ class Rich281(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName281] = Field(
++    style_name_: Optional[_StyleName281] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -80955,7 +80955,7 @@ class Rich282(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName282] = Field(
++    style_name_: Optional[_StyleName282] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -81158,7 +81158,7 @@ class Rich283(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName283] = Field(
++    style_name_: Optional[_StyleName283] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -81369,7 +81369,7 @@ class Rich284(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName284] = Field(
++    style_name_: Optional[_StyleName284] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -81550,7 +81550,7 @@ class Rich285(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName285] = Field(
++    style_name_: Optional[_StyleName285] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -81875,7 +81875,7 @@ class Rich286(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName286] = Field(
++    style_name_: Optional[_StyleName286] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -82058,7 +82058,7 @@ class Rich287(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName287] = Field(
++    style_name_: Optional[_StyleName287] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -82245,7 +82245,7 @@ class Rich288(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName288] = Field(
++    style_name_: Optional[_StyleName288] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -82440,7 +82440,7 @@ class Rich289(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName289] = Field(
++    style_name_: Optional[_StyleName289] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -82618,7 +82618,7 @@ class Rich290(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName290] = Field(
++    style_name_: Optional[_StyleName290] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -82800,7 +82800,7 @@ class Rich291(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName291] = Field(
++    style_name_: Optional[_StyleName291] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -83068,7 +83068,7 @@ class Rich292(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName292] = Field(
++    style_name_: Optional[_StyleName292] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -83246,7 +83246,7 @@ class Rich293(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName293] = Field(
++    style_name_: Optional[_StyleName293] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -83428,7 +83428,7 @@ class Rich294(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName294] = Field(
++    style_name_: Optional[_StyleName294] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -83831,7 +83831,7 @@ class Rich295(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName295] = Field(
++    style_name_: Optional[_StyleName295] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -84026,7 +84026,7 @@ class Rich296(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName296] = Field(
++    style_name_: Optional[_StyleName296] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -84225,7 +84225,7 @@ class Rich297(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName297] = Field(
++    style_name_: Optional[_StyleName297] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -84433,7 +84433,7 @@ class Rich298(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName298] = Field(
++    style_name_: Optional[_StyleName298] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -84624,7 +84624,7 @@ class Rich299(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName299] = Field(
++    style_name_: Optional[_StyleName299] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -84818,7 +84818,7 @@ class Rich300(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName300] = Field(
++    style_name_: Optional[_StyleName300] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -85073,7 +85073,7 @@ class Rich301(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName301] = Field(
++    style_name_: Optional[_StyleName301] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -85264,7 +85264,7 @@ class Rich302(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName302] = Field(
++    style_name_: Optional[_StyleName302] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -85458,7 +85458,7 @@ class Rich303(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName303] = Field(
++    style_name_: Optional[_StyleName303] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -86077,7 +86077,7 @@ class Rich304(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName304] = Field(
++    style_name_: Optional[_StyleName304] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -86384,7 +86384,7 @@ class Rich305(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName305] = Field(
++    style_name_: Optional[_StyleName305] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -86606,7 +86606,7 @@ class Rich306(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName306] = Field(
++    style_name_: Optional[_StyleName306] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -86804,7 +86804,7 @@ class Rich307(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName307] = Field(
++    style_name_: Optional[_StyleName307] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -87002,7 +87002,7 @@ class Rich308(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName308] = Field(
++    style_name_: Optional[_StyleName308] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -87201,7 +87201,7 @@ class Rich309(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName309] = Field(
++    style_name_: Optional[_StyleName309] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -87409,7 +87409,7 @@ class Rich310(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName310] = Field(
++    style_name_: Optional[_StyleName310] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -87608,7 +87608,7 @@ class Rich311(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName311] = Field(
++    style_name_: Optional[_StyleName311] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -87811,7 +87811,7 @@ class Rich312(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName312] = Field(
++    style_name_: Optional[_StyleName312] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -88022,7 +88022,7 @@ class Rich313(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName313] = Field(
++    style_name_: Optional[_StyleName313] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -88203,7 +88203,7 @@ class Rich314(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName314] = Field(
++    style_name_: Optional[_StyleName314] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -88512,7 +88512,7 @@ class Rich315(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName315] = Field(
++    style_name_: Optional[_StyleName315] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -88695,7 +88695,7 @@ class Rich316(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName316] = Field(
++    style_name_: Optional[_StyleName316] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -88882,7 +88882,7 @@ class Rich317(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName317] = Field(
++    style_name_: Optional[_StyleName317] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -89077,7 +89077,7 @@ class Rich318(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName318] = Field(
++    style_name_: Optional[_StyleName318] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -89255,7 +89255,7 @@ class Rich319(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName319] = Field(
++    style_name_: Optional[_StyleName319] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -89437,7 +89437,7 @@ class Rich320(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName320] = Field(
++    style_name_: Optional[_StyleName320] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -89689,7 +89689,7 @@ class Rich321(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName321] = Field(
++    style_name_: Optional[_StyleName321] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -89867,7 +89867,7 @@ class Rich322(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName322] = Field(
++    style_name_: Optional[_StyleName322] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -90049,7 +90049,7 @@ class Rich323(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName323] = Field(
++    style_name_: Optional[_StyleName323] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -90393,7 +90393,7 @@ class Rich324(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName324] = Field(
++    style_name_: Optional[_StyleName324] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -90588,7 +90588,7 @@ class Rich325(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName325] = Field(
++    style_name_: Optional[_StyleName325] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -90787,7 +90787,7 @@ class Rich326(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName326] = Field(
++    style_name_: Optional[_StyleName326] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -90995,7 +90995,7 @@ class Rich327(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName327] = Field(
++    style_name_: Optional[_StyleName327] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -91186,7 +91186,7 @@ class Rich328(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName328] = Field(
++    style_name_: Optional[_StyleName328] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -91380,7 +91380,7 @@ class Rich329(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName329] = Field(
++    style_name_: Optional[_StyleName329] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -91619,7 +91619,7 @@ class Rich330(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName330] = Field(
++    style_name_: Optional[_StyleName330] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -91810,7 +91810,7 @@ class Rich331(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName331] = Field(
++    style_name_: Optional[_StyleName331] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -92004,7 +92004,7 @@ class Rich332(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName332] = Field(
++    style_name_: Optional[_StyleName332] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -92562,7 +92562,7 @@ class Rich333(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName333] = Field(
++    style_name_: Optional[_StyleName333] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -92761,7 +92761,7 @@ class Rich334(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName334] = Field(
++    style_name_: Optional[_StyleName334] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -92964,7 +92964,7 @@ class Rich335(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName335] = Field(
++    style_name_: Optional[_StyleName335] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -93318,7 +93318,7 @@ class Rich336(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName336] = Field(
++    style_name_: Optional[_StyleName336] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -93593,7 +93593,7 @@ class Rich337(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName337] = Field(
++    style_name_: Optional[_StyleName337] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -93811,7 +93811,7 @@ class Rich338(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName338] = Field(
++    style_name_: Optional[_StyleName338] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -94118,7 +94118,7 @@ class Rich339(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName339] = Field(
++    style_name_: Optional[_StyleName339] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -94317,7 +94317,7 @@ class Rich340(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName340] = Field(
++    style_name_: Optional[_StyleName340] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -94520,7 +94520,7 @@ class Rich341(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName341] = Field(
++    style_name_: Optional[_StyleName341] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -94731,7 +94731,7 @@ class Rich342(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName342] = Field(
++    style_name_: Optional[_StyleName342] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -94912,7 +94912,7 @@ class Rich343(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName343] = Field(
++    style_name_: Optional[_StyleName343] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -95233,7 +95233,7 @@ class Rich344(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName344] = Field(
++    style_name_: Optional[_StyleName344] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -95416,7 +95416,7 @@ class Rich345(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName345] = Field(
++    style_name_: Optional[_StyleName345] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -95603,7 +95603,7 @@ class Rich346(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName346] = Field(
++    style_name_: Optional[_StyleName346] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -95798,7 +95798,7 @@ class Rich347(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName347] = Field(
++    style_name_: Optional[_StyleName347] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -95976,7 +95976,7 @@ class Rich348(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName348] = Field(
++    style_name_: Optional[_StyleName348] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -96158,7 +96158,7 @@ class Rich349(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName349] = Field(
++    style_name_: Optional[_StyleName349] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -96422,7 +96422,7 @@ class Rich350(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName350] = Field(
++    style_name_: Optional[_StyleName350] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -96600,7 +96600,7 @@ class Rich351(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName351] = Field(
++    style_name_: Optional[_StyleName351] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -96782,7 +96782,7 @@ class Rich352(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName352] = Field(
++    style_name_: Optional[_StyleName352] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -97156,7 +97156,7 @@ class Rich353(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName353] = Field(
++    style_name_: Optional[_StyleName353] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -97351,7 +97351,7 @@ class Rich354(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName354] = Field(
++    style_name_: Optional[_StyleName354] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -97550,7 +97550,7 @@ class Rich355(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName355] = Field(
++    style_name_: Optional[_StyleName355] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -97758,7 +97758,7 @@ class Rich356(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName356] = Field(
++    style_name_: Optional[_StyleName356] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -97949,7 +97949,7 @@ class Rich357(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName357] = Field(
++    style_name_: Optional[_StyleName357] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -98143,7 +98143,7 @@ class Rich358(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName358] = Field(
++    style_name_: Optional[_StyleName358] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -98394,7 +98394,7 @@ class Rich359(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName359] = Field(
++    style_name_: Optional[_StyleName359] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -98585,7 +98585,7 @@ class Rich360(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName360] = Field(
++    style_name_: Optional[_StyleName360] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -98779,7 +98779,7 @@ class Rich361(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName361] = Field(
++    style_name_: Optional[_StyleName361] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -99818,7 +99818,7 @@ class Rich362(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName362] = Field(
++    style_name_: Optional[_StyleName362] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -100090,7 +100090,7 @@ class Rich363(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName363] = Field(
++    style_name_: Optional[_StyleName363] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -100282,7 +100282,7 @@ class Rich364(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName364] = Field(
++    style_name_: Optional[_StyleName364] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -100465,7 +100465,7 @@ class Rich365(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName365] = Field(
++    style_name_: Optional[_StyleName365] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -100657,7 +100657,7 @@ class Rich366(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName366] = Field(
++    style_name_: Optional[_StyleName366] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -100832,7 +100832,7 @@ class Rich367(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName367] = Field(
++    style_name_: Optional[_StyleName367] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -101011,7 +101011,7 @@ class Rich368(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName368] = Field(
++    style_name_: Optional[_StyleName368] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -101193,7 +101193,7 @@ class Rich369(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName369] = Field(
++    style_name_: Optional[_StyleName369] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -101403,7 +101403,7 @@ class Rich370(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName370] = Field(
++    style_name_: Optional[_StyleName370] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -101602,7 +101602,7 @@ class Rich371(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName371] = Field(
++    style_name_: Optional[_StyleName371] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -101805,7 +101805,7 @@ class Rich372(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName372] = Field(
++    style_name_: Optional[_StyleName372] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -102016,7 +102016,7 @@ class Rich373(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName373] = Field(
++    style_name_: Optional[_StyleName373] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -102197,7 +102197,7 @@ class Rich374(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName374] = Field(
++    style_name_: Optional[_StyleName374] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -102506,7 +102506,7 @@ class Rich375(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName375] = Field(
++    style_name_: Optional[_StyleName375] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -102689,7 +102689,7 @@ class Rich376(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName376] = Field(
++    style_name_: Optional[_StyleName376] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -102876,7 +102876,7 @@ class Rich377(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName377] = Field(
++    style_name_: Optional[_StyleName377] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -103071,7 +103071,7 @@ class Rich378(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName378] = Field(
++    style_name_: Optional[_StyleName378] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -103249,7 +103249,7 @@ class Rich379(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName379] = Field(
++    style_name_: Optional[_StyleName379] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -103431,7 +103431,7 @@ class Rich380(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName380] = Field(
++    style_name_: Optional[_StyleName380] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -103683,7 +103683,7 @@ class Rich381(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName381] = Field(
++    style_name_: Optional[_StyleName381] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -103861,7 +103861,7 @@ class Rich382(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName382] = Field(
++    style_name_: Optional[_StyleName382] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -104043,7 +104043,7 @@ class Rich383(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName383] = Field(
++    style_name_: Optional[_StyleName383] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -104387,7 +104387,7 @@ class Rich384(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName384] = Field(
++    style_name_: Optional[_StyleName384] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -104582,7 +104582,7 @@ class Rich385(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName385] = Field(
++    style_name_: Optional[_StyleName385] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -104781,7 +104781,7 @@ class Rich386(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName386] = Field(
++    style_name_: Optional[_StyleName386] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -104989,7 +104989,7 @@ class Rich387(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName387] = Field(
++    style_name_: Optional[_StyleName387] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -105180,7 +105180,7 @@ class Rich388(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName388] = Field(
++    style_name_: Optional[_StyleName388] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -105374,7 +105374,7 @@ class Rich389(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName389] = Field(
++    style_name_: Optional[_StyleName389] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -105613,7 +105613,7 @@ class Rich390(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName390] = Field(
++    style_name_: Optional[_StyleName390] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -105804,7 +105804,7 @@ class Rich391(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName391] = Field(
++    style_name_: Optional[_StyleName391] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -105998,7 +105998,7 @@ class Rich392(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName392] = Field(
++    style_name_: Optional[_StyleName392] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -106609,7 +106609,7 @@ class Rich393(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName393] = Field(
++    style_name_: Optional[_StyleName393] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -106799,7 +106799,7 @@ class Rich394(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName394] = Field(
++    style_name_: Optional[_StyleName394] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -107026,7 +107026,7 @@ class Rich395(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName395] = Field(
++    style_name_: Optional[_StyleName395] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -107211,7 +107211,7 @@ class Rich396(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName396] = Field(
++    style_name_: Optional[_StyleName396] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -107413,7 +107413,7 @@ class Rich397(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName397] = Field(
++    style_name_: Optional[_StyleName397] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -107598,7 +107598,7 @@ class Rich398(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName398] = Field(
++    style_name_: Optional[_StyleName398] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -107787,7 +107787,7 @@ class Rich399(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName399] = Field(
++    style_name_: Optional[_StyleName399] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -107972,7 +107972,7 @@ class Rich400(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName400] = Field(
++    style_name_: Optional[_StyleName400] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -108166,7 +108166,7 @@ class Rich401(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName401] = Field(
++    style_name_: Optional[_StyleName401] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -108360,7 +108360,7 @@ class Rich402(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName402] = Field(
++    style_name_: Optional[_StyleName402] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -108559,7 +108559,7 @@ class Rich403(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName403] = Field(
++    style_name_: Optional[_StyleName403] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -108757,7 +108757,7 @@ class Rich404(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName404] = Field(
++    style_name_: Optional[_StyleName404] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -109008,7 +109008,7 @@ class Rich405(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName405] = Field(
++    style_name_: Optional[_StyleName405] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -109198,7 +109198,7 @@ class Rich406(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName406] = Field(
++    style_name_: Optional[_StyleName406] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -109397,7 +109397,7 @@ class Rich407(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName407] = Field(
++    style_name_: Optional[_StyleName407] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -109595,7 +109595,7 @@ class Rich408(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName408] = Field(
++    style_name_: Optional[_StyleName408] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -109967,7 +109967,7 @@ class Rich409(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName409] = Field(
++    style_name_: Optional[_StyleName409] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -110185,7 +110185,7 @@ class Rich410(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName410] = Field(
++    style_name_: Optional[_StyleName410] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -110384,7 +110384,7 @@ class Rich411(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName411] = Field(
++    style_name_: Optional[_StyleName411] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -110582,7 +110582,7 @@ class Rich412(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName412] = Field(
++    style_name_: Optional[_StyleName412] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -110822,7 +110822,7 @@ class Rich413(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName413] = Field(
++    style_name_: Optional[_StyleName413] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -111021,7 +111021,7 @@ class Rich414(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName414] = Field(
++    style_name_: Optional[_StyleName414] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -111224,7 +111224,7 @@ class Rich415(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName415] = Field(
++    style_name_: Optional[_StyleName415] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -111435,7 +111435,7 @@ class Rich416(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName416] = Field(
++    style_name_: Optional[_StyleName416] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -111616,7 +111616,7 @@ class Rich417(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName417] = Field(
++    style_name_: Optional[_StyleName417] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -111941,7 +111941,7 @@ class Rich418(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName418] = Field(
++    style_name_: Optional[_StyleName418] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -112124,7 +112124,7 @@ class Rich419(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName419] = Field(
++    style_name_: Optional[_StyleName419] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -112311,7 +112311,7 @@ class Rich420(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName420] = Field(
++    style_name_: Optional[_StyleName420] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -112506,7 +112506,7 @@ class Rich421(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName421] = Field(
++    style_name_: Optional[_StyleName421] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -112684,7 +112684,7 @@ class Rich422(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName422] = Field(
++    style_name_: Optional[_StyleName422] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -112866,7 +112866,7 @@ class Rich423(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName423] = Field(
++    style_name_: Optional[_StyleName423] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -113134,7 +113134,7 @@ class Rich424(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName424] = Field(
++    style_name_: Optional[_StyleName424] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -113312,7 +113312,7 @@ class Rich425(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName425] = Field(
++    style_name_: Optional[_StyleName425] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -113494,7 +113494,7 @@ class Rich426(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName426] = Field(
++    style_name_: Optional[_StyleName426] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -113897,7 +113897,7 @@ class Rich427(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName427] = Field(
++    style_name_: Optional[_StyleName427] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -114092,7 +114092,7 @@ class Rich428(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName428] = Field(
++    style_name_: Optional[_StyleName428] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -114291,7 +114291,7 @@ class Rich429(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName429] = Field(
++    style_name_: Optional[_StyleName429] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -114499,7 +114499,7 @@ class Rich430(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName430] = Field(
++    style_name_: Optional[_StyleName430] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -114690,7 +114690,7 @@ class Rich431(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName431] = Field(
++    style_name_: Optional[_StyleName431] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -114884,7 +114884,7 @@ class Rich432(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName432] = Field(
++    style_name_: Optional[_StyleName432] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -115139,7 +115139,7 @@ class Rich433(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName433] = Field(
++    style_name_: Optional[_StyleName433] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -115330,7 +115330,7 @@ class Rich434(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName434] = Field(
++    style_name_: Optional[_StyleName434] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -115524,7 +115524,7 @@ class Rich435(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName435] = Field(
++    style_name_: Optional[_StyleName435] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -116202,7 +116202,7 @@ class Rich436(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName436] = Field(
++    style_name_: Optional[_StyleName436] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -116420,7 +116420,7 @@ class Rich437(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName437] = Field(
++    style_name_: Optional[_StyleName437] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -116619,7 +116619,7 @@ class Rich438(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName438] = Field(
++    style_name_: Optional[_StyleName438] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -116821,7 +116821,7 @@ class Rich439(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName439] = Field(
++    style_name_: Optional[_StyleName439] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -117046,7 +117046,7 @@ class Rich440(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName440] = Field(
++    style_name_: Optional[_StyleName440] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -117372,7 +117372,7 @@ class Rich441(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName441] = Field(
++    style_name_: Optional[_StyleName441] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -117588,7 +117588,7 @@ class Rich442(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName442] = Field(
++    style_name_: Optional[_StyleName442] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -117795,7 +117795,7 @@ class Rich443(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName443] = Field(
++    style_name_: Optional[_StyleName443] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -118080,7 +118080,7 @@ class Rich444(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName444] = Field(
++    style_name_: Optional[_StyleName444] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -118266,7 +118266,7 @@ class Rich445(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName445] = Field(
++    style_name_: Optional[_StyleName445] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -118525,7 +118525,7 @@ class Rich446(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName446] = Field(
++    style_name_: Optional[_StyleName446] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -118787,7 +118787,7 @@ class Rich447(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName447] = Field(
++    style_name_: Optional[_StyleName447] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -119439,7 +119439,7 @@ class Rich448(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName448] = Field(
++    style_name_: Optional[_StyleName448] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -119757,7 +119757,7 @@ class Rich449(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName449] = Field(
++    style_name_: Optional[_StyleName449] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -119957,7 +119957,7 @@ class Rich450(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName450] = Field(
++    style_name_: Optional[_StyleName450] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -120148,7 +120148,7 @@ class Rich451(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName451] = Field(
++    style_name_: Optional[_StyleName451] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -120421,7 +120421,7 @@ class Rich452(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName452] = Field(
++    style_name_: Optional[_StyleName452] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -120603,7 +120603,7 @@ class Rich453(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName453] = Field(
++    style_name_: Optional[_StyleName453] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -120790,7 +120790,7 @@ class Rich454(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName454] = Field(
++    style_name_: Optional[_StyleName454] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -120980,7 +120980,7 @@ class Rich455(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName455] = Field(
++    style_name_: Optional[_StyleName455] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -121255,7 +121255,7 @@ class Rich456(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName456] = Field(
++    style_name_: Optional[_StyleName456] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -121454,7 +121454,7 @@ class Rich457(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName457] = Field(
++    style_name_: Optional[_StyleName457] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -121657,7 +121657,7 @@ class Rich458(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName458] = Field(
++    style_name_: Optional[_StyleName458] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -121868,7 +121868,7 @@ class Rich459(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName459] = Field(
++    style_name_: Optional[_StyleName459] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -122049,7 +122049,7 @@ class Rich460(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName460] = Field(
++    style_name_: Optional[_StyleName460] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -122358,7 +122358,7 @@ class Rich461(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName461] = Field(
++    style_name_: Optional[_StyleName461] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -122541,7 +122541,7 @@ class Rich462(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName462] = Field(
++    style_name_: Optional[_StyleName462] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -122728,7 +122728,7 @@ class Rich463(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName463] = Field(
++    style_name_: Optional[_StyleName463] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -122923,7 +122923,7 @@ class Rich464(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName464] = Field(
++    style_name_: Optional[_StyleName464] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -123101,7 +123101,7 @@ class Rich465(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName465] = Field(
++    style_name_: Optional[_StyleName465] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -123283,7 +123283,7 @@ class Rich466(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName466] = Field(
++    style_name_: Optional[_StyleName466] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -123535,7 +123535,7 @@ class Rich467(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName467] = Field(
++    style_name_: Optional[_StyleName467] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -123713,7 +123713,7 @@ class Rich468(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName468] = Field(
++    style_name_: Optional[_StyleName468] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -123895,7 +123895,7 @@ class Rich469(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName469] = Field(
++    style_name_: Optional[_StyleName469] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -124239,7 +124239,7 @@ class Rich470(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName470] = Field(
++    style_name_: Optional[_StyleName470] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -124434,7 +124434,7 @@ class Rich471(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName471] = Field(
++    style_name_: Optional[_StyleName471] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -124633,7 +124633,7 @@ class Rich472(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName472] = Field(
++    style_name_: Optional[_StyleName472] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -124841,7 +124841,7 @@ class Rich473(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName473] = Field(
++    style_name_: Optional[_StyleName473] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -125032,7 +125032,7 @@ class Rich474(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName474] = Field(
++    style_name_: Optional[_StyleName474] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -125226,7 +125226,7 @@ class Rich475(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName475] = Field(
++    style_name_: Optional[_StyleName475] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -125465,7 +125465,7 @@ class Rich476(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName476] = Field(
++    style_name_: Optional[_StyleName476] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -125656,7 +125656,7 @@ class Rich477(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName477] = Field(
++    style_name_: Optional[_StyleName477] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -125850,7 +125850,7 @@ class Rich478(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName478] = Field(
++    style_name_: Optional[_StyleName478] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -126430,7 +126430,7 @@ class Rich479(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName479] = Field(
++    style_name_: Optional[_StyleName479] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -126595,7 +126595,7 @@ class Rich480(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName480] = Field(
++    style_name_: Optional[_StyleName480] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -127082,7 +127082,7 @@ class Rich481(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName481] = Field(
++    style_name_: Optional[_StyleName481] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -127513,7 +127513,7 @@ class Rich482(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName482] = Field(
++    style_name_: Optional[_StyleName482] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -127678,7 +127678,7 @@ class Rich483(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName483] = Field(
++    style_name_: Optional[_StyleName483] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -127847,7 +127847,7 @@ class Rich484(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName484] = Field(
++    style_name_: Optional[_StyleName484] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -128046,7 +128046,7 @@ class Rich485(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName485] = Field(
++    style_name_: Optional[_StyleName485] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -128249,7 +128249,7 @@ class Rich486(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName486] = Field(
++    style_name_: Optional[_StyleName486] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -128460,7 +128460,7 @@ class Rich487(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName487] = Field(
++    style_name_: Optional[_StyleName487] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -128641,7 +128641,7 @@ class Rich488(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName488] = Field(
++    style_name_: Optional[_StyleName488] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -128950,7 +128950,7 @@ class Rich489(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName489] = Field(
++    style_name_: Optional[_StyleName489] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -129133,7 +129133,7 @@ class Rich490(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName490] = Field(
++    style_name_: Optional[_StyleName490] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -129320,7 +129320,7 @@ class Rich491(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName491] = Field(
++    style_name_: Optional[_StyleName491] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -129515,7 +129515,7 @@ class Rich492(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName492] = Field(
++    style_name_: Optional[_StyleName492] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -129693,7 +129693,7 @@ class Rich493(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName493] = Field(
++    style_name_: Optional[_StyleName493] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -129875,7 +129875,7 @@ class Rich494(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName494] = Field(
++    style_name_: Optional[_StyleName494] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -130127,7 +130127,7 @@ class Rich495(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName495] = Field(
++    style_name_: Optional[_StyleName495] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -130305,7 +130305,7 @@ class Rich496(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName496] = Field(
++    style_name_: Optional[_StyleName496] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -130487,7 +130487,7 @@ class Rich497(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName497] = Field(
++    style_name_: Optional[_StyleName497] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -130831,7 +130831,7 @@ class Rich498(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName498] = Field(
++    style_name_: Optional[_StyleName498] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -131026,7 +131026,7 @@ class Rich499(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName499] = Field(
++    style_name_: Optional[_StyleName499] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -131225,7 +131225,7 @@ class Rich500(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName500] = Field(
++    style_name_: Optional[_StyleName500] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -131433,7 +131433,7 @@ class Rich501(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName501] = Field(
++    style_name_: Optional[_StyleName501] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -131624,7 +131624,7 @@ class Rich502(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName502] = Field(
++    style_name_: Optional[_StyleName502] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -131818,7 +131818,7 @@ class Rich503(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName503] = Field(
++    style_name_: Optional[_StyleName503] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -132057,7 +132057,7 @@ class Rich504(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName504] = Field(
++    style_name_: Optional[_StyleName504] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -132248,7 +132248,7 @@ class Rich505(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName505] = Field(
++    style_name_: Optional[_StyleName505] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -132442,7 +132442,7 @@ class Rich506(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName506] = Field(
++    style_name_: Optional[_StyleName506] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -132969,7 +132969,7 @@ class Rich507(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName507] = Field(
++    style_name_: Optional[_StyleName507] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -133320,7 +133320,7 @@ class Rich508(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName508] = Field(
++    style_name_: Optional[_StyleName508] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -133554,7 +133554,7 @@ class Rich509(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName509] = Field(
++    style_name_: Optional[_StyleName509] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -133794,7 +133794,7 @@ class Rich510(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName510] = Field(
++    style_name_: Optional[_StyleName510] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -134082,7 +134082,7 @@ class Rich511(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName511] = Field(
++    style_name_: Optional[_StyleName511] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -134371,7 +134371,7 @@ class Rich512(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName512] = Field(
++    style_name_: Optional[_StyleName512] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -134606,7 +134606,7 @@ class Rich513(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName513] = Field(
++    style_name_: Optional[_StyleName513] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -134840,7 +134840,7 @@ class Rich514(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName514] = Field(
++    style_name_: Optional[_StyleName514] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -135250,7 +135250,7 @@ class Rich515(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName515] = Field(
++    style_name_: Optional[_StyleName515] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -135449,7 +135449,7 @@ class Rich516(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName516] = Field(
++    style_name_: Optional[_StyleName516] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -135652,7 +135652,7 @@ class Rich517(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName517] = Field(
++    style_name_: Optional[_StyleName517] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -135863,7 +135863,7 @@ class Rich518(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName518] = Field(
++    style_name_: Optional[_StyleName518] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -136044,7 +136044,7 @@ class Rich519(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName519] = Field(
++    style_name_: Optional[_StyleName519] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -136369,7 +136369,7 @@ class Rich520(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName520] = Field(
++    style_name_: Optional[_StyleName520] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -136552,7 +136552,7 @@ class Rich521(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName521] = Field(
++    style_name_: Optional[_StyleName521] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -136739,7 +136739,7 @@ class Rich522(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName522] = Field(
++    style_name_: Optional[_StyleName522] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -136934,7 +136934,7 @@ class Rich523(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName523] = Field(
++    style_name_: Optional[_StyleName523] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -137112,7 +137112,7 @@ class Rich524(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName524] = Field(
++    style_name_: Optional[_StyleName524] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -137294,7 +137294,7 @@ class Rich525(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName525] = Field(
++    style_name_: Optional[_StyleName525] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -137562,7 +137562,7 @@ class Rich526(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName526] = Field(
++    style_name_: Optional[_StyleName526] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -137740,7 +137740,7 @@ class Rich527(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName527] = Field(
++    style_name_: Optional[_StyleName527] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -137922,7 +137922,7 @@ class Rich528(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName528] = Field(
++    style_name_: Optional[_StyleName528] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -138325,7 +138325,7 @@ class Rich529(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName529] = Field(
++    style_name_: Optional[_StyleName529] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -138520,7 +138520,7 @@ class Rich530(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName530] = Field(
++    style_name_: Optional[_StyleName530] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -138719,7 +138719,7 @@ class Rich531(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName531] = Field(
++    style_name_: Optional[_StyleName531] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -138927,7 +138927,7 @@ class Rich532(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName532] = Field(
++    style_name_: Optional[_StyleName532] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -139118,7 +139118,7 @@ class Rich533(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName533] = Field(
++    style_name_: Optional[_StyleName533] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -139312,7 +139312,7 @@ class Rich534(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName534] = Field(
++    style_name_: Optional[_StyleName534] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -139567,7 +139567,7 @@ class Rich535(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName535] = Field(
++    style_name_: Optional[_StyleName535] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -139758,7 +139758,7 @@ class Rich536(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName536] = Field(
++    style_name_: Optional[_StyleName536] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -139952,7 +139952,7 @@ class Rich537(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName537] = Field(
++    style_name_: Optional[_StyleName537] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -140677,7 +140677,7 @@ class Rich538(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName538] = Field(
++    style_name_: Optional[_StyleName538] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -141016,7 +141016,7 @@ class Rich539(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName539] = Field(
++    style_name_: Optional[_StyleName539] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -141238,7 +141238,7 @@ class Rich540(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName540] = Field(
++    style_name_: Optional[_StyleName540] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+@@ -141451,7 +141451,7 @@ class Rich541(BaseModel):
+ 
+     """
+ 
+-    _style_name_: Optional[_StyleName541] = Field(
++    style_name_: Optional[_StyleName541] = Field(
+         None, alias='<style_name>', description=''
+     )
+ 
+diff --git a/generate-model.py b/generate-model.py
+index 9c71010..5d8ba57 100755
+--- a/generate-model.py
++++ b/generate-model.py
+@@ -48,6 +48,7 @@ with open(tmpfile, 'w') as fh:
+ proc = subprocess.run(f"""
+     datamodel-codegen
+         --class-name EChartsOption
++        --output-model-type pydantic_v2.BaseModel
+         --base-class ezcharts.plots._base.BaseModel
+         --use-schema-description --reuse-model
+         --input {tmpfile} --input-file-type jsonschema""".split(),
+@@ -72,6 +73,14 @@ laundry_list = dict(
+     renderitem=dict(
+         find="renderItem: Optional[RenderItem] = Field(",
+         replace="renderItem: Optional[JSCode] = Field("),
++    # pydantic v2 forbids field names with a leading underscore; these
++    # fields carry an alias anyway so only the python name needs changing
++    style_name=dict(
++        find="_style_name_: Optional[",
++        replace="style_name_: Optional["),
++    action=dict(
++        find="_action: Optional[",
++        replace="action_: Optional["),
+     imports=dict(
+         find="from __future__ import annotations",
+         replace="""from __future__ import annotations\n
