@@ -1,0 +1,10 @@
+{
+ "id": "cognizant-ai-lab__neuro-san",
+ "repo": "cognizant-ai-lab/neuro-san",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 156,
+ "sha": "48800fc374f5d801b0a77a3ed2e9f22056f31f95",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: error: No solution found when resolving dependencies\n  cause: Because the current Python version (3.11.17) does not satisfy Python>=3.12 and leaf-common==1.4.4 depends on Python>=3.12, we can conclude that leaf-common==1.4.4 cannot be used.\n         And because only leaf-common<=1.4.4 is available and you require leaf-common>=1.4.4, we can conclude that your requirements are unsatisfiable.\n"
+}

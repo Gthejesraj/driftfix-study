@@ -1,0 +1,24 @@
+{
+ "id": "zilliztech__akcio",
+ "repo": "zilliztech/akcio",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 258,
+ "sha": "3d00c5284876324e0f05f194d197e5c753484f7c",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 5
+  },
+  "failing": [
+   "tests/unit_tests/src/langchain/data_loader/test_data_parser.py",
+   "tests/unit_tests/src/langchain/data_loader/test_data_splitter.py",
+   "tests/unit_tests/src/towhee/memory/test_sql.py",
+   "tests/unit_tests/src/towhee/pipelines/test_pipelines.py",
+   "tests/unit_tests/src/towhee/test_operations.py"
+  ],
+  "tail": "___ ERROR collecting tests/unit_tests/src/towhee/pipelines/test_pipelines.py ___\nImportError while importing test module '/tmp/study/repo/tests/unit_tests/src/towhee/pipelines/test_pipelines.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/unit_tests/src/towhee/pipelines/test_pipelines.py:5: in <module>\n    from milvus import MilvusServer\nE   ModuleNotFoundError: No module named 'milvus'\n_______ ERROR collecting tests/unit_tests/src/towhee/test_operations.py ________\nImportError while importing test module '/tmp/study/repo/tests/unit_tests/src/towhee/test_operations.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/unit_tests/src/towhee/test_operations.py:4: in <module>\n    from towhee.runtime.data_queue import DataQueue, ColumnType\n../venv/lib/python3.11/site-packages/towhee/__init__.py:20: in <module>\n    from towhee.runtime import register, pipe, ops, accelerate, AutoConfig, AutoPipes\n../venv/lib/python3.11/site-packages/towhee/runtime/__init__.py:16: in <module>\n    from .factory import ops, register\n../venv/lib/python3.11/site-packages/towhee/runtime/factory.py:20: in <module>\n    from towhee.runtime.operator_manager import OperatorLoader, OperatorRegistry\n../venv/lib/python3.11/site-packages/towhee/runtime/operator_manager/__init__.py:14: in <module>\n    from .operator_pool import OperatorPool\n../venv/lib/python3.11/site-packages/towhee/runtime/operator_manager/operator_pool.py:19: in <module>\n    from .operator_loader import OperatorLoader\n../venv/lib/python3.11/site-packages/towhee/runtime/operator_manager/operator_loader.py:22: in <module>\n    import pkg_resources\nE   ModuleNotFoundError: No module named 'pkg_resources'\n=========================== short test summary info ============================\nERROR tests/unit_tests/src/langchain/data_loader/test_data_parser.py\nERROR tests/unit_tests/src/langchain/data_loader/test_data_splitter.py\nERROR tests/unit_tests/src/towhee/memory/test_sql.py\nERROR tests/unit_tests/src/towhee/pipelines/test_pipelines.py\nERROR tests/unit_tests/src/towhee/test_operations.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!\n5 errors in 2.97s"
+ }
+}

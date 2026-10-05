@@ -1,0 +1,47 @@
+{
+ "id": "internetarchive__fatcat-scholar",
+ "repo": "internetarchive/fatcat-scholar",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 86,
+ "sha": "56d17a34f5d48a8f73debc22c51d70129d584700",
+ "old": "1.10.16",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 115,
+   "skipped": 1
+  },
+  "failing": [],
+  "tail": "........................................................................ [ 62%]\n..........................................s.                             [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/citeproc_styles/__init__.py:17\n  /tmp/study/venv/lib/python3.11/site-packages/citeproc_styles/__init__.py:17: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html\n    from pkg_resources import resource_exists, resource_filename, resource_listdir\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n115 passed, 1 skipped, 1 deselected, 1 warning in 2.57s",
+  "preexisting_failures": 1
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 1,
+  "counts": {
+   "failed": 15,
+   "passed": 100,
+   "skipped": 1
+  },
+  "failing": [
+   "tests/fatcat/refs.py::test_release_refs_json",
+   "tests/fatcat/refs.py::test_release_refs_html",
+   "tests/fatcat/refs.py::test_openlibrary_refs",
+   "tests/fatcat/refs.py::test_wikipedia_refs",
+   "tests/test_refs_transform.py::test_transform_refs_grobid",
+   "tests/test_refs_transform.py::test_transform_refs_crossref",
+   "tests/test_transform.py::test_es_biblio_from_release",
+   "tests/test_transform.py::test_run_refs",
+   "tests/test_transform.py::test_run_transform",
+   "tests/test_transform.py::test_biblio_metadata_hacks",
+   "tests/test_web.py::test_basic_search",
+   "tests/test_web.py::test_basic_rss_feed",
+   "tests/test_web.py::test_basic_work_landing_page",
+   "tests/test_web.py::test_basic_access_redirect",
+   "tests/test_web.py::test_access_redirect_fallback"
+  ],
+  "tail": "    For further information visit https://errors.pydantic.dev/2.13/v/missing\noai_id\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nlicense_slug\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\npublisher_type\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontainer_name\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontainer_original_name\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontainer_ident\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontainer_issnl\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontainer_wikidata_qid\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontainer_sherpa_color\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontainer_type\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\ncontrib_count\n  Field required [type=missing, input_value={'title': 'some example p... [], 'affiliations': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\nFAILED tests/test_web.py::test_basic_search - jinja2.exceptions.UndefinedError: 'dict object' has no attribute '_obj'\nFAILED tests/test_web.py::test_basic_rss_feed - KeyError: '_obj'\nFAILED tests/test_web.py::test_basic_work_landing_page - KeyError: '_obj'\nFAILED tests/test_web.py::test_basic_access_redirect - KeyError: '_obj'\nFAILED tests/test_web.py::test_access_redirect_fallback - KeyError: '_obj'\n15 failed, 100 passed, 1 skipped, 1 deselected, 47 warnings in 4.96s"
+ },
+ "status": "broken"
+}

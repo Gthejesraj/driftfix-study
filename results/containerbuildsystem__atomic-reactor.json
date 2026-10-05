@@ -1,0 +1,10 @@
+{
+ "id": "containerbuildsystem__atomic-reactor",
+ "repo": "containerbuildsystem/atomic-reactor",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 139,
+ "sha": "e5a55a0854ada603917f0dc26bcf4ca606fd788b",
+ "status": "install_failed",
+ "error": "requirements otel-requirements.txt: error: No solution found when resolving dependencies\n  cause: Because opentelemetry-instrumentation-requests==0.40b0 depends on opentelemetry-instrumentation==0.40b0 and you require opentelemetry-instrumentation==0.41b0, we can conclude that your requirements and opentelemetry-instrumentation-requests==0.40b0 are incompatible.\n         And because you require opentelemetry-instrumentation-requests==0.40b0, we can conclude that your requirements are unsatisfiable.\n"
+}

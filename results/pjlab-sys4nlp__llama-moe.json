@@ -1,0 +1,10 @@
+{
+ "id": "pjlab-sys4nlp__llama-moe",
+ "repo": "pjlab-sys4nlp/llama-moe",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 1003,
+ "sha": "b17aff436cce58e2fcd7327789c7fadafe15d19e",
+ "old": "2.0.3",
+ "status": "not_on_old_version"
+}

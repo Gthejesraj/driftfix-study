@@ -1,0 +1,10 @@
+{
+ "id": "MLResearchAtOSRAM__cause2e",
+ "repo": "MLResearchAtOSRAM/cause2e",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 63,
+ "sha": "e15f8716a21b02dcd7cf96baeb6b4f6e6e93ac81",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: error: No solution found when resolving dependencies\n  cause: Because there are no versions of pycausal and you require pycausal, we can conclude that your requirements are unsatisfiable.\n"
+}

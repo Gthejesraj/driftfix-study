@@ -1,0 +1,10 @@
+{
+ "id": "cap-ntu__ML-Model-CI",
+ "repo": "cap-ntu/ML-Model-CI",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 197,
+ "sha": "f77635e469477b640a5c2d9b7ad3fe13374ce59e",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: error: No solution found when resolving dependencies\n  cause: Because onnxruntime==1.2.0 has no wheels with a matching Python ABI tag (e.g., `cp311`) and you require onnxruntime==1.2.0, we can conclude that your requirements are unsatisfiable.\n\nhint: You require CPython 3.11 (`cp311`), but we only found wheels for `onnxruntime` (v1.2.0) with the following Python ABI tags: `cp35m`, `cp36m`, `cp37m`, `cp38`\n"
+}

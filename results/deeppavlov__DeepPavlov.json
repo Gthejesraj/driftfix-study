@@ -1,0 +1,20 @@
+{
+ "id": "deeppavlov__DeepPavlov",
+ "repo": "deeppavlov/DeepPavlov",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 6995,
+ "sha": "5f9fbed0c7191466bc7621e604b810f66f254c03",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/test_quick_start.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n__________________ ERROR collecting tests/test_quick_start.py __________________\nImportError while importing test module '/tmp/study/repo/tests/test_quick_start.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_quick_start.py:16: in <module>\n    import pexpect\nE   ModuleNotFoundError: No module named 'pexpect'\n=========================== short test summary info ============================\nERROR tests/test_quick_start.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.20s"
+ }
+}

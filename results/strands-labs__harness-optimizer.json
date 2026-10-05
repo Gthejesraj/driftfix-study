@@ -1,0 +1,10 @@
+{
+ "id": "strands-labs__harness-optimizer",
+ "repo": "strands-labs/harness-optimizer",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 51,
+ "sha": "da3dd085e987a2105382f9a883b145b26b06608a",
+ "status": "install_failed",
+ "error": "requirements examples/webshop/webshop_runtime/webshop_requirements.txt: error: No solution found when resolving dependencies\n  cause: Because torch==1.11.0 has no wheels with a matching Python ABI tag (e.g., `cp311`) and you require torch==1.11.0, we can conclude that your requirements are unsatisfiable.\n\nhint: You require CPython 3.11 (`cp311`), but we only found wheels for `torch` (v1.11.0) with the following Python ABI tags: `cp37m`, `cp38`, `cp39`, `cp310`\n"
+}

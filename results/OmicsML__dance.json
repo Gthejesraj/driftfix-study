@@ -1,0 +1,10 @@
+{
+ "id": "OmicsML__dance",
+ "repo": "OmicsML/dance",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 388,
+ "sha": "ce2ffa3a9328ffaf815adc30510294a59e638dbc",
+ "old": "2.2.2",
+ "status": "not_on_old_version"
+}

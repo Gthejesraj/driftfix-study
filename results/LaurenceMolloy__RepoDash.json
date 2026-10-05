@@ -1,0 +1,16 @@
+{
+ "id": "LaurenceMolloy__RepoDash",
+ "repo": "LaurenceMolloy/RepoDash",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 25,
+ "sha": "70525fafbc9fcce6ed9ced94b6b1008e8d82d95d",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 1,
+  "counts": {},
+  "failing": [],
+  "tail": "    code = _main(prog=_get_prog_name(sys.argv))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 223, in _main\n    config = _prepareconfig(new_args, plugins, prog=prog)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 410, in _prepareconfig\n    config: Config = pluginmanager.hook.pytest_cmdline_parse(\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_hooks.py\", line 512, in __call__\n    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_manager.py\", line 120, in _hookexec\n    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 167, in _multicall\n    raise exception\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 139, in _multicall\n    teardown.throw(exception)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/helpconfig.py\", line 124, in pytest_cmdline_parse\n    config = yield\n             ^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 121, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 1232, in pytest_cmdline_parse\n    self.parse(args)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 1583, in parse\n    self.pluginmanager.load_setuptools_entrypoints(\"pytest11\")\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_manager.py\", line 417, in load_setuptools_entrypoints\n    self.register(plugin, name=ep.name)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 571, in register\n    plugin_name = super().register(plugin, name)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_manager.py\", line 168, in register\n    self._verify_hook(hook, hookimpl)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_manager.py\", line 343, in _verify_hook\n    raise PluginValidationError(\npluggy._manager.PluginValidationError: Plugin 'flake8' for hook 'pytest_collect_file'\nhookimpl definition: pytest_collect_file(file_path, path, parent)\nArgument(s) {'path'} are declared in the hookimpl but can not be found in the hookspec"
+ }
+}

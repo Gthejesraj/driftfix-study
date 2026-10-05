@@ -1,0 +1,20 @@
+{
+ "id": "Rodrigo-Henrique21__data_pipeline_airflow_dbt",
+ "repo": "Rodrigo-Henrique21/data_pipeline_airflow_dbt",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 37,
+ "sha": "d81d0cbe65c515ddb0653af07fded88e79613cdc",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/test_captura_dados.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n_________________ ERROR collecting tests/test_captura_dados.py _________________\ntests/test_captura_dados.py:3: in <module>\n    from dags.captura_dados import captura_ativos, captura_dados_tesouro, captura_indicadores_tecnicos\ndags/captura_dados.py:19: in <module>\n    CHAVE_API_ALPHA_VANTAGE = os.environ[\"CHAVE_API\"]\n                              ^^^^^^^^^^^^^^^^^^^^^^^\n<frozen os>:679: in __getitem__\n    ???\nE   KeyError: 'CHAVE_API'\n------------------------------- Captured stderr --------------------------------\n/tmp/study/venv/lib/python3.11/site-packages/airflow/models/base.py:49 MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to \"sqlalchemy<2.0\". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1464\n  /tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: python_paths\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/test_captura_dados.py - KeyError: 'CHAVE_API'\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 warning, 1 error in 2.97s"
+ }
+}

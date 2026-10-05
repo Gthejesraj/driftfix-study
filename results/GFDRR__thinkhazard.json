@@ -1,0 +1,10 @@
+{
+ "id": "GFDRR__thinkhazard",
+ "repo": "GFDRR/thinkhazard",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 47,
+ "sha": "5ab3c4bc844726a3356dd26249a53f2210fb8dfd",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: error: No solution found when resolving dependencies\n  cause: Because the current Python version (3.11.17) does not satisfy Python>=3.12 and rasterio>=1.5.0 depends on Python>=3.12, we can conclude that rasterio>=1.5.0 cannot be used.\n         And because you require rasterio>=1.5, we can conclude that your requirements are unsatisfiable.\n"
+}

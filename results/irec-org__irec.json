@@ -1,0 +1,10 @@
+{
+ "id": "irec-org__irec",
+ "repo": "irec-org/irec",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 26,
+ "sha": "9851443b8a85b10ca73c74af941b025b5c53fbc0",
+ "status": "install_failed",
+ "error": "requirements all_requirements.txt: error: No solution found when resolving dependencies\n  cause: Because tensorflow==2.11.0 has no wheels with a matching Python ABI tag (e.g., `cp311`) and you require tensorflow==2.11.0, we can conclude that your requirements are unsatisfiable.\n\nhint: You require CPython 3.11 (`cp311`), but we only found wheels for `tensorflow` (v2.11.0) with the following Python ABI tags: `cp37m`, `cp38`, `cp39`, `cp310`\n"
+}

@@ -1,0 +1,16 @@
+{
+ "id": "tchx84__linka",
+ "repo": "tchx84/linka",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 22,
+ "sha": "2220c3246285237ac2bed52e6b5af417d0f7378b",
+ "old": "1.4.46",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 5,
+  "counts": {},
+  "failing": [],
+  "tail": "\nno tests ran in 0.00s"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "abhinavkashyap__sciwing",
+ "repo": "abhinavkashyap/sciwing",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 63,
+ "sha": "1c061b99a35a9d8b565d9762aaaf5db979b50112",
+ "status": "install_failed",
+ "error": "requirements requirements.txt.bkp: error: No solution found when resolving dependencies\n  cause: Because pandas==0.24.2 has invalid metadata and you require pandas==0.24.2, we can conclude that your requirements are unsatisfiable.\n\nhint: Metadata for `pandas` (v0.24.2) could not be parsed:\n  after parsing `2011`, found `k`, which is not part of a valid version\n  pytz (>=2011k)\n        ^^^^^^^\n"
+}

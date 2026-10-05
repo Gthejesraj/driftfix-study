@@ -1,0 +1,16 @@
+{
+ "id": "opq-osc__botoy",
+ "repo": "opq-osc/botoy",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 69,
+ "sha": "b2b79a5163f78674aa08a55b4d32c16078b06fd0",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 5,
+  "counts": {},
+  "failing": [],
+  "tail": "\nno tests ran in 0.01s"
+ }
+}

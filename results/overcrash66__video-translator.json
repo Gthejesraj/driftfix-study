@@ -1,0 +1,10 @@
+{
+ "id": "overcrash66__video-translator",
+ "repo": "overcrash66/video-translator",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 42,
+ "sha": "8e91ebcca2265a7e8a4e1c567da549852ef02638",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: load.pytorch.org/whl/cu128, but not at the requested version (torchmetrics>=1.4.0). A compatible version may be available on a subsequent index (e.g., https://pypi.org/simple). By default, uv will only consider versions that are published on the first index that contains a given package, to avoid dependency confusion attacks. If all indexes are equally trusted, use `--index-strategy unsafe-best-match` to consider all versions from all indexes, regardless of the order in which they were defined.\n"
+}

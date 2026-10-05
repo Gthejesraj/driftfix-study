@@ -1,0 +1,21 @@
+{
+ "id": "AdCombo__flask-combo-jsonapi",
+ "repo": "AdCombo/flask-combo-jsonapi",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 32,
+ "sha": "3cfff98ecdbadc45d25a3fd443ad67d3743be6f5",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "tests/test_errors.py",
+   "tests/test_sqlalchemy_data_layer.py"
+  ],
+  "tail": "    from flask_combo_jsonapi.api import Api\nflask_combo_jsonapi/api.py:12: in <module>\n    from flask_combo_jsonapi.resource import ResourceList, ResourceRelationship\nflask_combo_jsonapi/resource.py:12: in <module>\n    from marshmallow_jsonapi.exceptions import IncorrectTypeError\n../venv/lib/python3.11/site-packages/marshmallow_jsonapi/__init__.py:1: in <module>\n    from .schema import Schema, SchemaOpts\n../venv/lib/python3.11/site-packages/marshmallow_jsonapi/schema.py:7: in <module>\n    from .fields import BaseRelationship, DocumentMeta, ResourceMeta\n../venv/lib/python3.11/site-packages/marshmallow_jsonapi/fields.py:11: in <module>\n    from marshmallow.base import SchemaABC\nE   ModuleNotFoundError: No module named 'marshmallow.base'\n_____________ ERROR collecting tests/test_sqlalchemy_data_layer.py _____________\nImportError while importing test module '/tmp/study/repo/tests/test_sqlalchemy_data_layer.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_sqlalchemy_data_layer.py:8: in <module>\n    from marshmallow_jsonapi.flask import Schema, Relationship\n../venv/lib/python3.11/site-packages/marshmallow_jsonapi/__init__.py:1: in <module>\n    from .schema import Schema, SchemaOpts\n../venv/lib/python3.11/site-packages/marshmallow_jsonapi/schema.py:7: in <module>\n    from .fields import BaseRelationship, DocumentMeta, ResourceMeta\n../venv/lib/python3.11/site-packages/marshmallow_jsonapi/fields.py:11: in <module>\n    from marshmallow.base import SchemaABC\nE   ModuleNotFoundError: No module named 'marshmallow.base'\n=============================== warnings summary ===============================\ntests/conftest.py:12\n  /tmp/study/repo/tests/conftest.py:12: PytestDeprecationWarning: @pytest.yield_fixture is deprecated.\n  Use @pytest.fixture instead; they are the same.\n    @pytest.yield_fixture()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/test_errors.py\nERROR tests/test_sqlalchemy_data_layer.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n1 warning, 2 errors in 0.80s"
+ }
+}

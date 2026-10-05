@@ -1,0 +1,16 @@
+{
+ "id": "BGI-Qingdao__SpaGRN",
+ "repo": "BGI-Qingdao/SpaGRN",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 22,
+ "sha": "61690ca69a766f14c580de5dd47d4bc7b603813a",
+ "old": "1.5.3",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 5,
+  "counts": {},
+  "failing": [],
+  "tail": "\nno tests ran in 0.01s"
+ }
+}

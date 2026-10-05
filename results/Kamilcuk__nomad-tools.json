@@ -1,0 +1,30 @@
+{
+ "id": "Kamilcuk__nomad-tools",
+ "repo": "Kamilcuk/nomad-tools",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 43,
+ "sha": "bfc82b9a1dd8f885db9ca4ea3b602549c9bdf7d2",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 15,
+   "skipped": 4
+  },
+  "failing": [],
+  "tail": "\ntests/unit/test_common.py::test_common_cached_property PASSED            [  5%]\ntests/unit/test_common.py::test_andjoin PASSED                           [ 10%]\ntests/unit/test_datadict.py::test_datadict_simple PASSED                 [ 15%]\ntests/unit/test_datadict.py::test_datadict_collect PASSED                [ 21%]\ntests/unit/test_datadict.py::test_datadict_inherit PASSED                [ 26%]\ntests/unit/test_datadict.py::test_datadict_nested PASSED                 [ 31%]\ntests/unit/test_datadict.py::test_datadict_tolist PASSED                 [ 36%]\ntests/unit/test_datadict.py::test_datadict_todict PASSED                 [ 42%]\ntests/unit/test_datadict.py::test_datadict_any PASSED                    [ 47%]\ntests/unit/test_datadict.py::test_datadict_strmember PASSED              [ 52%]\ntests/unit/test_downloadrelease.py::test_downloadrelease[nomad] SKIPPED  [ 57%]\ntests/unit/test_downloadrelease.py::test_downloadrelease[consul] SKIPPED [ 63%]\ntests/unit/test_help.py::test_cli_help[cli0] SKIPPED (got empty para...) [ 68%]\ntests/unit/test_help.py::test_cli_h[cli0] SKIPPED (got empty paramet...) [ 73%]\ntests/unit/test_nomad_gitlab_runner.py::test_entry_gitlab_runner_templater PASSED [ 78%]\ntests/unit/test_nomad_vardir.py::test_entry_vardir_test2 PASSED          [ 84%]\ntests/unit/test_nomad_vardir.py::test_units PASSED                       [ 89%]\ntests/unit/test_nomad_watch.py::test_entry_watch_multiple_log PASSED     [ 94%]\ntests/unit/test_types.py::test_fromisoformat PASSED                      [100%]\n\n================= 15 passed, 4 skipped, 11 deselected in 0.14s =================",
+  "preexisting_failures": 11
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 15,
+   "skipped": 4
+  },
+  "failing": [],
+  "tail": "\ntests/unit/test_common.py::test_common_cached_property PASSED            [  5%]\ntests/unit/test_common.py::test_andjoin PASSED                           [ 10%]\ntests/unit/test_datadict.py::test_datadict_simple PASSED                 [ 15%]\ntests/unit/test_datadict.py::test_datadict_collect PASSED                [ 21%]\ntests/unit/test_datadict.py::test_datadict_inherit PASSED                [ 26%]\ntests/unit/test_datadict.py::test_datadict_nested PASSED                 [ 31%]\ntests/unit/test_datadict.py::test_datadict_tolist PASSED                 [ 36%]\ntests/unit/test_datadict.py::test_datadict_todict PASSED                 [ 42%]\ntests/unit/test_datadict.py::test_datadict_any PASSED                    [ 47%]\ntests/unit/test_datadict.py::test_datadict_strmember PASSED              [ 52%]\ntests/unit/test_downloadrelease.py::test_downloadrelease[nomad] SKIPPED  [ 57%]\ntests/unit/test_downloadrelease.py::test_downloadrelease[consul] SKIPPED [ 63%]\ntests/unit/test_help.py::test_cli_help[cli0] SKIPPED (got empty para...) [ 68%]\ntests/unit/test_help.py::test_cli_h[cli0] SKIPPED (got empty paramet...) [ 73%]\ntests/unit/test_nomad_gitlab_runner.py::test_entry_gitlab_runner_templater PASSED [ 78%]\ntests/unit/test_nomad_vardir.py::test_entry_vardir_test2 PASSED          [ 84%]\ntests/unit/test_nomad_vardir.py::test_units PASSED                       [ 89%]\ntests/unit/test_nomad_watch.py::test_entry_watch_multiple_log PASSED     [ 94%]\ntests/unit/test_types.py::test_fromisoformat PASSED                      [100%]\n\n================= 15 passed, 4 skipped, 11 deselected in 0.14s ================="
+ },
+ "status": "not_broken"
+}

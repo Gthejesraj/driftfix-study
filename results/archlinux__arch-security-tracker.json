@@ -1,0 +1,10 @@
+{
+ "id": "archlinux__arch-security-tracker",
+ "repo": "archlinux/arch-security-tracker",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 135,
+ "sha": "a18d5c9d8291bf4eeb21b450eca77c62c8c006f9",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: tmpdfCzfc/lib/python3.11/site-packages/pkgconfig/pkgconfig.py\", line 248, in parse\n             _raise_if_not_exists(package)\n           File \"/home/runner/work/_temp/setup-uv-cache/builds-v0/.tmpdfCzfc/lib/python3.11/site-packages/pkgconfig/pkgconfig.py\", line 103, in _raise_if_not_exists\n             raise PackageNotFoundError(package)\n         pkgconfig.pkgconfig.PackageNotFoundError: libalpm not found\n\nhint: Build failures usually indicate a problem with the package or the build environment\n"
+}

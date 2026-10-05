@@ -1,0 +1,10 @@
+{
+ "id": "TextGeneratorio__text-generator.io",
+ "repo": "TextGeneratorio/text-generator.io",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 38,
+ "sha": "7543e04a5945f951e38d8b6aa4b4701bdf19cc1d",
+ "status": "install_failed",
+ "error": "requirements questions/inference_server/ofa-requirements.txt: error: Distribution not found at: file:///tmp/study/repo/OFA/fairseq\n"
+}

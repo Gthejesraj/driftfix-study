@@ -1,0 +1,10 @@
+{
+ "id": "TIGER-AI-Lab__VideoGenHub",
+ "repo": "TIGER-AI-Lab/VideoGenHub",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 50,
+ "sha": "7c02496501c027993da092f9035dee8dc0c12247",
+ "status": "install_failed",
+ "error": "requirements env_cfg/requirements.txt: error: Unsupported editable requirement in `env_cfg/requirements.txt` at line 44: `git+https://github.com/openai/CLIP.git@main#egg=clip`\n  cause: Git sources cannot be editable\n\nhint: Editable requirements must refer to a local directory\n"
+}

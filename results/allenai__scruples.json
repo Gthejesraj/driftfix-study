@@ -1,0 +1,10 @@
+{
+ "id": "allenai__scruples",
+ "repo": "allenai/scruples",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 59,
+ "sha": "c79697e97d24f5b43b5ff030a9b16011a32e4a5f",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: error: No solution found when resolving dependencies\n  cause: Because pandas==0.24.2 has invalid metadata and you require pandas==0.24.2, we can conclude that your requirements are unsatisfiable.\n\nhint: Metadata for `pandas` (v0.24.2) could not be parsed:\n  after parsing `2011`, found `k`, which is not part of a valid version\n  pytz (>=2011k)\n        ^^^^^^^\n"
+}

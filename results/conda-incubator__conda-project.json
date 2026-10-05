@@ -1,0 +1,10 @@
+{
+ "id": "conda-incubator__conda-project",
+ "repo": "conda-incubator/conda-project",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 31,
+ "sha": "fbbbc7ade8354a41f2152e269fd720c39ae73109",
+ "status": "install_failed",
+ "error": "requirements docs/requirements.txt: error: `/tmp/study` does not appear to be a Python project, as neither `pyproject.toml` nor `setup.py` are present in the directory\n"
+}

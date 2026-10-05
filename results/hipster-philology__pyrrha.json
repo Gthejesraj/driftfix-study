@@ -1,0 +1,10 @@
+{
+ "id": "hipster-philology__pyrrha",
+ "repo": "hipster-philology/pyrrha",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 30,
+ "sha": "89ebe5c776f9294c1c6112596ae6053d3cc45e31",
+ "old": "2.0.54",
+ "status": "not_on_old_version"
+}

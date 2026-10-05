@@ -1,0 +1,20 @@
+{
+ "id": "lealre__etl-airflow",
+ "repo": "lealre/etl-airflow",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 28,
+ "sha": "399ddccef965de78532f518297293c8f8d0839fe",
+ "old": "1.5.3",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/dags/test_dag_example.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n_______________ ERROR collecting tests/dags/test_dag_example.py ________________\nImportError while importing test module '/tmp/study/repo/tests/dags/test_dag_example.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\ntests/dags/test_dag_example.py:7: in <module>\n    from airflow.models import DagBag\nE   ModuleNotFoundError: No module named 'airflow'\n=========================== short test summary info ============================\nERROR tests/dags/test_dag_example.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 1.44s"
+ }
+}

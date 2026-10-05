@@ -1,0 +1,10 @@
+{
+ "id": "kazah4359-lgtm__Magda-agent",
+ "repo": "kazah4359-lgtm/Magda-agent",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 35,
+ "sha": "9adf282452d24181823d68019f0c471ab8b51568",
+ "old": "2.9.2",
+ "status": "not_on_old_version"
+}

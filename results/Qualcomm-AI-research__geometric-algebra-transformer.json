@@ -1,0 +1,10 @@
+{
+ "id": "Qualcomm-AI-research__geometric-algebra-transformer",
+ "repo": "Qualcomm-AI-research/geometric-algebra-transformer",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 257,
+ "sha": "6afc26f26b8fcf51136ae8c1d264a36e14b6e497",
+ "status": "install_failed",
+ "error": "requirements docker/requirements.txt: error: No solution found when resolving dependencies\n  cause: Because pyg-lib was not found in the package registry and you require pyg-lib, we can conclude that your requirements are unsatisfiable.\n"
+}

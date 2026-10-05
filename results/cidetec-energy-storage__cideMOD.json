@@ -1,0 +1,24 @@
+{
+ "id": "cidetec-energy-storage__cideMOD",
+ "repo": "cidetec-energy-storage/cideMOD",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 40,
+ "sha": "f3a834403d9b110c2c75ba69f0f42b8f6e6b8aaf",
+ "old": "1.10.11",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 5
+  },
+  "failing": [
+   "tests/test_Ai_2020.py",
+   "tests/test_Chen_2020.py",
+   "tests/test_LAM.py",
+   "tests/test_SEI.py",
+   "tests/test_thermal_p2D.py"
+  ],
+  "tail": "______________________ ERROR collecting tests/test_SEI.py ______________________\nImportError while importing test module '/tmp/study/repo/tests/test_SEI.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_SEI.py:22: in <module>\n    from cideMOD import __path__, Problem, CSI, get_model_options, Trigger\nsrc/cideMOD/__init__.py:21: in <module>\n    from cideMOD.helpers import (VerbosityLevel, LogLevel, PlotView,\nsrc/cideMOD/helpers/__init__.py:24: in <module>\n    from cideMOD.helpers.logging import VerbosityLevel, LogLevel\nsrc/cideMOD/helpers/logging.py:21: in <module>\n    from mpi4py import MPI\nE   ModuleNotFoundError: No module named 'mpi4py'\n__________________ ERROR collecting tests/test_thermal_p2D.py __________________\nImportError while importing test module '/tmp/study/repo/tests/test_thermal_p2D.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_thermal_p2D.py:22: in <module>\n    from cideMOD import Problem, CSI, get_model_options, Trigger\nsrc/cideMOD/__init__.py:21: in <module>\n    from cideMOD.helpers import (VerbosityLevel, LogLevel, PlotView,\nsrc/cideMOD/helpers/__init__.py:24: in <module>\n    from cideMOD.helpers.logging import VerbosityLevel, LogLevel\nsrc/cideMOD/helpers/logging.py:21: in <module>\n    from mpi4py import MPI\nE   ModuleNotFoundError: No module named 'mpi4py'\n=========================== short test summary info ============================\nERROR tests/test_Ai_2020.py\nERROR tests/test_Chen_2020.py\nERROR tests/test_LAM.py\nERROR tests/test_SEI.py\nERROR tests/test_thermal_p2D.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!\n5 errors in 0.36s"
+ }
+}

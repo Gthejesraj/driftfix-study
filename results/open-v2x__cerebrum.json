@@ -1,0 +1,23 @@
+{
+ "id": "open-v2x__cerebrum",
+ "repo": "open-v2x/cerebrum",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 47,
+ "sha": "fcaad3f2e7ff1dd32597dbb39d84c8d19387bb89",
+ "old": "1.4.39",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "tests/test_collision.py",
+   "tests/test_complement.py",
+   "tests/test_fusion.py",
+   "tests/test_smooth.py"
+  ],
+  "tail": "pre_process_ai_algo/algo_lib/complement/lstm/__init__.py:17: in <module>\n    from . import corenet\npre_process_ai_algo/algo_lib/complement/lstm/corenet.py:17: in <module>\n    from torch import nn  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^\nE   ModuleNotFoundError: No module named 'torch'\n____________________ ERROR collecting tests/test_fusion.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_fusion.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_fusion.py:15: in <module>\n    from pre_process_ai_algo.algo_lib.fusion import Fusion\npre_process_ai_algo/algo_lib/fusion/__init__.py:17: in <module>\n    from .algorithm import Hungarian\npre_process_ai_algo/algo_lib/fusion/algorithm.py:22: in <module>\n    import cv2  # type: ignore\n    ^^^^^^^^^^\nE   ModuleNotFoundError: No module named 'cv2'\n____________________ ERROR collecting tests/test_smooth.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_smooth.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_smooth.py:15: in <module>\n    from pre_process_ai_algo.algo_lib import smooth\npre_process_ai_algo/algo_lib/smooth/__init__.py:22: in <module>\n    import numpy as np\nE   ModuleNotFoundError: No module named 'numpy'\n=========================== short test summary info ============================\nERROR tests/test_collision.py\nERROR tests/test_complement.py\nERROR tests/test_fusion.py\nERROR tests/test_smooth.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n4 errors in 0.51s"
+ }
+}
