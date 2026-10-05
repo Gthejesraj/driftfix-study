@@ -39,4 +39,4 @@ third-party code, so use a container or VM.
 
 ## Results
 
-See [`RESULTS.md`](RESULTS.md) once runs complete.
+See [`RESULTS.md`](RESULTS.md). Pilot: 39 candidates → 4 real breaks → 3 fixed cleanly (one needs review), 1 workaround.
