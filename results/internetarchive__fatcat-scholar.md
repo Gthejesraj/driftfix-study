@@ -1,45 +1,28 @@
 ## driftfix: pydantic
 
-**❌ Not fixed** · cost $0.00
+**✅ Fixed** · cost $2.38
 
-Agent error: `Claude Code returned an error result: Reached maximum budget ($1) (exit code: 1)`
+All 115 tests pass (1 skipped, 1 deselected, previously 15 failures).
 
-Tests still failing:
-```
-s_kwargs:
->           raise TypeError('`dumps_kwargs` keyword arguments are no longer supported.')
-E           TypeError: `dumps_kwargs` keyword arguments are no longer supported.
+## Migrate to pydantic v2
 
-../venv/lib/python3.11/site-packages/pydantic/main.py:1371: TypeError
-=============================== warnings summary ===============================
-../venv/lib/python3.11/site-packages/citeproc_styles/__init__.py:17
-  /tmp/study/venv/lib/python3.11/site-packages/citeproc_styles/__init__.py:17: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
-    from pkg_resources import resource_exists, resource_filename, resource_listdir
+`pydantic` was upgraded from 1.10.16 to 2.13.5. Updated application code to the v2 API.
 
-tests/test_transform.py::test_es_release_from_release
-  /tmp/study/repo/tests/test_transform.py:21: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
-    d = json.loads(obj.json())
+### Optional fields are no longer implicitly optional
+The largest change. In v1, `Optional[X]` / `X | None` implied a `None` default; in v2 the field is **required** unless a default is given. Every model that was constructed or validated with partial data broke with `Field required [type=missing]`. Added explicit `= None` defaults to 147 optional fields in `scholar/schema.py`, `scholar/fatcat/tools/references.py`, and `scholar/fatcat/tools/transforms/access.py`.
 
-tests/test_transform.py::test_es_biblio_from_release
-  /tmp/study/repo/tests/test_transform.py:33: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
-    d = json.loads(obj.json())
+This also fixes the `KeyError: '_obj'` web failures: `search.py` wraps `ScholarDoc` validation in a bare `except Exception: pass`, so the missing-field errors were silently swallowing the `_obj` template helper.
 
-tests/test_transform.py::test_run_refs
-  /tmp/study/repo/src/scholar/transform.py:989: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
-    print(ref.json(exclude_none=True, sort_keys=True))
+### Config / serialization
+- `class Config` → `model_config = ConfigDict(arbitrary_types_allowed=True)`.
+- `json_encoders` (deprecated in v2) replaced with a reusable `SerializedReleaseEntity = Annotated[ReleaseEntity, PlainSerializer(entity_to_dict, ...)]` annotation. This attaches the openapi-client serializer to the field itself, so it now also works through `fastapi`'s `jsonable_encoder` and nested models — the `json_encoders` on `RefHits`/`RefHitsEnriched` became redundant and were dropped. The explicit `datetime` encoder was dropped too, since v2 serializes datetimes as ISO-8601 natively.
 
-tests/test_transform.py::test_run_transform
-  /tmp/study/repo/src/scholar/transform.py:978: PydanticDeprecatedSince20: The `json` method is deprecated; use `model_dump_json` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
-    print(es_doc.json(exclude_none=True, sort_keys=True))
+### Renamed methods
+- `parse_obj()` → `model_validate()`, `.dict()` → `.model_dump()`, `@validator` → `@field_validator`.
+- `.json(exclude_none=True)` → `.model_dump_json(exclude_none=True)`.
+- v2 rejects `json.dumps` passthrough kwargs, so `.json(..., sort_keys=True)` could not be translated directly. Added a `model_to_json()` helper in `scholar/schema.py` that dumps in JSON mode and then encodes with `json.dumps(..., sort_keys=True)`, preserving the stable key ordering the Kafka/ES/JSONL output paths rely on.
 
-tests/test_web.py::test_basic_rss_feed
-tests/test_web.py::test_basic_rss_feed
-  /tmp/study/venv/lib/python3.11/site-packages/fastapi_rss/models/feed.py:127: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
-    self.generate_tree(channel, self.dict())
+### Tests
+Only `tests/test_transform.py` changed, where it calls pydantic's API directly (`obj.json()` → `obj.model_dump_json()`).
 
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ============================
-FAILED tests/test_transform.py::test_run_refs - TypeError: `dumps_kwargs` keyword arguments are no longer supported.
-FAILED tests/test_transform.py::test_run_transform - TypeError: `dumps_kwargs` keyword arguments are no longer supported.
-2 failed, 113 passed, 1 skipped, 1 deselected, 7 warnings in 2.58s
-```
+Verified beyond the suite: `IntermediateBundle` JSON round-trip, `RefHitsEnriched`/`jsonable_encoder` output, the `run_transform`/`run_refs` CLI output, and FastAPI OpenAPI schema generation. The remaining deprecation warning comes from the third-party `fastapi_rss` package, not this repo.

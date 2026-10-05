@@ -1,27 +1,30 @@
 diff --git a/src/scholar/fatcat/tools/references.py b/src/scholar/fatcat/tools/references.py
-index 70139f7..205fa53 100644
+index 70139f7..0003527 100644
 --- a/src/scholar/fatcat/tools/references.py
 +++ b/src/scholar/fatcat/tools/references.py
-@@ -5,7 +5,8 @@ import elasticsearch
+@@ -1,11 +1,11 @@
+-from typing import Any, Dict, List
++from typing import Annotated, Any, Dict, List
+ import datetime
+ 
+ import elasticsearch
  import fatcat_openapi_client as fcapi
  from elasticsearch_dsl import Search
  from fatcat_openapi_client import ReleaseEntity
 -from pydantic import BaseModel, validator
 +from pydantic import BaseModel, ConfigDict, PlainSerializer, field_validator
-+from typing_extensions import Annotated
  
  from scholar.fatcat.tools.transforms.access import (
          AccessOption,
-@@ -13,51 +14,59 @@ from scholar.fatcat.tools.transforms.access import (
+@@ -13,51 +13,58 @@ from scholar.fatcat.tools.transforms.access import (
  )
  from scholar.fatcat.tools.transforms.entities import entity_to_dict
  
-+# ReleaseEntity is an "arbitrary" (non-pydantic) type: it needs an explicit
-+# serializer for JSON output. This replaces the pydantic v1 `json_encoders`
-+# config, which is deprecated in pydantic v2.
++# `ReleaseEntity` is a code-generated (non-pydantic) class, so it is allowed
++# through as an arbitrary type and serialized via the openapi client helper.
 +SerializedReleaseEntity = Annotated[
 +    ReleaseEntity,
-+    PlainSerializer(entity_to_dict, return_type=Dict[str, Any], when_used="json"),
++    PlainSerializer(entity_to_dict, return_type=Dict[str, Any]),
 +]
 +
  
@@ -91,7 +94,7 @@ index 70139f7..205fa53 100644
  
      def hacks(self) -> "BiblioRef":
          """
-@@ -93,22 +102,18 @@ class EnrichedBiblioRef(BaseModel):
+@@ -93,23 +100,19 @@ class EnrichedBiblioRef(BaseModel):
      # fetched from the fatcat API. CSL-JSON metadata would be derived from
      # the full release entity.
      ref: BiblioRef
@@ -101,6 +104,8 @@ index 70139f7..205fa53 100644
      access: List[AccessOption]
  
 -    @validator("release")
++    model_config = ConfigDict(arbitrary_types_allowed=True)
++
 +    @field_validator("release")
      @classmethod
      def check_release(cls: Any, v: ReleaseEntity) -> ReleaseEntity:
@@ -113,11 +118,11 @@ index 70139f7..205fa53 100644
 -        json_encoders = {
 -            ReleaseEntity: entity_to_dict,
 -        }
-+    model_config = ConfigDict(arbitrary_types_allowed=True)
- 
+-
  
  class RefHits(BaseModel):
-@@ -120,11 +125,6 @@ class RefHits(BaseModel):
+     count_returned: int
+@@ -120,11 +123,6 @@ class RefHits(BaseModel):
      query_wall_time_ms: int
      result_refs: List[BiblioRef]
  
@@ -129,7 +134,7 @@ index 70139f7..205fa53 100644
      def as_enriched(self, enriched_refs: List[EnrichedBiblioRef]) -> "RefHitsEnriched":
          return RefHitsEnriched(
              count_returned=self.count_returned,
-@@ -147,11 +147,6 @@ class RefHitsEnriched(BaseModel):
+@@ -147,11 +145,6 @@ class RefHitsEnriched(BaseModel):
      query_wall_time_ms: int
      result_refs: List[EnrichedBiblioRef]
  
@@ -141,7 +146,7 @@ index 70139f7..205fa53 100644
  def get_inbound_refs(
      es_client:         Any,
      release_ident:     str|None = None,
-@@ -237,7 +232,7 @@ def _execute_ref_query(search: Any,
+@@ -237,7 +230,7 @@ def _execute_ref_query(search: Any,
          # might be a list because of consolidation
          if isinstance(h._d_.get("source_work_ident"), list):
              h._d_["source_work_ident"] = h._d_["source_work_ident"][0]
@@ -168,35 +173,84 @@ index 1b42baa..99faa83 100644
  
  def release_access_options(release: ReleaseEntity) -> List[AccessOption]:
      """
+diff --git a/src/scholar/fatcat/web.py b/src/scholar/fatcat/web.py
+index 8d839b6..4e33d67 100644
+--- a/src/scholar/fatcat/web.py
++++ b/src/scholar/fatcat/web.py
+@@ -806,7 +806,7 @@ async def reference_match_json(
+         # and manually convert to dict (for jsonify)
+         info = m.__dict__
+         info["release"] = entity_to_dict(m.release)
+-        info["access_options"] = [o.dict() for o in m.access_options]
++        info["access_options"] = [o.model_dump() for o in m.access_options]
+         resp.append(info)
+     return resp
+ 
+diff --git a/src/scholar/kafka.py b/src/scholar/kafka.py
+index 5ae4b1e..f786510 100644
+--- a/src/scholar/kafka.py
++++ b/src/scholar/kafka.py
+@@ -42,7 +42,7 @@ class KafkaWorker:
+ 
+         producer.produce(
+             topic,
+-            some_obj.json(exclude_none=True).encode('UTF-8'),
++            some_obj.model_dump_json(exclude_none=True).encode('UTF-8'),
+             key=key,
+             on_delivery=self._fail_fast_produce)
+ 
 diff --git a/src/scholar/schema.py b/src/scholar/schema.py
-index ea50428..032195f 100644
+index ea50428..7eafad7 100644
 --- a/src/scholar/schema.py
 +++ b/src/scholar/schema.py
-@@ -16,13 +16,22 @@ from fatcat_openapi_client import ReleaseContrib, ReleaseEntity
+@@ -8,7 +8,7 @@ import datetime
+ import json
+ import re
+ from enum import Enum
+-from typing import Any, Dict, List, Optional
++from typing import Annotated, Any, Dict, List, Optional
+ 
+ import ftfy
+ from bs4 import BeautifulSoup
+@@ -16,13 +16,36 @@ from fatcat_openapi_client import ReleaseContrib, ReleaseEntity
  from grobid_tei_xml import GrobidDocument
  
  # pytype: disable=import-error
 -from pydantic import BaseModel
 +from pydantic import BaseModel, ConfigDict, PlainSerializer
-+from typing_extensions import Annotated
  
  from scholar.api_entities import entity_from_json, entity_to_dict
  from scholar.biblio_hacks import doi_link_domain
  
  # pytype: enable=import-error
  
-+# ReleaseEntity is an "arbitrary" (non-pydantic) type: it needs an explicit
-+# serializer for JSON output. This replaces the pydantic v1 `json_encoders`
-+# config, which is deprecated in pydantic v2.
++# `ReleaseEntity` is a code-generated (non-pydantic) class, so it is allowed
++# through as an arbitrary type and serialized via the openapi client helper.
 +SerializedReleaseEntity = Annotated[
 +    ReleaseEntity,
-+    PlainSerializer(entity_to_dict, return_type=Dict[str, Any], when_used="json"),
++    PlainSerializer(entity_to_dict, return_type=Dict[str, Any]),
 +]
++
++
++def model_to_json(
++    model: BaseModel, exclude_none: bool = False, sort_keys: bool = False
++) -> str:
++    """
++    Serializes a pydantic model to a JSON string.
++
++    pydantic v2 dropped support for passing `json.dumps` keyword arguments
++    (such as `sort_keys`) through to the model serializer, so dump to a
++    JSON-compatible dict first and then encode it ourselves.
++    """
++    return json.dumps(
++        model.model_dump(mode="json", exclude_none=exclude_none),
++        sort_keys=sort_keys,
++    )
 +
  
  class DocType(str, Enum):
      work = "work"
-@@ -31,22 +40,17 @@ class DocType(str, Enum):
+@@ -31,22 +54,17 @@ class DocType(str, Enum):
  
  class IntermediateBundle(BaseModel):
      doc_type: DocType
@@ -230,7 +284,7 @@ index ea50428..032195f 100644
  
      @staticmethod
      def from_json(obj: Dict[Any, Any]) -> "IntermediateBundle":
-@@ -77,51 +81,51 @@ class AccessType(str, Enum):
+@@ -77,51 +95,51 @@ class AccessType(str, Enum):
  
  
  class ScholarBiblio(BaseModel):
@@ -326,7 +380,7 @@ index ea50428..032195f 100644
      contrib_names: List[str]
      affiliations: List[str]
  
-@@ -165,18 +169,18 @@ class ScholarBiblio(BaseModel):
+@@ -165,18 +183,18 @@ class ScholarBiblio(BaseModel):
  
  
  class ScholarFulltext(BaseModel):
@@ -357,7 +411,7 @@ index ea50428..032195f 100644
  
      def remove_access(self) -> Any:
          """
-@@ -194,53 +198,53 @@ class ScholarFulltext(BaseModel):
+@@ -194,53 +212,53 @@ class ScholarFulltext(BaseModel):
  
  
  class ScholarRelease(BaseModel):
@@ -442,7 +496,7 @@ index ea50428..032195f 100644
  
  
  class ScholarDoc(BaseModel):
-@@ -248,56 +252,56 @@ class ScholarDoc(BaseModel):
+@@ -248,56 +266,56 @@ class ScholarDoc(BaseModel):
      doc_type: str  # enum: work or page
      doc_index_ts: datetime.datetime
      collapse_key: str
@@ -554,3 +608,157 @@ index f67284a..5812d5f 100644
      except Exception:
          pass
      return doc
+diff --git a/src/scholar/sim_pipeline.py b/src/scholar/sim_pipeline.py
+index 4c8f4c6..6af1246 100644
+--- a/src/scholar/sim_pipeline.py
++++ b/src/scholar/sim_pipeline.py
+@@ -12,7 +12,7 @@ import urllib3.exceptions
+ from scholar.config import GIT_REVISION, settings
+ from scholar.djvu import djvu_extract_leaf_texts
+ from scholar.issue_db import IssueDB
+-from scholar.schema import DocType, IntermediateBundle
++from scholar.schema import DocType, IntermediateBundle, model_to_json
+ 
+ 
+ def truncate_pub_meta(full: Dict[str, Any]) -> Dict[str, Any]:
+@@ -183,7 +183,7 @@ class SimPipeline:
+                 continue
+             pages = self.full_issue_to_pages(full_issue)
+             for bundle in pages:
+-                print(bundle.json(exclude_none=True, sort_keys=True))
++                print(model_to_json(bundle, exclude_none=True, sort_keys=True))
+                 count += 1
+                 if limit is not None and count >= limit:
+                     break
+@@ -229,7 +229,7 @@ class SimPipeline:
+             return
+         pages = self.full_issue_to_pages(full_issue)
+         for bundle in pages:
+-            print(bundle.json(exclude_none=True, sort_keys=True))
++            print(model_to_json(bundle, exclude_none=True, sort_keys=True))
+ 
+ 
+ def main() -> None:
+diff --git a/src/scholar/transform.py b/src/scholar/transform.py
+index 5bb1cce..297895a 100644
+--- a/src/scholar/transform.py
++++ b/src/scholar/transform.py
+@@ -30,6 +30,7 @@ from scholar.schema import (
+     es_abstracts_from_release,
+     es_biblio_from_release,
+     es_release_from_release,
++    model_to_json,
+ )
+ 
+ MAX_BODY_CHARS = 512 * 1024
+@@ -975,7 +976,7 @@ def run_transform(infile: Sequence) -> None:
+         es_doc = transform_heavy(heavy)
+         if not es_doc:
+             continue
+-        print(es_doc.json(exclude_none=True, sort_keys=True))
++        print(model_to_json(es_doc, exclude_none=True, sort_keys=True))
+ 
+ 
+ def run_refs(infile: Sequence) -> None:
+@@ -986,7 +987,7 @@ def run_refs(infile: Sequence) -> None:
+         assert heavy.doc_type
+         refs = refs_from_heavy(heavy)
+         for ref in refs:
+-            print(ref.json(exclude_none=True, sort_keys=True))
++            print(model_to_json(ref, exclude_none=True, sort_keys=True))
+ 
+ 
+ def main() -> None:
+diff --git a/src/scholar/work_pipeline.py b/src/scholar/work_pipeline.py
+index 8953f78..86e9b06 100644
+--- a/src/scholar/work_pipeline.py
++++ b/src/scholar/work_pipeline.py
+@@ -16,7 +16,7 @@ from scholar.config import GIT_REVISION, settings
+ from scholar.djvu import djvu_extract_leaf_texts
+ from scholar.issue_db import IssueDB, SimIssueRow, SimPubRow
+ from scholar.sandcrawler import SandcrawlerMinioClient, SandcrawlerPostgrestClient
+-from scholar.schema import DocType, IntermediateBundle, clean_str
++from scholar.schema import DocType, IntermediateBundle, clean_str, model_to_json
+ from scholar.sim_pipeline import truncate_issue_meta, truncate_pub_meta
+ 
+ 
+@@ -500,7 +500,7 @@ class WorkPipeline:
+                 continue
+             if batch:
+                 ib = self.process_release_list(batch)
+-                print(ib.json(exclude_none=True, sort_keys=True))
++                print(model_to_json(ib, exclude_none=True, sort_keys=True))
+                 batch_work_id = None
+             batch = [
+                 release,
+@@ -509,7 +509,7 @@ class WorkPipeline:
+ 
+         if batch:
+             ib = self.process_release_list(batch)
+-            print(ib.json(exclude_none=True, sort_keys=True))
++            print(model_to_json(ib, exclude_none=True, sort_keys=True))
+ 
+ 
+ def main() -> None:
+diff --git a/src/scholar/worker.py b/src/scholar/worker.py
+index a049d82..237ac97 100644
+--- a/src/scholar/worker.py
++++ b/src/scholar/worker.py
+@@ -14,7 +14,7 @@ from scholar.config import GIT_REVISION, settings
+ from scholar.issue_db import IssueDB
+ from scholar.kafka import KafkaWorker
+ from scholar.sandcrawler import SandcrawlerMinioClient, SandcrawlerPostgrestClient
+-from scholar.schema import IntermediateBundle
++from scholar.schema import IntermediateBundle, model_to_json
+ from scholar.sim_pipeline import SimPipeline
+ from scholar.transform import transform_heavy
+ from scholar.work_pipeline import WorkPipeline
+@@ -61,7 +61,7 @@ class FetchDocsWorker(KafkaWorker):
+             bundle.fetched = datetime.datetime.utcnow()
+             self.producer.produce(
+                 self.produce_topic,
+-                bundle.json(exclude_none=True).encode("UTF-8"),
++                bundle.model_dump_json(exclude_none=True).encode("UTF-8"),
+                 key=key,
+                 on_delivery=self._fail_fast_produce,
+             )
+@@ -90,7 +90,7 @@ class FetchDocsWorker(KafkaWorker):
+                 bundle.fetched = datetime.datetime.utcnow()
+                 self.producer.produce(
+                     self.produce_topic,
+-                    bundle.json(exclude_none=True).encode("UTF-8"),
++                    bundle.model_dump_json(exclude_none=True).encode("UTF-8"),
+                     # NOTE: this isn't going to be the document key, but it will sort by issue
+                     key=key,
+                     on_delivery=self._fail_fast_produce,
+@@ -123,7 +123,7 @@ class IndexDocsWorker(KafkaWorker):
+                         "_index": self.es_index,
+                         "_op_type": "index",
+                         "_id": es_doc.key,
+-                        "_source": es_doc.json(exclude_none=True, sort_keys=True),
++                        "_source": model_to_json(es_doc, exclude_none=True, sort_keys=True),
+                     }
+                 )
+                 self.counts["docs-indexed"] += 1
+diff --git a/tests/test_transform.py b/tests/test_transform.py
+index 4902c54..996b0a7 100644
+--- a/tests/test_transform.py
++++ b/tests/test_transform.py
+@@ -18,7 +18,7 @@ def test_es_release_from_release() -> None:
+         release = entity_from_json(f.read(), ReleaseEntity)
+ 
+     obj = es_release_from_release(release)
+-    d = json.loads(obj.json())
++    d = json.loads(obj.model_dump_json())
+ 
+     assert obj.ident == release.ident == d["ident"] == "hsmo6p4smrganpb3fndaj2lon4"
+     assert obj.doi_registrar == "crossref"
+@@ -30,7 +30,7 @@ def test_es_biblio_from_release() -> None:
+         release = entity_from_json(f.read(), ReleaseEntity)
+ 
+     obj = es_biblio_from_release(release)
+-    d = json.loads(obj.json())
++    d = json.loads(obj.model_dump_json())
+ 
+     assert obj.release_ident == release.ident == d["release_ident"] == "hsmo6p4smrganpb3fndaj2lon4"
+ 

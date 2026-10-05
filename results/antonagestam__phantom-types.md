@@ -1,46 +1,20 @@
 ## driftfix: pydantic
 
-**❌ Not fixed** · cost $0.00
+**✅ Fixed** · cost $2.93
 
-Agent error: `Claude Code returned an error result: Reached maximum budget ($1) (exit code: 1)`
+Migration complete — all 677 tests pass, mypy is clean, and `phantom` still imports without pydantic installed.
 
-Tests still failing:
-```
-a(k, v, decorators) for k, v in fields.items()},
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:1245: in _generate_md_field_schema
-    schema, metadata = self._common_field_schema(name, field_info, decorators)
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:1299: in _common_field_schema
-    schema = self._apply_annotations(
-../venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2252: in _apply_annotations
-    schema = get_inner_schema(source_type)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../venv/lib/python3.11/site-packages/pydantic/_internal/_schema_generation_shared.py:83: in __call__
-    schema = self._handler(source_type)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^
-../venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2233: in inner_handler
-    metadata_js_function = _extract_get_pydantic_json_schema(obj)
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2699: in _extract_get_pydantic_json_schema
-    raise PydanticUserError(
-E   pydantic.errors.PydanticUserError: The `__modify_schema__` method is not supported in Pydantic v2. Use `__get_pydantic_json_schema__` instead in class `ExclusiveType`.
-E   
-E   For further information visit https://errors.pydantic.dev/2.13/u/custom-json-schema
-=============================== warnings summary ===============================
-../venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:954
-../venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:954
-  /tmp/study/venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:954: PydanticDeprecatedSince20: `__get_validators__` is deprecated and will be removed, use `__get_pydantic_core_schema__` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
-    warnings.warn(
+## Support pydantic v2
 
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ============================
-ERROR tests/pydantic/test_datetime.py - pydantic.errors.PydanticUserError: The `__modify_schema__` method is not supported in Pydantic v2. Use `__get_pydantic_json_schema__` instead in class `TZAware`.
+`pydantic` 2 removed the v1 integration hooks phantom-types relied on: `__modify_schema__()` now raises `PydanticUserError` at model-definition time, and `__get_validators__()` is deprecated. This ports the integration to pydantic's v2 hooks.
 
-For further information visit https://errors.pydantic.dev/2.13/u/custom-json-schema
-ERROR tests/pydantic/test_schemas.py - pydantic.errors.PydanticUserError: The `__modify_schema__` method is not supported in Pydantic v2. Use `__get_pydantic_json_schema__` instead in class `ExclusiveType`.
+### Changes
 
-For further information visit https://errors.pydantic.dev/2.13/u/custom-json-schema
-!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
-38 deselected, 2 warnings, 2 errors in 0.90s
-```
+- **New `phantom._pydantic`** — private glue module holding the schema construction. pydantic is imported inside the functions that need it, so the module (and the package) stays importable without the optional dependency installed.
+- **`PhantomBase.__get_validators__()` → `PhantomBase.__get_pydantic_core_schema__()`** — a phantom type's core schema now validates the value against the type's runtime representation (derived from `__bound__`, falling back to "any" for bounds pydantic can't describe, such as protocols), and then narrows it with `parse()`. `TypeError` raised by `parse()` is converted to `ValueError`, since pydantic only translates `ValueError`/`AssertionError` into `ValidationError`.
+- **`SchemaField.__modify_schema__()` → `SchemaField.__get_pydantic_json_schema__()`** — still `@final` and still collects overrides from the user-facing `__schema__()` hook, which is unchanged, so custom phantom types keep working as before.
+- **`SequenceNotStr`** — overrides the core schema hook to describe itself as a parameterized sequence, since its bound is an intersection of abstract sequence types that pydantic cannot describe. This keeps `items` in its JSON schema.
+- **Docs** — updated hook references in `pydantic-support.rst` and `types.rst`.
+- **Tests** (pydantic API usage only) — `.schema()`/`.parse_obj()` replaced with `.model_json_schema()`/`.model_validate()`, and the `NonEmpty[int]` expectation no longer contains the stray `"allOf": [{"type": "integer"}]` that pydantic v1 emitted next to `"type": "array"`. All other schema expectations are unchanged, i.e. generated JSON schemas are identical to before.
+
+The `pydantic` requirement/extra in `pyproject.toml` was intentionally left untouched.

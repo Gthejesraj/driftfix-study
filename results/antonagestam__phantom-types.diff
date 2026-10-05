@@ -1,0 +1,505 @@
+diff --git a/docs/pages/pydantic-support.rst b/docs/pages/pydantic-support.rst
+index 6f152c3..787a8fb 100644
+--- a/docs/pages/pydantic-support.rst
++++ b/docs/pages/pydantic-support.rst
+@@ -2,11 +2,13 @@ Pydantic Support
+ ================
+ 
+ phantom-types supports pydantic_ out of the box by providing a
+-:func:`__get_validators__() <phantom.Phantom.__get_validators__>` hook
+-on the base :class:`Phantom <phantom.Phantom>` class. Most of the shipped types also
++:func:`__get_pydantic_core_schema__() <phantom.Phantom.__get_pydantic_core_schema__>`
++hook on the base :class:`Phantom <phantom.Phantom>` class. Values are validated against
++the runtime representation of a phantom type, ie. its bound, and are then narrowed using
++:func:`Phantom.parse() <phantom.PhantomBase.parse>`. Most of the shipped types also
+ implements full JSON Schema and OpenAPI support.
+ 
+-.. _pydantic: https://pydantic-docs.helpmanual.io/
++.. _pydantic: https://docs.pydantic.dev/
+ 
+ To make a phantom type compatible with pydantic, all you need to do is override
+ :func:`Phantom.__schema__() <phantom.Phantom.__schema__>`:
+diff --git a/docs/pages/types.rst b/docs/pages/types.rst
+index ccf6c1b..bd67ce3 100644
+--- a/docs/pages/types.rst
++++ b/docs/pages/types.rst
+@@ -13,7 +13,7 @@ Base classes
+     :undoc-members:
+     :show-inheritance:
+     :inherited-members:
+-    :special-members: __schema__, __modify_schema__, __get_validators__, __bound__
++    :special-members: __schema__, __get_pydantic_json_schema__, __get_pydantic_core_schema__, __bound__
+ 
+ Boolean
+ -------
+diff --git a/src/phantom/_base.py b/src/phantom/_base.py
+index 7af83c7..b1e3a76 100644
+--- a/src/phantom/_base.py
++++ b/src/phantom/_base.py
+@@ -1,9 +1,8 @@
+ from __future__ import annotations
+ 
+ import abc
+-from collections.abc import Callable
+ from collections.abc import Iterable
+-from collections.abc import Iterator
++from typing import TYPE_CHECKING
+ from typing import Any
+ from typing import ClassVar
+ from typing import Generic
+@@ -26,6 +25,10 @@ from .errors import BoundError
+ from .predicates import Predicate
+ from .schema import SchemaField
+ 
++if TYPE_CHECKING:
++    from pydantic import GetCoreSchemaHandler
++    from pydantic_core import CoreSchema
++
+ 
+ @runtime_checkable
+ class InstanceCheckable(Protocol):
+@@ -84,9 +87,15 @@ class PhantomBase(SchemaField, metaclass=PhantomMeta):
+     def __instancecheck__(cls, instance: object) -> bool: ...
+ 
+     @classmethod
+-    def __get_validators__(cls: type[Derived]) -> Iterator[Callable[[object], Derived]]:
++    def __get_pydantic_core_schema__(
++        cls: type[Derived],
++        source_type: Any,
++        handler: GetCoreSchemaHandler,
++    ) -> CoreSchema:
+         """Hook that makes phantom types compatible with pydantic."""
+-        yield cls.parse
++        from ._pydantic import phantom_core_schema
++
++        return phantom_core_schema(cls, handler)
+ 
+ 
+ class AbstractInstanceCheck(TypeError): ...
+diff --git a/src/phantom/_pydantic.py b/src/phantom/_pydantic.py
+new file mode 100644
+index 0000000..4dad83a
+--- /dev/null
++++ b/src/phantom/_pydantic.py
+@@ -0,0 +1,106 @@
++"""
++Glue code for pydantic integration.
++
++As pydantic is an optional dependency, this module must stay importable without it
++installed, so pydantic is only imported from within the functions that need it. Those
++functions are in turn only called from the ``__get_pydantic_core_schema__()`` and
++``__get_pydantic_json_schema__()`` hooks, which pydantic itself invokes.
++"""
++
++from __future__ import annotations
++
++from typing import TYPE_CHECKING
++from typing import Any
++from typing import TypeVar
++
++from ._utils.misc import fully_qualified_name
++
++if TYPE_CHECKING:
++    from pydantic import GetCoreSchemaHandler
++    from pydantic import GetJsonSchemaHandler
++    from pydantic.json_schema import JsonSchemaValue
++    from pydantic_core import CoreSchema
++
++    from ._base import PhantomBase
++    from .schema import SchemaField
++
++__all__ = ("parsed_schema", "phantom_core_schema", "phantom_json_schema")
++
++Derived = TypeVar("Derived", bound="PhantomBase")
++
++
++def parsed_schema(type_: type[Derived], representation: CoreSchema) -> CoreSchema:
++    """
++    Build a core schema that first validates the runtime representation of a phantom
++    type, and then narrows the validated value using the type's
++    :func:`parse() <phantom.PhantomBase.parse>` method.
++    """
++    from pydantic_core import core_schema
++
++
++    def parse(value: Any) -> Derived:
++        try:
++            return type_.parse(value)
++        except TypeError as exception:
++            # pydantic only translates ValueError and AssertionError into validation
++            # errors, so TypeError raised by parse() needs to be converted.
++            raise ValueError(
++                str(exception)
++                or f"Could not parse {fully_qualified_name(type_)} from {value!r}"
++            ) from exception
++
++    return core_schema.no_info_after_validator_function(parse, representation)
++
++
++def representation_schema(
++    type_: type[PhantomBase],
++    handler: GetCoreSchemaHandler,
++) -> CoreSchema:
++    """
++    Build a core schema for the runtime representation of a phantom type, by inspecting
++    its bound. Bounds that pydantic cannot describe, such as protocols, result in a
++    schema that accepts any value, leaving all validation to the type's parse method.
++    """
++    from pydantic import PydanticSchemaGenerationError
++    from pydantic_core import core_schema
++
++    bound = getattr(type_, "__bound__", None)
++    # A bound can be an intersection, represented as a sequence of types. The first type
++    # of such a sequence is the most derived one, and hence the best candidate for
++    # describing the runtime representation. Narrowing is in any case guaranteed by
++    # parse(), which checks values against the full bound.
++    candidates = bound if isinstance(bound, tuple) else (bound,)
++    for candidate in candidates:
++        # Protocols and non-types, such as unions, cannot be described by pydantic.
++        if not isinstance(candidate, type) or getattr(candidate, "_is_protocol", False):
++            continue
++        try:
++            return handler.generate_schema(candidate)
++        except PydanticSchemaGenerationError:
++            continue
++    return core_schema.any_schema()
++
++
++def phantom_core_schema(
++    type_: type[Derived],
++    handler: GetCoreSchemaHandler,
++) -> CoreSchema:
++    """Build the core schema of a phantom type."""
++    return parsed_schema(type_, representation_schema(type_, handler))
++
++
++def phantom_json_schema(
++    type_: type[SchemaField],
++    schema: CoreSchema,
++    handler: GetJsonSchemaHandler,
++) -> JsonSchemaValue:
++    """
++    Build the JSON schema of a phantom type, by applying the overrides provided by
++    :func:`__schema__() <phantom.Phantom.__schema__>` on top of the JSON schema of its
++    runtime representation.
++    """
++    json_schema = handler(schema)
++    json_schema.update(
++        {key: value for key, value in type_.__schema__().items() if value is not None}
++    )
++    return json_schema
+diff --git a/src/phantom/negated.py b/src/phantom/negated.py
+index 59177a5..340e271 100644
+--- a/src/phantom/negated.py
++++ b/src/phantom/negated.py
+@@ -9,6 +9,8 @@ sequence.
+ from __future__ import annotations
+ 
+ from collections.abc import Sequence
++from typing import TYPE_CHECKING
++from typing import Any
+ from typing import Generic
+ from typing import TypeVar
+ from typing import get_args
+@@ -18,6 +20,10 @@ from . import _hypothesis
+ from .predicates import boolean
+ from .predicates.generic import of_type
+ 
++if TYPE_CHECKING:
++    from pydantic import GetCoreSchemaHandler
++    from pydantic_core import CoreSchema
++
+ __all__ = ("SequenceNotStr",)
+ 
+ T = TypeVar("T")
+@@ -32,6 +38,23 @@ class SequenceNotStr(
+     # phantom type is safe to use with mutable types.
+     predicate=boolean.negate(of_type((str, bytes))),
+ ):
++    @classmethod
++    def __get_pydantic_core_schema__(
++        cls,
++        source_type: Any,
++        handler: GetCoreSchemaHandler,
++    ) -> CoreSchema:
++        """
++        The bound of this type is an intersection of abstract sequence types, which
++        pydantic cannot describe, so the runtime representation is instead described
++        using the parameterized sequence type.
++        """
++        from ._pydantic import parsed_schema
++
++        args = get_args(source_type)
++        inner = Sequence[args[0]] if args else Sequence[Any]  # type: ignore[valid-type]
++        return parsed_schema(cls, handler.generate_schema(inner))
++
+     @classmethod
+     def __register_strategy__(cls) -> _hypothesis.HypothesisStrategy:
+         from hypothesis.strategies import from_type
+diff --git a/src/phantom/schema.py b/src/phantom/schema.py
+index 622e8d7..d9b0f89 100644
+--- a/src/phantom/schema.py
++++ b/src/phantom/schema.py
+@@ -1,9 +1,17 @@
++from __future__ import annotations
++
+ from collections.abc import Sequence
++from typing import TYPE_CHECKING
+ from typing import Literal
+ 
+ from typing_extensions import TypedDict
+ from typing_extensions import final
+ 
++if TYPE_CHECKING:
++    from pydantic import GetJsonSchemaHandler
++    from pydantic.json_schema import JsonSchemaValue
++    from pydantic_core import CoreSchema
++
+ 
+ class Schema(TypedDict, total=False):
+     title: str
+@@ -24,24 +32,29 @@ class Schema(TypedDict, total=False):
+ class SchemaField:
+     @classmethod
+     @final
+-    def __modify_schema__(cls, field_schema: dict) -> None:
++    def __get_pydantic_json_schema__(
++        cls,
++        schema: CoreSchema,
++        handler: GetJsonSchemaHandler,
++    ) -> JsonSchemaValue:
+         """
+         This final method is called by pydantic and collects overrides from
+         :func:`Phantom.__schema__() <phantom.Phantom.__schema__>`. Override
+         :func:`__schema__() <phantom.Phantom.__schema__>` to provide custom schema
+         representations for phantom types.
+         """
+-        field_schema.update(
+-            {key: value for key, value in cls.__schema__().items() if value is not None}
+-        )
++        from ._pydantic import phantom_json_schema
++
++        return phantom_json_schema(cls, schema, handler)
+ 
+     @classmethod
+     def __schema__(cls) -> Schema:
+         """
+         Hook for providing schema metadata. Override in subclasses to customize a types
+-        schema representation. See pydantic's documentation on ``__modify_schema__()``
+-        for more information. This hook differs to pydantic's ``__modify_schema__()``
+-        and expects subclasses to instantiate new dicts instead of mutating a given one.
++        schema representation. See pydantic's documentation on
++        ``__get_pydantic_json_schema__()`` for more information. This hook differs to
++        pydantic's ``__get_pydantic_json_schema__()`` and expects subclasses to return
++        new dicts of JSON schema overrides, instead of amending a given schema.
+ 
+         Example:
+ 
+diff --git a/tests/pydantic/test_datetime.py b/tests/pydantic/test_datetime.py
+index d353fc9..ae15dd8 100644
+--- a/tests/pydantic/test_datetime.py
++++ b/tests/pydantic/test_datetime.py
+@@ -19,13 +19,13 @@ class HasTZAware(pydantic.BaseModel):
+ class TestPydanticTZAware:
+     @parametrize_aware_str
+     def test_can_parse_tz_aware(self, value: str, expected: datetime.datetime):
+-        obj = HasTZAware.parse_obj({"created_at": value})
++        obj = HasTZAware.model_validate({"created_at": value})
+         assert type(obj.created_at) is datetime.datetime
+         assert obj.created_at == expected
+ 
+     def test_tz_aware_rejects_naive_datetime(self):
+         with pytest.raises(ValidationError):
+-            HasTZAware.parse_obj({"created_at": "2022-09-24T10:40:20"})
++            HasTZAware.model_validate({"created_at": "2022-09-24T10:40:20"})
+ 
+ 
+ class HasTZNaive(pydantic.BaseModel):
+@@ -35,10 +35,10 @@ class HasTZNaive(pydantic.BaseModel):
+ class TestPydanticTZNaive:
+     @parametrize_naive_str
+     def test_can_parse_tz_naive(self, value: str, expected: datetime.datetime):
+-        obj = HasTZNaive.parse_obj({"time_of_day": value})
++        obj = HasTZNaive.model_validate({"time_of_day": value})
+         assert type(obj.time_of_day) is datetime.datetime
+         assert obj.time_of_day == expected
+ 
+     def test_tz_naive_rejects_aware_datetime(self):
+         with pytest.raises(ValidationError):
+-            HasTZNaive.parse_obj({"time_of_day": "2022-09-24T10:40:20+00:00"})
++            HasTZNaive.model_validate({"time_of_day": "2022-09-24T10:40:20+00:00"})
+diff --git a/tests/pydantic/test_schemas.py b/tests/pydantic/test_schemas.py
+index f4e146f..33e1792 100644
+--- a/tests/pydantic/test_schemas.py
++++ b/tests/pydantic/test_schemas.py
+@@ -70,7 +70,7 @@ class DataModel(pydantic.BaseModel):
+ 
+ class TestShippedTypesImplementsSchema:
+     def test_interval_open_implements_schema(self):
+-        assert DataModel.schema()["properties"]["exclusive"] == {
++        assert DataModel.model_json_schema()["properties"]["exclusive"] == {
+             "exclusiveMinimum": 0,
+             "exclusiveMaximum": 100,
+             "description": "A value in the exclusive range (0, 100).",
+@@ -79,7 +79,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_interval_closed_implements_schema(self):
+-        assert DataModel.schema()["properties"]["inclusive"] == {
++        assert DataModel.model_json_schema()["properties"]["inclusive"] == {
+             "description": "A value in the inclusive range [-1, 1].",
+             "minimum": -1,
+             "maximum": 1,
+@@ -88,7 +88,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_interval_exclusive_inclusive_implements_schema(self):
+-        assert DataModel.schema()["properties"]["exclusive_inclusive"] == {
++        assert DataModel.model_json_schema()["properties"]["exclusive_inclusive"] == {
+             "description": "A value in the half-open range (0, 100].",
+             "exclusiveMinimum": 0,
+             "maximum": 100,
+@@ -97,7 +97,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_interval_inclusive_exclusive_implements_schema(self):
+-        assert DataModel.schema()["properties"]["inclusive_exclusive"] == {
++        assert DataModel.model_json_schema()["properties"]["inclusive_exclusive"] == {
+             "title": "InclusiveExclusiveType",
+             "description": "A value in the half-open range [-100, 0).",
+             "minimum": -100,
+@@ -106,7 +106,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_interval_negative_int_implements_schema(self):
+-        assert DataModel.schema()["properties"]["negative_int"] == {
++        assert DataModel.model_json_schema()["properties"]["negative_int"] == {
+             "title": "NegativeInt",
+             "maximum": 0,
+             "description": "An integer value in the inclusive range (-∞, 0].",
+@@ -114,7 +114,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_interval_natural_implements_schema(self):
+-        assert DataModel.schema()["properties"]["natural"] == {
++        assert DataModel.model_json_schema()["properties"]["natural"] == {
+             "title": "Natural",
+             "description": "An integer value in the inclusive range [0, ∞).",
+             "minimum": 0,
+@@ -122,7 +122,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_interval_portion_implements_schema(self):
+-        assert DataModel.schema()["properties"]["portion"] == {
++        assert DataModel.model_json_schema()["properties"]["portion"] == {
+             "title": "Portion",
+             "description": "A float value in the inclusive range [0, 1].",
+             "minimum": 0,
+@@ -131,7 +131,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_tz_aware_implements_schema(self):
+-        assert DataModel.schema()["properties"]["tz_aware"] == {
++        assert DataModel.model_json_schema()["properties"]["tz_aware"] == {
+             "title": "TZAware",
+             "description": "A date-time with timezone data.",
+             "type": "string",
+@@ -139,7 +139,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_tz_naive_implements_schema(self):
+-        assert DataModel.schema()["properties"]["tz_naive"] == {
++        assert DataModel.model_json_schema()["properties"]["tz_naive"] == {
+             "title": "TZNaive",
+             "description": "A date-time without timezone data.",
+             "type": "string",
+@@ -147,7 +147,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_re_match_implements_schema(self):
+-        assert DataModel.schema()["properties"]["match"] == {
++        assert DataModel.model_json_schema()["properties"]["match"] == {
+             "title": "MatchType",
+             "description": (
+                 "A string starting with a match of the format regular expression."
+@@ -157,7 +157,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_re_full_match_implements_schema(self):
+-        assert DataModel.schema()["properties"]["full_match"] == {
++        assert DataModel.model_json_schema()["properties"]["full_match"] == {
+             "title": "FullMatchType",
+             "description": "A string that matches the format regular expression.",
+             "type": "string",
+@@ -165,8 +165,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_sized_non_empty_implements_schema(self):
+-        assert DataModel.schema()["properties"]["non_empty"] == {
+-            "allOf": [{"type": "integer"}],
++        assert DataModel.model_json_schema()["properties"]["non_empty"] == {
+             "title": "NonEmpty",
+             "type": "array",
+             "description": "A non-empty array.",
+@@ -174,7 +173,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_sized_empty_implements_schema(self):
+-        assert DataModel.schema()["properties"]["empty"] == {
++        assert DataModel.model_json_schema()["properties"]["empty"] == {
+             "title": "Empty",
+             "type": "array",
+             "description": "An empty array.",
+@@ -182,7 +181,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_sized_non_empty_str_implements_schema(self):
+-        assert DataModel.schema()["properties"]["non_empty_str"] == {
++        assert DataModel.model_json_schema()["properties"]["non_empty_str"] == {
+             "title": "NonEmptyStr",
+             "type": "string",
+             "description": "A non-empty string.",
+@@ -190,13 +189,13 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_phantom_sized_implements_schema(self):
+-        assert DataModel.schema()["properties"]["odd_size"] == {
++        assert DataModel.model_json_schema()["properties"]["odd_size"] == {
+             "title": "OddSize",
+             "type": "array",
+         }
+ 
+     def test_country_code_implements_schema(self):
+-        assert DataModel.schema()["properties"]["country"] == {
++        assert DataModel.model_json_schema()["properties"]["country"] == {
+             "title": "Alpha2",
+             "description": "ISO3166-1 alpha-2 country code",
+             "examples": ["NR", "KZ", "ET", "VC", "AE", "NZ", "SX", "XK", "AX"],
+@@ -205,7 +204,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_phone_number_implements_schema(self):
+-        assert DataModel.schema()["properties"]["phone_number"] == {
++        assert DataModel.model_json_schema()["properties"]["phone_number"] == {
+             "title": "PhoneNumber",
+             "description": "A valid E.164 phone number.",
+             "type": "string",
+@@ -213,7 +212,8 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_formatted_phone_number_implements_schema(self):
+-        assert DataModel.schema()["properties"]["formatted_phone_number"] == {
++        properties = DataModel.model_json_schema()["properties"]
++        assert properties["formatted_phone_number"] == {
+             "title": "PhoneNumber",
+             "description": "A valid E.164 phone number.",
+             "type": "string",
+@@ -221,7 +221,7 @@ class TestShippedTypesImplementsSchema:
+         }
+ 
+     def test_sequence_not_str_implements_schema(self):
+-        assert DataModel.schema()["properties"]["sequence_not_str"] == {
++        assert DataModel.model_json_schema()["properties"]["sequence_not_str"] == {
+             "title": "SequenceNotStr",
+             "type": "array",
+             "items": {"type": "integer"},

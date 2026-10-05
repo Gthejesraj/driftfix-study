@@ -1,56 +1,125 @@
 diff --git a/bdd100k/__init__.py b/bdd100k/__init__.py
-index 464222d..5c3a0ec 100644
+index 464222d..c9dbc55 100644
 --- a/bdd100k/__init__.py
 +++ b/bdd100k/__init__.py
-@@ -1 +1,3 @@
+@@ -1 +1,10 @@
  """BDD100K python toolkit."""
 +
-+from bdd100k.common import pydantic_compat as _pydantic_compat  # noqa: F401
++from scalabel.label import typing as scalabel_typing
++
++from .common.pydantic_compat import optional_fields_default_to_none
++
++# The scalabel label models are written for pydantic v1, where optional
++# fields implicitly defaulted to None. Restore that behaviour so that
++# BDD100K annotations and dataset configs can be loaded with pydantic v2.
++optional_fields_default_to_none(scalabel_typing)
+diff --git a/bdd100k/common/pydantic_compat.py b/bdd100k/common/pydantic_compat.py
+new file mode 100644
+index 0000000..df73697
+--- /dev/null
++++ b/bdd100k/common/pydantic_compat.py
+@@ -0,0 +1,52 @@
++"""Compatibility helpers for pydantic v2.
++
++Pydantic v1 implicitly gave every ``Optional[...]`` model field a default
++value of ``None``, so a field annotated as optional could be omitted when
++constructing or parsing a model. Pydantic v2 dropped that behaviour: a field
++is only optional if it declares a default explicitly.
++
++The models shared with the toolkit by ``scalabel`` (``Frame``, ``Config``,
++``Category``, ...) still rely on the old behaviour, which makes loading
++BDD100K annotation and configuration files fail with "Field required"
++validation errors. The helper below restores the pydantic v1 semantics for
++those models by giving every nullable field without a default a ``None``
++default.
++"""
++
++import types
++from typing import Union, get_args, get_origin
++
++from pydantic import BaseModel
++
++
++def _allows_none(annotation: object) -> bool:
++    """Check whether a field annotation accepts ``None``."""
++    if annotation is None or annotation is type(None):
++        return True
++    origin = get_origin(annotation)
++    if origin is Union or origin is getattr(types, "UnionType", Union):
++        return any(_allows_none(arg) for arg in get_args(annotation))
++    return False
++
++
++def optional_fields_default_to_none(module: types.ModuleType) -> None:
++    """Give nullable fields of a module's models a ``None`` default."""
++    models = [
++        obj
++        for obj in vars(module).values()
++        if isinstance(obj, type)
++        and issubclass(obj, BaseModel)
++        and obj is not BaseModel
++        and obj.__module__ == module.__name__
++    ]
++    patched = False
++    for model in models:
++        for field in model.model_fields.values():
++            if field.is_required() and _allows_none(field.annotation):
++                field.default = None
++                patched = True
++    if patched:
++        # models may share inherited field definitions, so regenerate the
++        # validation schema of all of them with the new defaults
++        for model in models:
++            model.model_rebuild(force=True)
 diff --git a/bdd100k/eval/lane.py b/bdd100k/eval/lane.py
-index 8cc610c..5919e01 100644
+index 8cc610c..f784d34 100644
 --- a/bdd100k/eval/lane.py
 +++ b/bdd100k/eval/lane.py
-@@ -174,8 +174,9 @@ class LaneResult(Result):
+@@ -174,7 +174,7 @@ class LaneResult(Result):
      ) -> Scores:
          """Convert the lane_mark data into a flattened dict as the summary."""
          summary_dict: Dict[str, Union[int, float]] = {}
 -        for metric, scores_list in self.dict(
--            include=include, exclude=exclude
 +        for metric, scores_list in self.model_dump(
-+            include=set(include) if include is not None else None,
-+            exclude=set(exclude) if exclude is not None else None,
+             include=include, exclude=exclude
          ).items():
              for category, score in scores_list[-2].items():
-                 summary_dict[f"{metric}/{category}"] = score
 diff --git a/bdd100k/eval/pan_seg.py b/bdd100k/eval/pan_seg.py
-index 9f170e3..3aff295 100644
+index 9f170e3..16c7c6f 100644
 --- a/bdd100k/eval/pan_seg.py
 +++ b/bdd100k/eval/pan_seg.py
-@@ -80,8 +80,9 @@ class PanSegResult(Result):
+@@ -80,7 +80,7 @@ class PanSegResult(Result):
      ) -> Scores:
          """Convert the pan_seg data into a flattened dict as the summary."""
          summary_dict: Dict[str, Union[int, float]] = {}
 -        for metric, scores_list in self.dict(
--            include=include, exclude=exclude
 +        for metric, scores_list in self.model_dump(
-+            include=set(include) if include is not None else None,
-+            exclude=set(exclude) if exclude is not None else None,
+             include=include, exclude=exclude
          ).items():
              summary_dict[f"{metric}/{STUFF}"] = scores_list[1][STUFF]
-             summary_dict[f"{metric}/{THING}"] = scores_list[1][THING]
 diff --git a/bdd100k/eval/seg.py b/bdd100k/eval/seg.py
-index 9e981d2..0e8626a 100644
+index 9e981d2..1821489 100644
 --- a/bdd100k/eval/seg.py
 +++ b/bdd100k/eval/seg.py
-@@ -44,8 +44,9 @@ class SegResult(Result):
+@@ -44,7 +44,7 @@ class SegResult(Result):
      ) -> Scores:
          """Convert the seg result into a flattened dict as the summary."""
          summary_dict: Dict[str, Union[int, float]] = {}
 -        for metric, scores_list in self.dict(
--            include=include, exclude=exclude
 +        for metric, scores_list in self.model_dump(
-+            include=set(include) if include is not None else None,
-+            exclude=set(exclude) if exclude is not None else None,
+             include=include, exclude=exclude
          ).items():
              if not isinstance(scores_list, list):
-                 summary_dict[metric] = scores_list
+diff --git a/requirements.txt b/requirements.txt
+index 5cf2e02..aaae4f0 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -11,7 +11,7 @@ numpy
+ pandas
+ pillow
+ pycocotools
+-pydantic<2.0.0
++pydantic>=2.0.0
+ pylint
+ pytest
+ scikit-image
