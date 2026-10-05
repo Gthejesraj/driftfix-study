@@ -1,0 +1,41 @@
+name: check
+on: workflow_dispatch
+permissions: { contents: write }
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs: { ids: "${{ steps.ids.outputs.ids }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - id: ids
+        run: echo "ids=$(python3 -c 'import json; print(json.dumps([c["id"] for c in json.load(open("candidates.json"))]))')" >> "$GITHUB_OUTPUT"
+
+  check:
+    needs: list
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: { id: "${{ fromJSON(needs.list.outputs.ids) }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: python3 study.py check "${{ matrix.id }}"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: "result-${{ matrix.id }}", path: results/ }
+
+  report:
+    needs: check
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { pattern: "result-*", path: results, merge-multiple: true }
+      - run: python3 study.py report | tee -a "$GITHUB_STEP_SUMMARY"
+      - run: |
+          git add results
+          git -c user.name=study-bot -c user.email=study@users.noreply.github.com commit -qm "check results" || exit 0
+          git push

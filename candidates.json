@@ -1,0 +1,435 @@
+[
+ {
+  "id": "deeppavlov__DeepPavlov",
+  "repo": "deeppavlov/DeepPavlov",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 6995,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "towhee-io__towhee",
+  "repo": "towhee-io/towhee",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 3451,
+  "pinned_in": [
+   "towhee/doc/requirements.txt"
+  ]
+ },
+ {
+  "id": "fiatrete__OpenDAN-Personal-AI-OS",
+  "repo": "fiatrete/OpenDAN-Personal-AI-OS",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 2061,
+  "pinned_in": [
+   "src/requirements.txt.bak"
+  ]
+ },
+ {
+  "id": "pjlab-sys4nlp__llama-moe",
+  "repo": "pjlab-sys4nlp/llama-moe",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 1003,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "bdd100k__bdd100k",
+  "repo": "bdd100k/bdd100k",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 575,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "OmicsML__dance",
+  "repo": "OmicsML/dance",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 388,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "zilliztech__akcio",
+  "repo": "zilliztech/akcio",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 258,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "Qualcomm-AI-research__geometric-algebra-transformer",
+  "repo": "Qualcomm-AI-research/geometric-algebra-transformer",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 257,
+  "pinned_in": [
+   "docker/requirements.txt"
+  ]
+ },
+ {
+  "id": "antonagestam__phantom-types",
+  "repo": "antonagestam/phantom-types",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 233,
+  "pinned_in": [
+   "docs-requirements.txt",
+   "typing-requirements.txt"
+  ]
+ },
+ {
+  "id": "cap-ntu__ML-Model-CI",
+  "repo": "cap-ntu/ML-Model-CI",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 197,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "cognizant-ai-lab__neuro-san",
+  "repo": "cognizant-ai-lab/neuro-san",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 156,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "containerbuildsystem__atomic-reactor",
+  "repo": "containerbuildsystem/atomic-reactor",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 139,
+  "pinned_in": [
+   "otel-requirements.txt"
+  ]
+ },
+ {
+  "id": "archlinux__arch-security-tracker",
+  "repo": "archlinux/arch-security-tracker",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 135,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "internetarchive__fatcat-scholar",
+  "repo": "internetarchive/fatcat-scholar",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 86,
+  "pinned_in": [
+   "ci.requirements.txt",
+   "dev.requirements.txt"
+  ]
+ },
+ {
+  "id": "script-money__generate-nft-images",
+  "repo": "script-money/generate-nft-images",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 82,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "opq-osc__botoy",
+  "repo": "opq-osc/botoy",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 69,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "MLResearchAtOSRAM__cause2e",
+  "repo": "MLResearchAtOSRAM/cause2e",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 63,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "abhinavkashyap__sciwing",
+  "repo": "abhinavkashyap/sciwing",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 63,
+  "pinned_in": [
+   "requirements.txt.bkp"
+  ]
+ },
+ {
+  "id": "allenai__scruples",
+  "repo": "allenai/scruples",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 59,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "signebedi__gptty",
+  "repo": "signebedi/gptty",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 52,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "strands-labs__harness-optimizer",
+  "repo": "strands-labs/harness-optimizer",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 51,
+  "pinned_in": [
+   "examples/webshop/webshop_runtime/webshop_requirements.txt"
+  ]
+ },
+ {
+  "id": "TIGER-AI-Lab__VideoGenHub",
+  "repo": "TIGER-AI-Lab/VideoGenHub",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 50,
+  "pinned_in": [
+   "env_cfg/requirements.txt"
+  ]
+ },
+ {
+  "id": "GFDRR__thinkhazard",
+  "repo": "GFDRR/thinkhazard",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 47,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "open-v2x__cerebrum",
+  "repo": "open-v2x/cerebrum",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 47,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "Kamilcuk__nomad-tools",
+  "repo": "Kamilcuk/nomad-tools",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 43,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "overcrash66__video-translator",
+  "repo": "overcrash66/video-translator",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 42,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "cidetec-energy-storage__cideMOD",
+  "repo": "cidetec-energy-storage/cideMOD",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 40,
+  "pinned_in": [
+   "docs/source/rtd_requirements.txt"
+  ]
+ },
+ {
+  "id": "TextGeneratorio__text-generator.io",
+  "repo": "TextGeneratorio/text-generator.io",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 38,
+  "pinned_in": [
+   "questions/inference_server/ofa-requirements.txt"
+  ]
+ },
+ {
+  "id": "Rodrigo-Henrique21__data_pipeline_airflow_dbt",
+  "repo": "Rodrigo-Henrique21/data_pipeline_airflow_dbt",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 37,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "kazah4359-lgtm__Magda-agent",
+  "repo": "kazah4359-lgtm/Magda-agent",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 35,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "AdCombo__flask-combo-jsonapi",
+  "repo": "AdCombo/flask-combo-jsonapi",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 32,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "conda-incubator__conda-project",
+  "repo": "conda-incubator/conda-project",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 31,
+  "pinned_in": [
+   "docs/requirements.txt"
+  ]
+ },
+ {
+  "id": "hipster-philology__pyrrha",
+  "repo": "hipster-philology/pyrrha",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 30,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "lealre__etl-airflow",
+  "repo": "lealre/etl-airflow",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 28,
+  "pinned_in": [
+   "dev-requirements.txt",
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "irec-org__irec",
+  "repo": "irec-org/irec",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 26,
+  "pinned_in": [
+   "all_requirements.txt"
+  ]
+ },
+ {
+  "id": "LaurenceMolloy__RepoDash",
+  "repo": "LaurenceMolloy/RepoDash",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 25,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "epi2me-labs__ezcharts",
+  "repo": "epi2me-labs/ezcharts",
+  "package": "pydantic",
+  "upgrade": "pydantic>=2,<3",
+  "python": "3.11",
+  "stars": 23,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "BGI-Qingdao__SpaGRN",
+  "repo": "BGI-Qingdao/SpaGRN",
+  "package": "pandas",
+  "upgrade": "pandas>=2,<3",
+  "python": "3.11",
+  "stars": 22,
+  "pinned_in": [
+   "docs/requirements.txt",
+   "requirements.txt"
+  ]
+ },
+ {
+  "id": "tchx84__linka",
+  "repo": "tchx84/linka",
+  "package": "sqlalchemy",
+  "upgrade": "sqlalchemy>=2,<3",
+  "python": "3.11",
+  "stars": 22,
+  "pinned_in": [
+   "requirements.txt"
+  ]
+ }
+]

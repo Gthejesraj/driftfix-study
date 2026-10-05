@@ -1,0 +1,51 @@
+name: fix
+on:
+  workflow_dispatch:
+    inputs:
+      ids: { description: "Comma-separated candidate ids (status: broken)", required: true }
+      model: { default: claude-opus-5 }
+      budget: { description: Max USD per project, default: "1.5" }
+permissions: { contents: write }
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs: { ids: "${{ steps.ids.outputs.ids }}" }
+    steps:
+      - id: ids
+        env: { IDS: "${{ inputs.ids }}" }
+        run: echo "ids=$(python3 -c 'import json, os; print(json.dumps([i.strip() for i in os.environ["IDS"].split(",") if i.strip()]))')" >> "$GITHUB_OUTPUT"
+
+  fix:
+    needs: list
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: { id: "${{ fromJSON(needs.list.outputs.ids) }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv tool install git+https://github.com/Gthejesraj/driftfix
+      - run: python3 study.py fix "${{ matrix.id }}"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ inputs.model }}
+          BUDGET: ${{ inputs.budget }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: "fix-${{ matrix.id }}", path: results/ }
+
+  report:
+    needs: fix
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: { pattern: "fix-*", path: results, merge-multiple: true }
+      - run: python3 study.py report | tee -a "$GITHUB_STEP_SUMMARY"
+      - run: |
+          git add results
+          git -c user.name=study-bot -c user.email=study@users.noreply.github.com commit -qm "fix results" || exit 0
+          git pull -q --rebase && git push
