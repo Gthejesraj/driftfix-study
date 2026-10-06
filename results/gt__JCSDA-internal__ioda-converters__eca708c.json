@@ -1,0 +1,16 @@
+{
+ "id": "gt__JCSDA-internal__ioda-converters__eca708c",
+ "repo": "JCSDA-internal/ioda-converters",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 18,
+ "sha": "2f88cb68cef2cf5a7ad9a54c40af901a54b4305d",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 3,
+  "counts": {},
+  "failing": [],
+  "tail": "INTERNALERROR>     self._obj = obj = self._getobj()\nINTERNALERROR>                       ^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/python.py\", line 561, in _getobj\nINTERNALERROR>     return importtestmodule(self.path, self.config)\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/python.py\", line 508, in importtestmodule\nINTERNALERROR>     mod = import_path(\nINTERNALERROR>           ^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/pathlib.py\", line 596, in import_path\nINTERNALERROR>     importlib.import_module(module_name)\nINTERNALERROR>   File \"/usr/lib/python3.12/importlib/__init__.py\", line 90, in import_module\nINTERNALERROR>     return _bootstrap._gcd_import(name[level:], package, level)\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py\", line 188, in exec_module\nINTERNALERROR>     exec(co, module.__dict__)\nINTERNALERROR>   File \"/tmp/study/repo/src/wrfda_ncdiag/test_wrfdadiag.py\", line 18, in <module>\nINTERNALERROR>     args = parser.parse_args()\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/usr/lib/python3.12/argparse.py\", line 1908, in parse_args\nINTERNALERROR>     args, argv = self.parse_known_args(args, namespace)\nINTERNALERROR>                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/usr/lib/python3.12/argparse.py\", line 1941, in parse_known_args\nINTERNALERROR>     namespace, args = self._parse_known_args(args, namespace)\nINTERNALERROR>                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/usr/lib/python3.12/argparse.py\", line 2190, in _parse_known_args\nINTERNALERROR>     self.error(_('the following arguments are required: %s') %\nINTERNALERROR>   File \"/usr/lib/python3.12/argparse.py\", line 2677, in error\nINTERNALERROR>     self.exit(2, _('%(prog)s: error: %(message)s\\n') % args)\nINTERNALERROR>   File \"/usr/lib/python3.12/argparse.py\", line 2664, in exit\nINTERNALERROR>     _sys.exit(status)\nINTERNALERROR> SystemExit: 2\n\n2 errors in 0.43s\nusage: __main__.py [-h] -i INPUT -o OUTPUT -t TYPE\n__main__.py: error: the following arguments are required: -i/--input, -t/--type\nmainloop: caught unexpected SystemExit!"
+ }
+}

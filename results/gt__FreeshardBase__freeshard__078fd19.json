@@ -1,0 +1,16 @@
+{
+ "id": "gt__FreeshardBase__freeshard__078fd19",
+ "repo": "FreeshardBase/freeshard",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 47,
+ "sha": "4566408295eb45d3a12d512ce62e7dc4a37ae4d7",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/__init__.py:3: in <module>\n    import gconf\nE   ModuleNotFoundError: No module named 'gconf'"
+ }
+}

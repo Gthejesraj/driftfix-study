@@ -1,0 +1,37 @@
+{
+ "id": "gt__acoular__acoular__f43967a",
+ "repo": "acoular/acoular",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 657,
+ "sha": "6acedea40a2691b10480bddd7d2ae0056c73dce8",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 18
+  },
+  "failing": [
+   "examples/benchmark/test_beamformerfreq.py",
+   "examples/benchmark/test_delayandsum.py",
+   "examples/benchmark/test_dist_mat.py",
+   "tests/test_beamformer_results.py",
+   "tests/test_classes.py",
+   "tests/test_digest.py",
+   "tests/test_environments.py",
+   "tests/test_fprocess.py",
+   "tests/test_grid.py",
+   "tests/test_integrate.py",
+   "tests/test_process.py",
+   "tests/test_signals.py",
+   "tests/test_sources.py",
+   "tests/test_spectra.py",
+   "tests/test_tbeamform.py",
+   "tests/test_timecache.py",
+   "tests/test_tools_utils.py",
+   "tests/test_tprocess.py"
+  ],
+  "tail": "E   ImportError: cannot import name 'ListInt' from 'traits.api' (/tmp/study/venv/lib/python3.12/site-packages/traits/api.py)\n___________________ ERROR collecting tests/test_tprocess.py ____________________\nImportError while importing test module '/tmp/study/repo/tests/test_tprocess.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_tprocess.py:6: in <module>\n    from acoular import MaskedTimeSamples, MicGeom, PointSource, TimeConvolve, WNoiseGenerator, config, tools\nacoular/__init__.py:12: in <module>\n    from . import demo, tools\nacoular/tools/__init__.py:15: in <module>\n    from .aiaa import (\nacoular/tools/aiaa.py:43: in <module>\n    from acoular.microphones import MicGeom\nacoular/microphones.py:19: in <module>\n    from traits.api import Bool, CArray, File, HasPrivateTraits, ListInt, Property, cached_property, on_trait_change\nE   ImportError: cannot import name 'ListInt' from 'traits.api' (/tmp/study/venv/lib/python3.12/site-packages/traits/api.py)\n=========================== short test summary info ============================\nERROR examples/benchmark/test_beamformerfreq.py\nERROR examples/benchmark/test_delayandsum.py\nERROR examples/benchmark/test_dist_mat.py\nERROR tests/test_beamformer_results.py\nERROR tests/test_classes.py\nERROR tests/test_digest.py\nERROR tests/test_environments.py\nERROR tests/test_fprocess.py\nERROR tests/test_grid.py\nERROR tests/test_integrate.py\nERROR tests/test_process.py\nERROR tests/test_signals.py\nERROR tests/test_sources.py\nERROR tests/test_spectra.py\nERROR tests/test_tbeamform.py\nERROR tests/test_timecache.py\nERROR tests/test_tools_utils.py\nERROR tests/test_tprocess.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 18 errors during collection !!!!!!!!!!!!!!!!!!!\n18 errors in 1.57s"
+ }
+}

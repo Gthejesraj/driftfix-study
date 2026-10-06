@@ -1,0 +1,36 @@
+{
+ "id": "gt__MIT-PSFC__disruption-py__b712a7e",
+ "repo": "MIT-PSFC/disruption-py",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 48,
+ "sha": "9897342d3e5c42eabf9661f9111d79c028d34103",
+ "old": "1.26.4",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 13,
+   "skipped": 7
+  },
+  "failing": [],
+  "tail": "s......ssss.......ss                                                     [100%]\n=============================== warnings summary ===============================\ntests/test_decorator.py::test_tokamak_parameter[None]\ntests/test_decorator.py::test_tokamak_parameter[Tokamak.MAST]\ntests/test_output_setting.py::test_output_exists\ntests/test_output_setting.py::test_output_exists\ntests/test_quick.py::test_efit\n  /usr/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=2653) is multi-threaded, use of fork() may lead to deadlocks in the child.\n    self.pid = os.fork()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n13 passed, 7 skipped, 5 warnings in 109.05s (0:01:49)",
+  "preexisting_failures": 0
+ },
+ "new": "2.5.3",
+ "after": {
+  "code": 1,
+  "counts": {
+   "failed": 4,
+   "passed": 9,
+   "skipped": 7
+  },
+  "failing": [
+   "tests/test_decorator.py::test_tokamak_parameter[None]",
+   "tests/test_decorator.py::test_tokamak_parameter[Tokamak.MAST]",
+   "tests/test_output_setting.py::test_output_exists",
+   "tests/test_quick.py::test_efit"
+  ],
+  "tail": "21:15:15.804 [ INFO  ] Saved Dataset in 0.002 s: /tmp/runner/disruption-py/.2026-10-06/21.13.32-jiish0i5/output-9zc2nh43.nc\u001b[0m\n<xarray.Dataset> Size: 0B\nDimensions:  ()\nData variables:\n    *empty*\n----------------------------- Captured stderr call -----------------------------\n\n  0%|          | 0/1 [00:00<?, ?it/s]\n                                     \n\n  0%|          | 0/1 [00:25<?, ?it/s]\n100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:25<00:00, 25.38s/it]\n                                             \n=============================== warnings summary ===============================\n../venv/lib/python3.12/site-packages/xarray/core/dtypes.py:111\n../venv/lib/python3.12/site-packages/xarray/core/dtypes.py:111\n  /tmp/study/venv/lib/python3.12/site-packages/xarray/core/dtypes.py:111: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.\n    NAT_TYPES = {np.datetime64(\"NaT\").dtype, np.timedelta64(\"NaT\").dtype}\n\ntests/test_decorator.py::test_tokamak_parameter[None]\ntests/test_decorator.py::test_tokamak_parameter[Tokamak.MAST]\ntests/test_output_setting.py::test_output_exists\ntests/test_output_setting.py::test_output_exists\ntests/test_quick.py::test_efit\n  /usr/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=2735) is multi-threaded, use of fork() may lead to deadlocks in the child.\n    self.pid = os.fork()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_decorator.py::test_tokamak_parameter[None] - AssertionError: assert 'x' in Data variables:\\n    *empty*\n +  where Data variables:\\n    *empty* = <xarray.Dataset> Size: 0B\\nDimensions:  ()\\nData variables:\\n    *empty*.data_vars\nFAILED tests/test_decorator.py::test_tokamak_parameter[Tokamak.MAST] - AssertionError: assert 'x' in Data variables:\\n    *empty*\n +  where Data variables:\\n    *empty* = <xarray.Dataset> Size: 0B\\nDimensions:  ()\\nData variables:\\n    *empty*.data_vars\nFAILED tests/test_output_setting.py::test_output_exists - AssertionError: DataFrame.index are different\n\nAttribute \"inferred_type\" are different\n[left]:  integer\n[right]: empty\nFAILED tests/test_quick.py::test_efit - AttributeError: 'Dataset' object has no attribute 'time'\n4 failed, 9 passed, 7 skipped, 7 warnings in 103.30s (0:01:43)"
+ },
+ "status": "broken"
+}

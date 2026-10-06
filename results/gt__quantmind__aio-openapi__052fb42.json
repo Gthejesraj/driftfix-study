@@ -1,0 +1,16 @@
+{
+ "id": "gt__quantmind__aio-openapi__052fb42",
+ "repo": "quantmind/aio-openapi",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 37,
+ "sha": "cf891daa40703d4d1e3f78ce5170dafcc4f923ab",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/__init__.py:3: in <module>\n    import dotenv\nE   ModuleNotFoundError: No module named 'dotenv'"
+ }
+}

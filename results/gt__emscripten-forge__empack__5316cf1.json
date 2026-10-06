@@ -1,0 +1,20 @@
+{
+ "id": "gt__emscripten-forge__empack__5316cf1",
+ "repo": "emscripten-forge/empack",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 24,
+ "sha": "9b2638062396af4d377f90ed4a2295022d9d24c5",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/test_integration.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n__________________ ERROR collecting tests/test_integration.py __________________\nImportError while importing test module '/tmp/study/repo/tests/test_integration.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_integration.py:4: in <module>\n    from pyjs_code_runner.run import run\nE   ModuleNotFoundError: No module named 'pyjs_code_runner'\n=========================== short test summary info ============================\nERROR tests/test_integration.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.39s"
+ }
+}

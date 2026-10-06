@@ -1,0 +1,23 @@
+{
+ "id": "gt__workfloworchestrator__pydantic-forms__fa9630d",
+ "repo": "workfloworchestrator/pydantic-forms",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 14,
+ "sha": "55245ef1cadad592916574ae8609ecbc4892533f",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "tests/unit_tests/exception_handlers/test_fastapi.py",
+   "tests/unit_tests/test_core.py",
+   "tests/unit_tests/test_core_async.py",
+   "tests/unit_tests/test_generic_validators.py"
+  ],
+  "tail": "pydantic_forms/core/__init__.py:13: in <module>\n    from pydantic_forms.core.shared import DisplayOnlyFieldType, FormPage, ReadOnlyField, list_forms, register_form\npydantic_forms/core/shared.py:16: in <module>\n    import structlog\nE   ModuleNotFoundError: No module named 'structlog'\n_____________ ERROR collecting tests/unit_tests/test_core_async.py _____________\nImportError while importing test module '/tmp/study/repo/tests/unit_tests/test_core_async.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/unit_tests/test_core_async.py:3: in <module>\n    from pydantic_forms.core import FormPage\npydantic_forms/core/__init__.py:13: in <module>\n    from pydantic_forms.core.shared import DisplayOnlyFieldType, FormPage, ReadOnlyField, list_forms, register_form\npydantic_forms/core/shared.py:16: in <module>\n    import structlog\nE   ModuleNotFoundError: No module named 'structlog'\n_________ ERROR collecting tests/unit_tests/test_generic_validators.py _________\nImportError while importing test module '/tmp/study/repo/tests/unit_tests/test_generic_validators.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/unit_tests/test_generic_validators.py:7: in <module>\n    from pydantic_forms.core import FormPage, ReadOnlyField\npydantic_forms/core/__init__.py:13: in <module>\n    from pydantic_forms.core.shared import DisplayOnlyFieldType, FormPage, ReadOnlyField, list_forms, register_form\npydantic_forms/core/shared.py:16: in <module>\n    import structlog\nE   ModuleNotFoundError: No module named 'structlog'\n=========================== short test summary info ============================\nERROR tests/unit_tests/exception_handlers/test_fastapi.py\nERROR tests/unit_tests/test_core.py\nERROR tests/unit_tests/test_core_async.py\nERROR tests/unit_tests/test_generic_validators.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n4 errors in 0.18s"
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "id": "gt__ansible-community__antsibull-docs__ab8b373",
+ "repo": "ansible-community/antsibull-docs",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 41,
+ "sha": "d066b2ee0905a3d4c5d1e94434412c64e4a98959",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 64
+  },
+  "failing": [],
+  "tail": "................................................................         [100%]\n64 passed, 44 deselected in 0.72s",
+  "preexisting_failures": 44
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "tests/functional/schema/test_schema.py",
+   "tests/functional/test_docs_baseline.py",
+   "tests/functional/test_docs_linting.py",
+   "tests/functional/test_sphinx_init_baseline.py"
+  ],
+  "tail": "    from .config import DEFAULT_LOGGING_CONFIG, LoggingModel\n../venv/lib/python3.12/site-packages/antsibull_core/schemas/config.py:17: in <module>\n    LEVEL_CHOICES_F = p.Field(\n../venv/lib/python3.12/site-packages/pydantic/fields.py:1323: in Field\n    raise PydanticUserError('`regex` is removed. use `pattern` instead', code='removed-kwargs')\nE   pydantic.errors.PydanticUserError: `regex` is removed. use `pattern` instead\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/removed-kwargs\n________ ERROR collecting tests/functional/test_sphinx_init_baseline.py ________\ntests/functional/test_sphinx_init_baseline.py:15: in <module>\n    from antsibull_docs.cli.antsibull_docs import run\nsrc/antsibull_docs/cli/antsibull_docs.py:25: in <module>\n    from antsibull_core import app_context  # noqa: E402\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/antsibull_core/app_context.py:112: in <module>\n    from .schemas.context import AppContext, LibContext\n../venv/lib/python3.12/site-packages/antsibull_core/schemas/context.py:13: in <module>\n    from .config import DEFAULT_LOGGING_CONFIG, LoggingModel\n../venv/lib/python3.12/site-packages/antsibull_core/schemas/config.py:17: in <module>\n    LEVEL_CHOICES_F = p.Field(\n../venv/lib/python3.12/site-packages/pydantic/fields.py:1323: in Field\n    raise PydanticUserError('`regex` is removed. use `pattern` instead', code='removed-kwargs')\nE   pydantic.errors.PydanticUserError: `regex` is removed. use `pattern` instead\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/removed-kwargs\n=========================== short test summary info ============================\nERROR tests/functional/schema/test_schema.py - pydantic.errors.PydanticUserError: `regex` is removed. use `pattern` instead\n\nFor further information visit https://errors.pydantic.dev/2.13/u/removed-kwargs\nERROR tests/functional/test_docs_baseline.py - pydantic.errors.PydanticUserError: `regex` is removed. use `pattern` instead\n\nFor further information visit https://errors.pydantic.dev/2.13/u/removed-kwargs\nERROR tests/functional/test_docs_linting.py - pydantic.errors.PydanticUserError: `regex` is removed. use `pattern` instead\n\nFor further information visit https://errors.pydantic.dev/2.13/u/removed-kwargs\nERROR tests/functional/test_sphinx_init_baseline.py - pydantic.errors.PydanticUserError: `regex` is removed. use `pattern` instead\n\nFor further information visit https://errors.pydantic.dev/2.13/u/removed-kwargs\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n27 deselected, 4 errors in 0.56s"
+ },
+ "status": "broken"
+}

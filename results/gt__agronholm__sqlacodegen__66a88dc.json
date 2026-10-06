@@ -1,0 +1,52 @@
+{
+ "id": "gt__agronholm__sqlacodegen__66a88dc",
+ "repo": "agronholm/sqlacodegen",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 2371,
+ "sha": "6ecfbc49b358f3c85ff6cfef1aa685d8e797e537",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 90
+  },
+  "failing": [],
+  "tail": "........................................................................ [ 80%]\n..................                                                       [100%]\n90 passed, 4 deselected in 2.29s",
+  "preexisting_failures": 4
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 1,
+  "counts": {
+   "failed": 10,
+   "passed": 69,
+   "errors": 11
+  },
+  "failing": [
+   "tests/test_generators.py::TestDataclassGenerator::test_basic_class",
+   "tests/test_generators.py::TestDataclassGenerator::test_mandatory_field_last",
+   "tests/test_generators.py::TestDataclassGenerator::test_onetomany_optional",
+   "tests/test_generators.py::TestDataclassGenerator::test_manytomany",
+   "tests/test_generators.py::TestDataclassGenerator::test_named_foreign_key_constraints",
+   "tests/test_generators.py::TestDataclassGenerator::test_uuid_type_annotation",
+   "tests/test_generators.py::TestSQLModelGenerator::test_indexes",
+   "tests/test_generators.py::TestSQLModelGenerator::test_constraints",
+   "tests/test_generators.py::TestSQLModelGenerator::test_onetomany",
+   "tests/test_generators.py::TestSQLModelGenerator::test_onetoone",
+   "tests/test_generators.py::TestTablesGenerator::test_fancy_coltypes[postgresql]",
+   "tests/test_generators.py::TestTablesGenerator::test_arrays[postgresql]",
+   "tests/test_generators.py::TestTablesGenerator::test_jsonb[postgresql]",
+   "tests/test_generators.py::TestTablesGenerator::test_jsonb_default[postgresql]",
+   "tests/test_generators.py::TestTablesGenerator::test_column_adaptation[postgresql]",
+   "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_standard_name[postgresql]",
+   "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_nonstandard_name[postgresql]",
+   "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-test_seq]",
+   "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-\"test_seq\"]",
+   "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-test_seq]",
+   "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-\"test_seq\"]"
+  ],
+  "tail": "FAILED tests/test_generators.py::TestDataclassGenerator::test_manytomany - sqlalchemy.orm.exc.MappedAnnotationError: Could not interpret annotation List[SimpleItems].  Check that it uses names that are correctly imported at the module level. See chained stack trace for more hints.\nFAILED tests/test_generators.py::TestDataclassGenerator::test_named_foreign_key_constraints - sqlalchemy.orm.exc.MappedAnnotationError: Could not interpret annotation List[SimpleItems].  Check that it uses names that are correctly imported at the module level. See chained stack trace for more hints.\nFAILED tests/test_generators.py::TestDataclassGenerator::test_uuid_type_annotation - AssertionError: assert 'from __futur...key=True)})\\n' == 'from __futur...key=True)})\\n'\n  \n  Skipping 97 identical leading characters in diff, use -v to show\n  - ort Column\n  + ort Column, UUID\n  ?           ++++++\n  - from sqlalchemy.dialects.postgresql import UUID\n    from sqlalchemy.orm import registry\n    \n    mapper_registry = registry()\n    \n    \n    @mapper_registry.mapped\n    @dataclass\n    class Simple:\n        __tablename__ = 'simple'\n        __sa_dataclass_metadata_key__ = 'sa'\n    \n  -     id: str = field(init=False, metadata={'sa': Column(UUID, primary_key=True)})\n  ?         ^^^\n  +     id: UUID = field(init=False, metadata={'sa': Column(UUID, primary_key=True)})\n  ?         ^^^^\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_indexes - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_constraints - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_onetomany - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_onetoone - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nERROR tests/test_generators.py::TestTablesGenerator::test_fancy_coltypes[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_arrays[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_jsonb[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_jsonb_default[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_column_adaptation[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_standard_name[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_nonstandard_name[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-test_seq] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-\"test_seq\"] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-test_seq] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-\"test_seq\"] - ModuleNotFoundError: No module named 'psycopg'\n10 failed, 69 passed, 4 deselected, 11 errors in 4.43s"
+ },
+ "status": "broken"
+}

@@ -1,0 +1,35 @@
+{
+ "id": "gt__lnbits__lnurl__1cf7274",
+ "repo": "lnbits/lnurl",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 66,
+ "sha": "3c78450ccae1232de3c3e2217094d2ceaa105d52",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 127
+  },
+  "failing": [],
+  "tail": "......x..xxx............................................................ [ 54%]\n...........................................................              [100%]\n127 passed, 4 xfailed in 1.50s",
+  "preexisting_failures": 0
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 2,
+  "counts": {
+   "errors": 6
+  },
+  "failing": [
+   "tests/test_core.py",
+   "tests/test_fast_withdraw.py",
+   "tests/test_helpers_lnurlauth.py",
+   "tests/test_models.py",
+   "tests/test_models_from_dict.py",
+   "tests/test_types.py"
+  ],
+  "tail": "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic:ConstrainedStr` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n_____________________ ERROR collecting tests/test_types.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_types.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_types.py:4: in <module>\n    from lnurl import (\nlnurl/__init__.py:4: in <module>\n    from .core import decode, encode, execute, execute_login, execute_pay_request, execute_withdraw, get, handle\nlnurl/core.py:16: in <module>\n    from .models import (\nlnurl/models.py:11: in <module>\n    from .types import (\nlnurl/types.py:11: in <module>\n    from pydantic import (\n../venv/lib/python3.12/site-packages/pydantic/__init__.py:437: in __getattr__\n    return _getattr_migration(attr_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic:ConstrainedStr` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n=========================== short test summary info ============================\nERROR tests/test_core.py\nERROR tests/test_fast_withdraw.py\nERROR tests/test_helpers_lnurlauth.py\nERROR tests/test_models.py\nERROR tests/test_models_from_dict.py\nERROR tests/test_types.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!\n6 errors in 0.58s"
+ },
+ "status": "broken"
+}

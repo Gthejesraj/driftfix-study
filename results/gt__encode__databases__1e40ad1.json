@@ -1,0 +1,22 @@
+{
+ "id": "gt__encode__databases__1e40ad1",
+ "repo": "encode/databases",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 3987,
+ "sha": "c2e4c5ba9ba84e30d0b4676dee90cfb998b72a1d",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 3
+  },
+  "failing": [
+   "tests/test_connection_options.py",
+   "tests/test_databases.py",
+   "tests/test_integration.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n______________ ERROR collecting tests/test_connection_options.py _______________\nImportError while importing test module '/tmp/study/repo/tests/test_connection_options.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_connection_options.py:8: in <module>\n    from databases.backends.aiopg import AiopgBackend\ndatabases/backends/aiopg.py:7: in <module>\n    import aiopg\nE   ModuleNotFoundError: No module named 'aiopg'\n___________________ ERROR collecting tests/test_databases.py ___________________\ntests/test_databases.py:18: in <module>\n    assert \"TEST_DATABASE_URLS\" in os.environ, \"TEST_DATABASE_URLS is not set.\"\nE   AssertionError: TEST_DATABASE_URLS is not set.\nE   assert 'TEST_DATABASE_URLS' in environ({'GITHUB_STATE': '/home/runner/work/_temp/_runner_file_commands/save_state_0fe78b07-9a61-4e05-ab30-d29f1817953...runner/work/_temp/_runner_file_commands/step_summary_0fe78b07-9a61-4e05-ab30-d29f18179537', 'PYTEST_VERSION': '9.1.1'})\nE    +  where environ({'GITHUB_STATE': '/home/runner/work/_temp/_runner_file_commands/save_state_0fe78b07-9a61-4e05-ab30-d29f1817953...runner/work/_temp/_runner_file_commands/step_summary_0fe78b07-9a61-4e05-ab30-d29f18179537', 'PYTEST_VERSION': '9.1.1'}) = <module 'os' (frozen)>.environ\n__________________ ERROR collecting tests/test_integration.py __________________\nImportError while importing test module '/tmp/study/repo/tests/test_integration.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_integration.py:3: in <module>\n    from starlette.applications import Starlette\nE   ModuleNotFoundError: No module named 'starlette'\n=========================== short test summary info ============================\nERROR tests/test_connection_options.py\nERROR tests/test_databases.py - AssertionError: TEST_DATABASE_URLS is not set.\nassert 'TEST_DATABASE_URLS' in environ({'GITHUB_STATE': '/home/runner/work/_temp/_runner_file_commands/save_state_0fe78b07-9a61-4e05-ab30-d29f1817953...runner/work/_temp/_runner_file_commands/step_summary_0fe78b07-9a61-4e05-ab30-d29f18179537', 'PYTEST_VERSION': '9.1.1'})\n +  where environ({'GITHUB_STATE': '/home/runner/work/_temp/_runner_file_commands/save_state_0fe78b07-9a61-4e05-ab30-d29f1817953...runner/work/_temp/_runner_file_commands/step_summary_0fe78b07-9a61-4e05-ab30-d29f18179537', 'PYTEST_VERSION': '9.1.1'}) = <module 'os' (frozen)>.environ\nERROR tests/test_integration.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 0.36s"
+ }
+}

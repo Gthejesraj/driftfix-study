@@ -1,0 +1,20 @@
+{
+ "id": "gt__ToucanDB__ToucanDB__0155396",
+ "repo": "ToucanDB/ToucanDB",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 15,
+ "sha": "66127cf20100af05459ddeff65f8dd7149c3873b",
+ "old": "1.10.26",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/test_toucandb.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n___________________ ERROR collecting tests/test_toucandb.py ____________________\ntests/test_toucandb.py:19: in <module>\n    from toucandb import ToucanDB, VectorSchema, SearchQuery, create_schema\ntoucandb/__init__.py:14: in <module>\n    from .exceptions import (\ntoucandb/exceptions.py:11: in <module>\n    from .types import ErrorCode\ntoucandb/types.py:140: in <module>\n    class SearchQuery(BaseModel):\npydantic/main.py:214: in pydantic.main.ModelMetaclass.__new__\n    ???\npydantic/fields.py:504: in pydantic.fields.ModelField.infer\n    ???\npydantic/fields.py:434: in pydantic.fields.ModelField.__init__\n    ???\npydantic/fields.py:550: in pydantic.fields.ModelField.prepare\n    ???\npydantic/fields.py:661: in pydantic.fields.ModelField._type_analysis\n    ???\npydantic/fields.py:806: in pydantic.fields.ModelField._create_sub_type\n    ???\npydantic/fields.py:434: in pydantic.fields.ModelField.__init__\n    ???\npydantic/fields.py:550: in pydantic.fields.ModelField.prepare\n    ???\npydantic/fields.py:753: in pydantic.fields.ModelField._type_analysis\n    ???\nE   TypeError: Fields of type \"<class 'numpy.ndarray'>\" are not supported.\n=========================== short test summary info ============================\nERROR tests/test_toucandb.py - TypeError: Fields of type \"<class 'numpy.ndarray'>\" are not supported.\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.39s"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "id": "gt__cuenca-mx__clabe-python__c482622",
+ "repo": "cuenca-mx/clabe-python",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 43,
+ "sha": "47fcafb3839e82cd0f73c9188423f4b940725b41",
+ "old": "1.10.26",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "tests/test_clabe.py",
+   "tests/test_types.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n_____________________ ERROR collecting tests/test_clabe.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_clabe.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_clabe.py:3: in <module>\n    from clabe import (\nclabe/__init__.py:15: in <module>\n    from .types import Clabe\nclabe/types.py:3: in <module>\n    from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler\nE   ImportError: cannot import name 'GetCoreSchemaHandler' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so)\n_____________________ ERROR collecting tests/test_types.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_types.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_types.py:4: in <module>\n    from clabe import BANK_NAMES, BANKS\nclabe/__init__.py:15: in <module>\n    from .types import Clabe\nclabe/types.py:3: in <module>\n    from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler\nE   ImportError: cannot import name 'GetCoreSchemaHandler' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so)\n=========================== short test summary info ============================\nERROR tests/test_clabe.py\nERROR tests/test_types.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.14s"
+ }
+}

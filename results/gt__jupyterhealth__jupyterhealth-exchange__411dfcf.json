@@ -1,0 +1,16 @@
+{
+ "id": "gt__jupyterhealth__jupyterhealth-exchange__411dfcf",
+ "repo": "jupyterhealth/jupyterhealth-exchange",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 16,
+ "sha": "9b9a3ee6881292dfa57ca1480093afe76bbcadd5",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:6: in <module>\n    from rest_framework.test import APIClient\nE   ModuleNotFoundError: No module named 'rest_framework'"
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "id": "gt__cuenca-mx__clabe-python__e8cbcaa",
+ "repo": "cuenca-mx/clabe-python",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 43,
+ "sha": "cd31becabb32977a6489cecc8c1867f9b5023e8c",
+ "old": "1.9.0",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 18
+  },
+  "failing": [],
+  "tail": "..................                                                       [100%]\n18 passed in 0.04s",
+  "preexisting_failures": 0
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "tests/test_clabe.py",
+   "tests/test_types.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n_____________________ ERROR collecting tests/test_clabe.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_clabe.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_clabe.py:3: in <module>\n    from clabe import (\nclabe/__init__.py:15: in <module>\n    from .types import Clabe\nclabe/types.py:3: in <module>\n    from pydantic.errors import NotDigitError\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic.errors:NotDigitError` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n_____________________ ERROR collecting tests/test_types.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_types.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_types.py:3: in <module>\n    from pydantic.errors import NotDigitError\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic.errors:NotDigitError` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n=========================== short test summary info ============================\nERROR tests/test_clabe.py\nERROR tests/test_types.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.31s"
+ },
+ "status": "broken"
+}

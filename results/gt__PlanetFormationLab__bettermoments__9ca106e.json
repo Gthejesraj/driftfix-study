@@ -1,0 +1,16 @@
+{
+ "id": "gt__PlanetFormationLab__bettermoments__9ca106e",
+ "repo": "PlanetFormationLab/bettermoments",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 20,
+ "sha": "6e1c4b1cac86bb987bdaf194a7be1037a4a5c0c6",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 5,
+  "counts": {},
+  "failing": [],
+  "tail": "\nno tests ran in 0.01s"
+ }
+}

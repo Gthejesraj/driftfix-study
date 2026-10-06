@@ -1,0 +1,16 @@
+{
+ "id": "gt__datamodel-code-generator__datamodel-code-generator__47c1db0",
+ "repo": "datamodel-code-generator/datamodel-code-generator",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 4029,
+ "sha": "a4914db8e9a59673e740dc4d24f6b9a389fe141c",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:25: in <module>\n    import httpx\nE   ModuleNotFoundError: No module named 'httpx'"
+ }
+}

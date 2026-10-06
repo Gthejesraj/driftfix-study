@@ -1,0 +1,26 @@
+{
+ "id": "gt__kvesteri__wtforms-alchemy__adbf92a",
+ "repo": "kvesteri/wtforms-alchemy",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 247,
+ "sha": "3be575b719c993c171bf384e1ebdf2eb48ed013f",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 248
+  },
+  "failing": [],
+  "tail": "........................................................................ [ 29%]\n........................................................................ [ 58%]\n........................................................................ [ 87%]\n................................                                         [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854\n  /tmp/study/venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854: DeprecationWarning: 'crypt' is deprecated and slated for removal in Python 3.13\n    from crypt import crypt as _crypt\n\ntests/test_unique_validator.py:12\n  /tmp/study/repo/tests/test_unique_validator.py:12: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to \"sqlalchemy<2.0\". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)\n    base = declarative_base()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n248 passed, 2 warnings in 0.87s",
+  "preexisting_failures": 0
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/__init__.py:6: in <module>\n    from sqlalchemy_utils import force_auto_coercion\n../venv/lib/python3.12/site-packages/sqlalchemy_utils/__init__.py:46: in <module>\n    from .generic import generic_relationship  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/sqlalchemy_utils/generic.py:15: in <module>\n    class GenericAttributeImpl(attributes.ScalarAttributeImpl):\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'sqlalchemy.orm.attributes' has no attribute 'ScalarAttributeImpl'. Did you mean: '_ScalarAttributeImpl'?"
+ },
+ "status": "broken"
+}

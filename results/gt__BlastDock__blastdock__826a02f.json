@@ -1,0 +1,28 @@
+{
+ "id": "gt__BlastDock__blastdock__826a02f",
+ "repo": "BlastDock/blastdock",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 10,
+ "sha": "781b362085706129f821584a83a23c4dc071f472",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 37
+  },
+  "failing": [],
+  "tail": ".....................................                                    [100%]\n37 passed, 39 deselected in 0.25s",
+  "preexisting_failures": 39
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 37
+  },
+  "failing": [],
+  "tail": ".....................................                                    [100%]\n37 passed, 39 deselected in 0.25s"
+ },
+ "status": "not_broken"
+}

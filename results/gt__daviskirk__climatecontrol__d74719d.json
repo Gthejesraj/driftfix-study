@@ -1,0 +1,16 @@
+{
+ "id": "gt__daviskirk__climatecontrol__d74719d",
+ "repo": "daviskirk/climatecontrol",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 19,
+ "sha": "f3994beb314ddb629fb88111ec27bd699a458dab",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:12: in <module>\n    import tomli_w\nE   ModuleNotFoundError: No module named 'tomli_w'"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "id": "gt__Aiven-Open__karapace__ae9d788",
+ "repo": "Aiven-Open/karapace",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 636,
+ "sha": "3dd7d7f0e9b98dd2e2657965f9cd5953c168ca85",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:15: in <module>\n    import karapace.api.controller\nsrc/karapace/api/controller.py:11: in <module>\n    from karapace.api.forward_client import ForwardClient\nsrc/karapace/api/forward_client.py:7: in <module>\n    from karapace.core.utils import json_decode\nsrc/karapace/core/utils.py:10: in <module>\n    from .typing import ArgJsonData, JsonData\nsrc/karapace/core/typing.py:13: in <module>\n    from pydantic import ValidationInfo\nE   ImportError: cannot import name 'ValidationInfo' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so). Did you mean: 'ValidationError'?"
+ }
+}

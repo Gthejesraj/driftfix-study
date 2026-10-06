@@ -1,0 +1,48 @@
+{
+ "id": "gt__NVIDIA__OSMO__c629a87",
+ "repo": "NVIDIA/OSMO",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 267,
+ "sha": "cdccc7c759870f8e81343c2d8a7b9fb1a90f2bfa",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 29
+  },
+  "failing": [
+   "run/tests/test_run_command.py",
+   "src/cli/tests/test_cli.py",
+   "src/cli/tests/test_config_update.py",
+   "src/lib/data/storage/backends/tests/test_backends.py",
+   "src/lib/data/storage/tests/test_common.py",
+   "src/lib/tests/test_import.py",
+   "src/lib/utils/tests/test_common.py",
+   "src/lib/utils/tests/test_dataset.py",
+   "src/lib/utils/tests/test_jinja_sandbox.py",
+   "src/lib/utils/tests/test_workflow.py",
+   "src/operator/tests/test_listener.py",
+   "src/operator/tests/test_pod_status_calculator.py",
+   "src/operator/utils/node_validation_test/test_base.py",
+   "src/service/core/auth/tests/test_auth_service.py",
+   "src/service/core/config/tests/test_config_history.py",
+   "src/service/core/config/tests/test_config_history_helpers.py",
+   "src/service/core/tests/test_group_templates.py",
+   "src/service/core/tests/test_service.py",
+   "src/service/core/workflow/tests/test_calculate_pool_quotas.py",
+   "src/service/core/workflow/tests/test_workflow_service.py",
+   "src/utils/connectors/tests/test_resource_spec.py",
+   "src/utils/job/tests/job_test.py",
+   "src/utils/job/tests/test_harness.py",
+   "src/utils/job/tests/test_kb_objects.py",
+   "src/utils/job/tests/test_task.py",
+   "src/utils/job/tests/test_task_db.py",
+   "src/utils/job/tests/test_topology.py",
+   "src/utils/job/tests/test_workflow.py",
+   "src/utils/tests/test_auth.py"
+  ],
+  "tail": "Hint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/utils/tests/test_auth.py:23: in <module>\n    from jwcrypto import jwk, jws, jwt\nE   ModuleNotFoundError: No module named 'jwcrypto'\n=========================== short test summary info ============================\nERROR run/tests/test_run_command.py\nERROR src/cli/tests/test_cli.py\nERROR src/cli/tests/test_config_update.py\nERROR src/lib/data/storage/backends/tests/test_backends.py\nERROR src/lib/data/storage/tests/test_common.py\nERROR src/lib/tests/test_import.py\nERROR src/lib/utils/tests/test_common.py\nERROR src/lib/utils/tests/test_dataset.py\nERROR src/lib/utils/tests/test_jinja_sandbox.py\nERROR src/lib/utils/tests/test_workflow.py\nERROR src/operator/tests/test_listener.py\nERROR src/operator/tests/test_pod_status_calculator.py\nERROR src/operator/utils/node_validation_test/test_base.py\nERROR src/service/core/auth/tests/test_auth_service.py\nERROR src/service/core/config/tests/test_config_history.py\nERROR src/service/core/config/tests/test_config_history_helpers.py\nERROR src/service/core/tests/test_group_templates.py\nERROR src/service/core/tests/test_service.py\nERROR src/service/core/workflow/tests/test_calculate_pool_quotas.py\nERROR src/service/core/workflow/tests/test_workflow_service.py\nERROR src/utils/connectors/tests/test_resource_spec.py\nERROR src/utils/job/tests/job_test.py\nERROR src/utils/job/tests/test_harness.py\nERROR src/utils/job/tests/test_kb_objects.py\nERROR src/utils/job/tests/test_task.py\nERROR src/utils/job/tests/test_task_db.py\nERROR src/utils/job/tests/test_topology.py\nERROR src/utils/job/tests/test_workflow.py\nERROR src/utils/tests/test_auth.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 29 errors during collection !!!!!!!!!!!!!!!!!!!\n29 errors in 0.86s"
+ }
+}

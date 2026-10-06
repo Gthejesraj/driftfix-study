@@ -1,0 +1,16 @@
+{
+ "id": "gt__alphagov__notifications-api__f5adf9f",
+ "repo": "alphagov/notifications-api",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 75,
+ "sha": "45b69f624daea1af8a24cf14cdeafe3457052bd4",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/__init__.py:6: in <module>\n    from app.constants import KEY_TYPE_NORMAL\napp/__init__.py:19: in <module>\n    from flask_marshmallow import Marshmallow\n../venv/lib/python3.12/site-packages/flask_marshmallow/__init__.py:31: in <module>\n    import flask_sqlalchemy  # noqa: F401\n../venv/lib/python3.12/site-packages/flask_sqlalchemy/__init__.py:5: in <module>\n    from .extension import SQLAlchemy\n../venv/lib/python3.12/site-packages/flask_sqlalchemy/extension.py:40: in <module>\n    t.Type[sa_orm.DeclarativeBase],\nE   AttributeError: module 'sqlalchemy.orm' has no attribute 'DeclarativeBase'. Did you mean: 'declarative_base'?"
+ }
+}

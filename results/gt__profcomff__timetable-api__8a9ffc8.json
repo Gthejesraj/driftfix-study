@@ -1,0 +1,16 @@
+{
+ "id": "gt__profcomff__timetable-api__8a9ffc8",
+ "repo": "profcomff/timetable-api",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 17,
+ "sha": "e2ff75edf2f8fab6af1c7a01b16d1e662e8805f7",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:4: in <module>\n    from fastapi.testclient import TestClient\n../venv/lib/python3.12/site-packages/fastapi/__init__.py:7: in <module>\n    from .applications import FastAPI as FastAPI\n../venv/lib/python3.12/site-packages/fastapi/applications.py:7: in <module>\n    from fastapi import routing\n../venv/lib/python3.12/site-packages/fastapi/routing.py:45: in <module>\n    from fastapi import params\n../venv/lib/python3.12/site-packages/fastapi/params.py:8: in <module>\n    from fastapi.openapi.models import Example\n../venv/lib/python3.12/site-packages/fastapi/openapi/models.py:5: in <module>\n    from fastapi._compat import with_info_plain_validator_function\n../venv/lib/python3.12/site-packages/fastapi/_compat/__init__.py:1: in <module>\n    from .shared import PYDANTIC_VERSION_MINOR_TUPLE as PYDANTIC_VERSION_MINOR_TUPLE\n../venv/lib/python3.12/site-packages/fastapi/_compat/shared.py:17: in <module>\n    from fastapi.types import UnionType\n../venv/lib/python3.12/site-packages/fastapi/types.py:7: in <module>\n    from pydantic.main import IncEx as IncEx\nE   ImportError: cannot import name 'IncEx' from 'pydantic.main' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/main.cpython-312-x86_64-linux-gnu.so)"
+ }
+}

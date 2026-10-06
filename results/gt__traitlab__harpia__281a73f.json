@@ -1,0 +1,21 @@
+{
+ "id": "gt__traitlab__harpia__281a73f",
+ "repo": "traitlab/harpia",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 15,
+ "sha": "7f0657f854797ce5d70d69e307a6ce89f7b15826",
+ "old": "1.10.26",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "tests/test_build_xml.py",
+   "tests/test_create_kmz.py"
+  ],
+  "tail": "    from src.lib.build_template_kml import BuildTemplateKML\nsrc/lib/build_template_kml.py:9: in <module>\n    from src.lib.config import config\nsrc/lib/config.py:10: in <module>\n    from src.model.config import Config\nsrc/model/config.py:3: in <module>\n    from pydantic import BaseModel, FilePath, field_validator\nE   ImportError: cannot import name 'field_validator' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so). Did you mean: 'root_validator'?\n__________________ ERROR collecting tests/test_create_kmz.py ___________________\nImportError while importing test module '/tmp/study/repo/tests/test_create_kmz.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_create_kmz.py:11: in <module>\n    from src.lib.create_kmz import CreateKMZ\nsrc/lib/create_kmz.py:5: in <module>\n    from src.lib.config import config\nsrc/lib/config.py:10: in <module>\n    from src.model.config import Config\nsrc/model/config.py:3: in <module>\n    from pydantic import BaseModel, FilePath, field_validator\nE   ImportError: cannot import name 'field_validator' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so). Did you mean: 'root_validator'?\n=============================== warnings summary ===============================\n<frozen importlib._bootstrap>:488\n  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute\n\n<frozen importlib._bootstrap>:488\n  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute\n\n<frozen importlib._bootstrap>:488\n  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/test_build_xml.py\nERROR tests/test_create_kmz.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 warnings, 2 errors in 2.22s"
+ }
+}

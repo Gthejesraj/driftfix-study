@@ -1,0 +1,16 @@
+{
+ "id": "gt__elfi-dev__elfi__bd74048",
+ "repo": "elfi-dev/elfi",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 283,
+ "sha": "15aae515f296e05ee1cfd980d842f07a0be34d67",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:7: in <module>\n    import scipy.stats as ss\n../venv/lib/python3.12/site-packages/scipy/stats/__init__.py:600: in <module>\n    from ._stats_py import *\n../venv/lib/python3.12/site-packages/scipy/stats/_stats_py.py:39: in <module>\n    from scipy import sparse\n../venv/lib/python3.12/site-packages/scipy/sparse/__init__.py:250: in <module>\n    from ._base import *\n../venv/lib/python3.12/site-packages/scipy/sparse/_base.py:8: in <module>\n    from ._sputils import (asmatrix, check_shape,\n../venv/lib/python3.12/site-packages/scipy/sparse/_sputils.py:17: in <module>\n    np.uintc, np.long, np.ulong, np.longlong, np.ulonglong,\n              ^^^^^^^\n../venv/lib/python3.12/site-packages/numpy/__init__.py:333: in __getattr__\n    raise AttributeError(\"module {!r} has no attribute \"\nE   AttributeError: module 'numpy' has no attribute 'long'. Did you mean: 'log'?"
+ }
+}

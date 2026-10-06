@@ -1,0 +1,16 @@
+{
+ "id": "gt__snowflakedb__snowflake-sqlalchemy__d78f0c0",
+ "repo": "snowflakedb/snowflake-sqlalchemy",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 270,
+ "sha": "58fb1bd556cddbd2b7cf2b8ccebf0ead3363e113",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:28: in <module>\n    from .parameters import CONNECTION_PARAMETERS\nE   ModuleNotFoundError: No module named 'tests.parameters'"
+ }
+}

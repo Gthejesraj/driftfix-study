@@ -1,0 +1,16 @@
+{
+ "id": "gt__meizhong986__WhisperJAV__d5b8296",
+ "repo": "meizhong986/WhisperJAV",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 2305,
+ "sha": "a2ab596084c59eee709abbf412ec1487238921f1",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 3,
+  "counts": {},
+  "failing": [],
+  "tail": "INTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/runner.py\", line 408, in pytest_make_collect_report\nINTERNALERROR>     call = CallInfo.from_call(\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/runner.py\", line 361, in from_call\nINTERNALERROR>     result: TResult | None = func()\nINTERNALERROR>                              ^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/runner.py\", line 406, in collect\nINTERNALERROR>     return list(collector.collect())\nINTERNALERROR>                 ^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/python.py\", line 564, in collect\nINTERNALERROR>     self._register_setup_module_fixture()\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/python.py\", line 577, in _register_setup_module_fixture\nINTERNALERROR>     self.obj, (\"setUpModule\", \"setup_module\")\nINTERNALERROR>     ^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/python.py\", line 290, in obj\nINTERNALERROR>     self._obj = obj = self._getobj()\nINTERNALERROR>                       ^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/python.py\", line 561, in _getobj\nINTERNALERROR>     return importtestmodule(self.path, self.config)\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/python.py\", line 508, in importtestmodule\nINTERNALERROR>     mod = import_path(\nINTERNALERROR>           ^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/pathlib.py\", line 596, in import_path\nINTERNALERROR>     importlib.import_module(module_name)\nINTERNALERROR>   File \"/usr/lib/python3.12/importlib/__init__.py\", line 90, in import_module\nINTERNALERROR>     return _bootstrap._gcd_import(name[level:], package, level)\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py\", line 188, in exec_module\nINTERNALERROR>     exec(co, module.__dict__)\nINTERNALERROR>   File \"/tmp/study/repo/tests/test_196_e2e_validation.py\", line 271, in <module>\nINTERNALERROR>     sys.exit(0 if failed == 0 else 1)\nINTERNALERROR> SystemExit: 0\n\n6 warnings in 5.04s\nmainloop: caught unexpected SystemExit!"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "id": "gt__mmuckley__torchkbnufft__7e23776",
+ "repo": "mmuckley/torchkbnufft",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 257,
+ "sha": "7039bc1c2d32cf86c8f25d39bcf1bf394368bdd4",
+ "old": "1.26.4",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:3: in <module>\n    import torchkbnufft as tkbn\ntorchkbnufft/__init__.py:14: in <module>\n    import torchkbnufft.modules\ntorchkbnufft/modules/__init__.py:1: in <module>\n    from .kbinterp import KbInterp, KbInterpAdjoint\ntorchkbnufft/modules/kbinterp.py:7: in <module>\n    from ._kbmodule import KbModule\ntorchkbnufft/modules/_kbmodule.py:6: in <module>\n    from .._nufft.utils import DTYPE_MAP, init_fn\ntorchkbnufft/_nufft/utils.py:7: in <module>\n    from scipy.sparse import coo_matrix\n../venv/lib/python3.12/site-packages/scipy/sparse/__init__.py:250: in <module>\n    from ._base import *\n../venv/lib/python3.12/site-packages/scipy/sparse/_base.py:8: in <module>\n    from ._sputils import (asmatrix, check_shape,\n../venv/lib/python3.12/site-packages/scipy/sparse/_sputils.py:17: in <module>\n    np.uintc, np.long, np.ulong, np.longlong, np.ulonglong,\n              ^^^^^^^\n../venv/lib/python3.12/site-packages/numpy/__init__.py:333: in __getattr__\n    raise AttributeError(\"module {!r} has no attribute \"\nE   AttributeError: module 'numpy' has no attribute 'long'. Did you mean: 'log'?"
+ }
+}

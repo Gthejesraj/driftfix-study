@@ -1,0 +1,16 @@
+{
+ "id": "gt__quantumjot__btrack__78b223d",
+ "repo": "quantumjot/btrack",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 335,
+ "sha": "c0dfd9d45c6140c33682ec25b436587b62297bc8",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:7: in <module>\n    from qtpy import QtWidgets\n../venv/lib/python3.12/site-packages/qtpy/__init__.py:293: in <module>\n    raise QtBindingsNotFoundError from None\nE   qtpy.QtBindingsNotFoundError: No Qt bindings could be found"
+ }
+}

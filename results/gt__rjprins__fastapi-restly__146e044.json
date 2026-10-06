@@ -1,0 +1,16 @@
+{
+ "id": "gt__rjprins__fastapi-restly__146e044",
+ "repo": "rjprins/fastapi-restly",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 17,
+ "sha": "147d6c825ee994a8aedb7a691373c7896fc3c7f1",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 1,
+  "counts": {},
+  "failing": [],
+  "tail": "    teardown.throw(exception)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/helpconfig.py\", line 105, in pytest_cmdline_parse\n    config = yield\n             ^^^^^\n  File \"/tmp/study/venv/lib/python3.12/site-packages/pluggy/_callers.py\", line 121, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/config/__init__.py\", line 1140, in pytest_cmdline_parse\n    self.parse(args)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/config/__init__.py\", line 1494, in parse\n    self._preparse(args, addopts=addopts)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/config/__init__.py\", line 1381, in _preparse\n    self.pluginmanager.load_setuptools_entrypoints(\"pytest11\")\n  File \"/tmp/study/venv/lib/python3.12/site-packages/pluggy/_manager.py\", line 416, in load_setuptools_entrypoints\n    plugin = ep.load()\n             ^^^^^^^^^\n  File \"/usr/lib/python3.12/importlib/metadata/__init__.py\", line 205, in load\n    module = import_module(match.group('module'))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1310, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 488, in _call_with_frames_removed\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py\", line 185, in exec_module\n    exec(co, module.__dict__)\n  File \"/tmp/study/repo/fastapi_restly/__init__.py\", line 12, in <module>\n    from . import exc, objects, query, utils  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py\", line 185, in exec_module\n    exec(co, module.__dict__)\n  File \"/tmp/study/repo/fastapi_restly/objects.py\", line 6, in <module>\n    from sqlalchemy.orm import DeclarativeBase as _DeclarativeBase\nImportError: cannot import name 'DeclarativeBase' from 'sqlalchemy.orm' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/orm/__init__.py). Did you mean: 'declarative_base'?"
+ }
+}

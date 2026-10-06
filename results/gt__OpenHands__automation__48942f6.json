@@ -1,0 +1,16 @@
+{
+ "id": "gt__OpenHands__automation__48942f6",
+ "repo": "OpenHands/automation",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 33,
+ "sha": "a3d02b0be04a9a21041cccee109c32726ba3e292",
+ "old": "1.4.54",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:10: in <module>\n    from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine\nE   ImportError: cannot import name 'async_sessionmaker' from 'sqlalchemy.ext.asyncio' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/__init__.py)"
+ }
+}

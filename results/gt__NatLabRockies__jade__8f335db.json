@@ -1,0 +1,30 @@
+{
+ "id": "gt__NatLabRockies__jade__8f335db",
+ "repo": "NatLabRockies/jade",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 14,
+ "sha": "3a276d188638ed2645b30d1d5e6d48b58511e32e",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 126,
+   "skipped": 8
+  },
+  "failing": [],
+  "tail": "sss.......................s............................................. [ 53%]\n............s.........ss.............................s........           [100%]\n=============================== warnings summary ===============================\ntests/unit/utils/test_dataframe_utils.py::test_write_dataframe__json[False]\ntests/unit/utils/test_dataframe_utils.py::test_write_dataframe__json[True]\n  /tmp/study/repo/jade/utils/dataframe_utils.py:229: Pandas4Warning: The default 'epoch' date format is deprecated and will be removed in a future version, please use 'iso' date format instead.\n    df.to_json(file_path, **kwargs)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n126 passed, 8 skipped, 39 deselected, 2 warnings in 9.19s",
+  "preexisting_failures": 40
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 126,
+   "skipped": 8
+  },
+  "failing": [],
+  "tail": "sss.......................s............................................. [ 53%]\n............s.........ss.............................s........           [100%]\n=============================== warnings summary ===============================\ntests/unit/utils/test_dataframe_utils.py::test_write_dataframe__json[False]\ntests/unit/utils/test_dataframe_utils.py::test_write_dataframe__json[True]\n  /tmp/study/repo/jade/utils/dataframe_utils.py:229: Pandas4Warning: The default 'epoch' date format is deprecated and will be removed in a future version, please use 'iso' date format instead.\n    df.to_json(file_path, **kwargs)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n126 passed, 8 skipped, 39 deselected, 2 warnings in 9.12s"
+ },
+ "status": "not_broken"
+}

@@ -1,0 +1,26 @@
+{
+ "id": "gt__aio-libs__aiopg__653ba5a",
+ "repo": "aio-libs/aiopg",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 1433,
+ "sha": "0b5e63cac2a50d4409051c2c066cc80d4d35b862",
+ "old": "1.4.38",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 37
+  },
+  "failing": [],
+  "tail": ".....................................                                    [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.12/site-packages/sqlalchemy/sql/sqltypes.py:2061\n  /tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/sql/sqltypes.py:2061: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).\n    epoch = dt.datetime.utcfromtimestamp(0)\n\ntests/conftest.py:54\n  /tmp/study/repo/tests/conftest.py:54: PytestRemovedIn10Warning: The hookimpl pytest_pycollect_makeitem uses old-style configuration options (marks or attributes).\n  Please use the pytest.hookimpl(tryfirst=True) decorator instead\n   to configure the hooks.\n   See https://docs.pytest.org/en/latest/deprecations.html#configuring-hook-specs-impls-using-markers\n    @pytest.mark.tryfirst\n\ntests/conftest.py:79\n  /tmp/study/repo/tests/conftest.py:79: PytestRemovedIn10Warning: The hookimpl pytest_pyfunc_call uses old-style configuration options (marks or attributes).\n  Please use the pytest.hookimpl(tryfirst=True) decorator instead\n   to configure the hooks.\n   See https://docs.pytest.org/en/latest/deprecations.html#configuring-hook-specs-impls-using-markers\n    @pytest.mark.tryfirst\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n37 passed, 285 deselected, 3 warnings in 0.42s",
+  "preexisting_failures": 285
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:18: in <module>\n    from aiopg import sa\naiopg/sa/__init__.py:3: in <module>\n    from .engine import Engine, create_engine\naiopg/sa/engine.py:16: in <module>\n    raise ImportError(\"aiopg.sa requires sqlalchemy\")\nE   ImportError: aiopg.sa requires sqlalchemy"
+ },
+ "status": "broken"
+}

@@ -1,0 +1,25 @@
+{
+ "id": "gt__TUW-GEO__pytesmo__25e8dfa",
+ "repo": "TUW-GEO/pytesmo",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 92,
+ "sha": "ad981a200f05d9e326569f62c8bedfa84e015fb4",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 6
+  },
+  "failing": [
+   "tests/test_docs/test_examples.py",
+   "tests/test_timedate/test_julian.py",
+   "tests/test_validation_framework/test_adapters.py",
+   "tests/test_validation_framework/test_error_handling.py",
+   "tests/test_validation_framework/test_metric_calculators.py",
+   "tests/test_validation_framework/test_validation.py"
+  ],
+  "tail": "    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_validation_framework/test_error_handling.py:5: in <module>\n    from pytesmo.validation_framework.validation import Validation\nsrc/pytesmo/validation_framework/validation.py:20: in <module>\n    from distutils.version import LooseVersion\nE   ModuleNotFoundError: No module named 'distutils'\n_ ERROR collecting tests/test_validation_framework/test_metric_calculators.py __\nImportError while importing test module '/tmp/study/repo/tests/test_validation_framework/test_metric_calculators.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_validation_framework/test_metric_calculators.py:40: in <module>\n    from pytesmo.validation_framework.validation import Validation\nsrc/pytesmo/validation_framework/validation.py:20: in <module>\n    from distutils.version import LooseVersion\nE   ModuleNotFoundError: No module named 'distutils'\n_____ ERROR collecting tests/test_validation_framework/test_validation.py ______\nImportError while importing test module '/tmp/study/repo/tests/test_validation_framework/test_validation.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_validation_framework/test_validation.py:53: in <module>\n    from pytesmo.validation_framework.validation import Validation\nsrc/pytesmo/validation_framework/validation.py:20: in <module>\n    from distutils.version import LooseVersion\nE   ModuleNotFoundError: No module named 'distutils'\n=========================== short test summary info ============================\nERROR tests/test_docs/test_examples.py\nERROR tests/test_timedate/test_julian.py\nERROR tests/test_validation_framework/test_adapters.py\nERROR tests/test_validation_framework/test_error_handling.py\nERROR tests/test_validation_framework/test_metric_calculators.py\nERROR tests/test_validation_framework/test_validation.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!\n6 errors in 6.42s"
+ }
+}

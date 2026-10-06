@@ -1,0 +1,16 @@
+{
+ "id": "gt__BjornMelin__ai-job-scraper__a7d7cbe",
+ "repo": "BjornMelin/ai-job-scraper",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 47,
+ "sha": "d871eec672cd697956a03894b0d52c38b3b8a334",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:13: in <module>\n    from sqlmodel import Session, SQLModel, create_engine\n../venv/lib/python3.12/site-packages/sqlmodel/__init__.py:81: in <module>\n    from sqlalchemy.types import DOUBLE as DOUBLE\nE   ImportError: cannot import name 'DOUBLE' from 'sqlalchemy.types' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/types.py)"
+ }
+}

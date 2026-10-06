@@ -1,0 +1,16 @@
+{
+ "id": "gt__datamodel-code-generator__datamodel-code-generator__00dcee2",
+ "repo": "datamodel-code-generator/datamodel-code-generator",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 4029,
+ "sha": "a069e5f46ae7468d660a18152ec2bf735b2999fc",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:26: in <module>\n    import time_machine\nE   ModuleNotFoundError: No module named 'time_machine'"
+ }
+}

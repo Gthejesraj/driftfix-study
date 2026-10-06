@@ -1,0 +1,41 @@
+{
+ "id": "gt__prebid__salesagent__4ce89d9",
+ "repo": "prebid/salesagent",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 38,
+ "sha": "8bb61377b496f07477fa755e7415ace6c2fcb8be",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 22
+  },
+  "failing": [
+   "tests/integration",
+   "tests/manual/test_gam_automation_real.py",
+   "tests/manual/test_gam_supported_only.py",
+   "tests/unit/adapters/test_base.py",
+   "tests/unit/test_adcp_contract.py",
+   "tests/unit/test_ai_orchestrator.py",
+   "tests/unit/test_ai_review.py",
+   "tests/unit/test_comprehensive_product_validation.py",
+   "tests/unit/test_context_management.py",
+   "tests/unit/test_creative_review_model.py",
+   "tests/unit/test_dashboard_service.py",
+   "tests/unit/test_format_id_parsing.py",
+   "tests/unit/test_gam_creatives_manager.py",
+   "tests/unit/test_gam_pricing_compatibility.py",
+   "tests/unit/test_pricing_validation.py",
+   "tests/unit/test_product_provider_direct.py",
+   "tests/unit/test_property_verification_service.py",
+   "tests/unit/test_signals_discovery_provider.py",
+   "tests/unit/test_targeting_translation.py",
+   "tests/unit/test_tenant_utils.py",
+   "tests/unit/test_virtual_host_config_loader.py",
+   "tests/unit/test_virtual_host_edge_cases.py"
+  ],
+  "tail": "  /tmp/study/repo/product_catalog_providers/ai.py:7: FutureWarning: \n  \n  All support for the `google.generativeai` package has ended. It will no longer be receiving \n  updates or bug fixes. Please switch to the `google.genai` package as soon as possible.\n  See README for more details:\n  \n  https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md\n  \n    import google.generativeai as genai\n\nsrc/core/testing_hooks.py:50\n  /tmp/study/repo/src/core/testing_hooks.py:50: PytestCollectionWarning: cannot collect test class 'TestingContext' because it has a __init__ constructor (from: tests/unit/test_mock_server_response_headers.py)\n    class TestingContext(BaseModel):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/integration - ImportError: cannot import name 'DeclarativeBase' from 'sqlalchemy.orm' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/orm/__init__.py)\nERROR tests/manual/test_gam_automation_real.py\nERROR tests/manual/test_gam_supported_only.py\nERROR tests/unit/adapters/test_base.py\nERROR tests/unit/test_adcp_contract.py\nERROR tests/unit/test_ai_orchestrator.py\nERROR tests/unit/test_ai_review.py\nERROR tests/unit/test_comprehensive_product_validation.py\nERROR tests/unit/test_context_management.py\nERROR tests/unit/test_creative_review_model.py\nERROR tests/unit/test_dashboard_service.py\nERROR tests/unit/test_format_id_parsing.py\nERROR tests/unit/test_gam_creatives_manager.py\nERROR tests/unit/test_gam_pricing_compatibility.py\nERROR tests/unit/test_pricing_validation.py\nERROR tests/unit/test_product_provider_direct.py\nERROR tests/unit/test_property_verification_service.py\nERROR tests/unit/test_signals_discovery_provider.py\nERROR tests/unit/test_targeting_translation.py\nERROR tests/unit/test_tenant_utils.py\nERROR tests/unit/test_virtual_host_config_loader.py\nERROR tests/unit/test_virtual_host_edge_cases.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 22 errors during collection !!!!!!!!!!!!!!!!!!!\n5 warnings, 22 errors in 8.64s"
+ }
+}

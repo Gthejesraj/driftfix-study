@@ -1,0 +1,26 @@
+{
+ "id": "gt__AgentDebugX__AgentDebugX__91ce5bf",
+ "repo": "AgentDebugX/AgentDebugX",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 61,
+ "sha": "99fd60b7a7205377249296ec9e8b4b2d5f9eb2b4",
+ "old": "1.10.26",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "skipped": 4,
+   "errors": 6
+  },
+  "failing": [
+   "tests/gui/test_distill.py",
+   "tests/gui/test_episodic_schema_v2.py",
+   "tests/gui/test_lesson_explorer_tools.py",
+   "tests/gui/test_lesson_injector.py",
+   "tests/gui/test_lesson_validator.py",
+   "tests/gui/test_make_client.py"
+  ],
+  "tail": "<frozen importlib._bootstrap>:488: in _call_with_frames_removed\n    ???\nsrc/agentdebug/gui/__main__.py:29: in <module>\n    from .memory import (\n<frozen importlib._bootstrap>:1412: in _handle_fromlist\n    ???\nsrc/agentdebug/gui/memory/__init__.py:21: in __getattr__\n    from .episode_memory import EpisodicMemory, TrajectoryType\nsrc/agentdebug/gui/memory/episode_memory.py:47: in <module>\n    class Episode(BaseModel):\npydantic/main.py:214: in pydantic.main.ModelMetaclass.__new__\n    ???\npydantic/fields.py:504: in pydantic.fields.ModelField.infer\n    ???\npydantic/fields.py:434: in pydantic.fields.ModelField.__init__\n    ???\npydantic/fields.py:550: in pydantic.fields.ModelField.prepare\n    ???\npydantic/fields.py:661: in pydantic.fields.ModelField._type_analysis\n    ???\npydantic/fields.py:806: in pydantic.fields.ModelField._create_sub_type\n    ???\npydantic/fields.py:434: in pydantic.fields.ModelField.__init__\n    ???\npydantic/fields.py:555: in pydantic.fields.ModelField.prepare\n    ???\npydantic/fields.py:829: in pydantic.fields.ModelField.populate_validators\n    ???\npydantic/validators.py:768: in find_validators\n    ???\nE   RuntimeError: no validator found for <class 'os.PathLike'>, see `arbitrary_types_allowed` in Config\n=========================== short test summary info ============================\nERROR tests/gui/test_distill.py\nERROR tests/gui/test_episodic_schema_v2.py - RuntimeError: no validator found for <class 'os.PathLike'>, see `arbitrary_types_allowed` in Config\nERROR tests/gui/test_lesson_explorer_tools.py\nERROR tests/gui/test_lesson_injector.py\nERROR tests/gui/test_lesson_validator.py\nERROR tests/gui/test_make_client.py - RuntimeError: no validator found for <class 'os.PathLike'>, see `arbitrary_types_allowed` in Config\n!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!\n4 skipped, 6 errors in 0.92s"
+ }
+}

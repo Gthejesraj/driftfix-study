@@ -1,0 +1,16 @@
+{
+ "id": "gt__vellum-ai__vellum-python-sdks__bc3bd7b",
+ "repo": "vellum-ai/vellum-python-sdks",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 83,
+ "sha": "0cfdf459c61f725c9bb7eda629c9a4231e4864a3",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/conftest.py'.\nconftest.py:8: in <module>\n    import requests_mock\nE   ModuleNotFoundError: No module named 'requests_mock'"
+ }
+}

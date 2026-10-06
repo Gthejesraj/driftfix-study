@@ -1,0 +1,28 @@
+{
+ "id": "gt__MAIF__arta__c0dcda9",
+ "repo": "MAIF/arta",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 67,
+ "sha": "21ed02fd90d46162ceca117e35718750a44005b1",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 88
+  },
+  "failing": [],
+  "tail": "........................................................................ [ 81%]\n................                                                         [100%]\n88 passed in 1.11s",
+  "preexisting_failures": 0
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 88
+  },
+  "failing": [],
+  "tail": "........................................................................ [ 81%]\n................                                                         [100%]\n88 passed in 1.19s"
+ },
+ "status": "not_broken"
+}

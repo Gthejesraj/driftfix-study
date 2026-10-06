@@ -1,0 +1,16 @@
+{
+ "id": "gt__bilby-dev__bilby__1ed73af",
+ "repo": "bilby-dev/bilby",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 129,
+ "sha": "1153adc1b142117d4615c5c42ce5bf456ce4411c",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/test/conftest.py'.\ntest/conftest.py:6: in <module>\n    from bilby.compat.utils import BILBY_DEVICE\nbilby/__init__.py:21: in <module>\n    from . import core, gw, hyper\nbilby/core/__init__.py:1: in <module>\n    from . import grid, likelihood, prior, result, sampler, series, utils, fisher\nbilby/core/grid.py:7: in <module>\n    from .prior import Prior, PriorDict\nbilby/core/prior/__init__.py:1: in <module>\n    from .analytical import *\nbilby/core/prior/analytical.py:17: in <module>\n    from .base import Prior\nbilby/core/prior/base.py:9: in <module>\n    import scipy.stats\n../venv/lib/python3.12/site-packages/scipy/stats/__init__.py:600: in <module>\n    from ._stats_py import *\n../venv/lib/python3.12/site-packages/scipy/stats/_stats_py.py:39: in <module>\n    from scipy import sparse\n../venv/lib/python3.12/site-packages/scipy/sparse/__init__.py:250: in <module>\n    from ._base import *\n../venv/lib/python3.12/site-packages/scipy/sparse/_base.py:8: in <module>\n    from ._sputils import (asmatrix, check_shape,\n../venv/lib/python3.12/site-packages/scipy/sparse/_sputils.py:17: in <module>\n    np.uintc, np.long, np.ulong, np.longlong, np.ulonglong,\n              ^^^^^^^\n../venv/lib/python3.12/site-packages/numpy/__init__.py:333: in __getattr__\n    raise AttributeError(\"module {!r} has no attribute \"\nE   AttributeError: module 'numpy' has no attribute 'long'. Did you mean: 'log'?"
+ }
+}
