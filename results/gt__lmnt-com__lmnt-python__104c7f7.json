@@ -1,0 +1,16 @@
+{
+ "id": "gt__lmnt-com__lmnt-python__104c7f7",
+ "repo": "lmnt-com/lmnt-python",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 11,
+ "sha": "3a435b8255f6cc9bdb6854440dd7f7646b53b293",
+ "old": "1.10.26",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:13: in <module>\n    from lmnt import Lmnt, AsyncLmnt, DefaultAioHttpClient\nsrc/lmnt/__init__.py:9: in <module>\n    from . import types\nsrc/lmnt/types/__init__.py:5: in <module>\n    from .voice import Voice as Voice\nsrc/lmnt/types/voice.py:6: in <module>\n    from .._models import BaseModel\nsrc/lmnt/_models.py:761: in <module>\n    class RootModel(GenericModel, Generic[_T]):\npydantic/main.py:257: in pydantic.main.ModelMetaclass.__new__\n    ???\npydantic/main.py:100: in pydantic.main.validate_custom_root_type\n    ???\nE   ValueError: __root__ cannot be mixed with other fields"
+ }
+}

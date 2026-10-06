@@ -1,0 +1,16 @@
+{
+ "id": "gt__cognizant-ai-lab__neuro-san__182c51c",
+ "repo": "cognizant-ai-lab/neuro-san",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 156,
+ "sha": "5628baa775db9af8cb9c05f4442b24b5dd55502c",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 1,
+  "counts": {},
+  "failing": [],
+  "tail": "  File \"/tmp/study/venv/lib/python3.12/site-packages/pluggy/_callers.py\", line 167, in _multicall\n    raise exception\n  File \"/tmp/study/venv/lib/python3.12/site-packages/pluggy/_callers.py\", line 139, in _multicall\n    teardown.throw(exception)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/helpconfig.py\", line 124, in pytest_cmdline_parse\n    config = yield\n             ^^^^^\n  File \"/tmp/study/venv/lib/python3.12/site-packages/pluggy/_callers.py\", line 121, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/config/__init__.py\", line 1232, in pytest_cmdline_parse\n    self.parse(args)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/config/__init__.py\", line 1583, in parse\n    self.pluginmanager.load_setuptools_entrypoints(\"pytest11\")\n  File \"/tmp/study/venv/lib/python3.12/site-packages/pluggy/_manager.py\", line 416, in load_setuptools_entrypoints\n    plugin = ep.load()\n             ^^^^^^^^^\n  File \"/usr/lib/python3.12/importlib/metadata/__init__.py\", line 205, in load\n    module = import_module(match.group('module'))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/importlib/__init__.py\", line 90, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen importlib._bootstrap>\", line 1387, in _gcd_import\n  File \"<frozen importlib._bootstrap>\", line 1360, in _find_and_load\n  File \"<frozen importlib._bootstrap>\", line 1331, in _find_and_load_unlocked\n  File \"<frozen importlib._bootstrap>\", line 935, in _load_unlocked\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py\", line 188, in exec_module\n    exec(co, module.__dict__)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/langsmith/pytest_plugin.py\", line 14, in <module>\n    from langsmith import utils as ls_utils\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py\", line 188, in exec_module\n    exec(co, module.__dict__)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/langsmith/utils.py\", line 36, in <module>\n    from langsmith import schemas as ls_schemas\n  File \"/tmp/study/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py\", line 188, in exec_module\n    exec(co, module.__dict__)\n  File \"/tmp/study/venv/lib/python3.12/site-packages/langsmith/schemas.py\", line 22, in <module>\n    from pydantic import (\nImportError: cannot import name 'field_validator' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so). Did you mean: 'root_validator'?"
+ }
+}

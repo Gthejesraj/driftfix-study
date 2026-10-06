@@ -1,0 +1,16 @@
+{
+ "id": "gt__workfloworchestrator__orchestrator-core__7a8d6d8",
+ "repo": "workfloworchestrator/orchestrator-core",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 72,
+ "sha": "41edeaf891cbd627454858f9117b73740020ab8b",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "2026-10-06 17:33:18 [info     ] Starting the orchestrator      version=5.5.0a4\nImportError while loading conftest '/tmp/study/repo/test/unit_tests/conftest.py'.\ntest/unit_tests/conftest.py:30: in <module>\n    from orchestrator.core.services.translations import generate_translations\norchestrator/core/__init__.py:29: in <module>\n    from orchestrator.core.app import OrchestratorCore\norchestrator/core/app.py:45: in <module>\n    from orchestrator.core.api.api_v1.api import api_router\norchestrator/core/api/api_v1/api.py:19: in <module>\n    from orchestrator.core.api.api_v1.endpoints import (\norchestrator/core/api/api_v1/endpoints/health.py:24: in <module>\n    from orchestrator.core.db import ProductTable, get_async_session\norchestrator/core/db/__init__.py:19: in <module>\n    from orchestrator.core.db.database import BaseModel as DbBaseModel\norchestrator/core/db/database.py:23: in <module>\n    from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine\nE   ImportError: cannot import name 'async_sessionmaker' from 'sqlalchemy.ext.asyncio' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/__init__.py)"
+ }
+}

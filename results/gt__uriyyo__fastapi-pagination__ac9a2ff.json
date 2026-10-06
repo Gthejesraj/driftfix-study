@@ -1,0 +1,16 @@
+{
+ "id": "gt__uriyyo__fastapi-pagination__ac9a2ff",
+ "repo": "uriyyo/fastapi-pagination",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 1683,
+ "sha": "0cc3eb7d039f11f9c64abd3196d98c9cf56c9fe9",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:4: in <module>\n    from . import patch  # noqa: F401  # isort: skip  # DO NOT REMOVE THIS LINE.\n    ^^^^^^^^^^^^^^^^^^^\ntests/patch.py:4: in <module>\n    from fastapi_pagination.pydantic import IS_PYDANTIC_V2\nfastapi_pagination/__init__.py:17: in <module>\n    from . import _warns  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^\nfastapi_pagination/_warns.py:3: in <module>\n    from fastapi_pagination.consts import IS_FASTAPI_V_0_128_0_OR_NEWER\nfastapi_pagination/consts.py:5: in <module>\n    from fastapi import __version__\n../venv/lib/python3.12/site-packages/fastapi/__init__.py:7: in <module>\n    from .applications import FastAPI as FastAPI\n../venv/lib/python3.12/site-packages/fastapi/applications.py:13: in <module>\n    from fastapi import routing\n../venv/lib/python3.12/site-packages/fastapi/routing.py:24: in <module>\n    from fastapi import params\n../venv/lib/python3.12/site-packages/fastapi/params.py:8: in <module>\n    from fastapi.openapi.models import Example\n../venv/lib/python3.12/site-packages/fastapi/openapi/models.py:5: in <module>\n    from fastapi._compat import with_info_plain_validator_function\n../venv/lib/python3.12/site-packages/fastapi/_compat/__init__.py:16: in <module>\n    from .v2 import BaseConfig as BaseConfig\n../venv/lib/python3.12/site-packages/fastapi/_compat/v2.py:18: in <module>\n    from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, create_model\nE   ImportError: cannot import name 'TypeAdapter' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so)"
+ }
+}

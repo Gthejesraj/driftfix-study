@@ -1,0 +1,28 @@
+{
+ "id": "gt__pycasbin__sqlalchemy-adapter__a737cd8",
+ "repo": "pycasbin/sqlalchemy-adapter",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 82,
+ "sha": "78edd934697c036bc189e477ac556dfbfeb977e2",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 14
+  },
+  "failing": [],
+  "tail": "..............                                                           [100%]\n=============================== warnings summary ===============================\ncasbin_sqlalchemy_adapter/adapter.py:9\n  /tmp/study/repo/casbin_sqlalchemy_adapter/adapter.py:9: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to \"sqlalchemy<2.0\". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)\n    Base = declarative_base()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n14 passed, 1 warning in 0.19s",
+  "preexisting_failures": 0
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 14
+  },
+  "failing": [],
+  "tail": "..............                                                           [100%]\n=============================== warnings summary ===============================\ncasbin_sqlalchemy_adapter/adapter.py:9\n  /tmp/study/repo/casbin_sqlalchemy_adapter/adapter.py:9: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)\n    Base = declarative_base()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n14 passed, 1 warning in 0.72s"
+ },
+ "status": "not_broken"
+}

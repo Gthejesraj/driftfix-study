@@ -1,0 +1,32 @@
+{
+ "id": "gt__ni__nisystemlink-clients-python__66eada6",
+ "repo": "ni/nisystemlink-clients-python",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 10,
+ "sha": "c5cb4c2c6426c0b153680bf561304ab336be4e8d",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 13
+  },
+  "failing": [
+   "tests/integration/artifact/test_artifact.py",
+   "tests/integration/dataframe/test_dataframe.py",
+   "tests/integration/feeds/test_feeds_client.py",
+   "tests/integration/file/test_file_client.py",
+   "tests/integration/notebook/test_notebook_client.py",
+   "tests/integration/product/test_product_client.py",
+   "tests/integration/spec/test_spec.py",
+   "tests/integration/testmonitor/test_testmonitor.py",
+   "tests/product/test_product_dataframe_utilities.py",
+   "tests/spec/test_spec_dataframe_utilitites.py",
+   "tests/tag/test_itagreader.py",
+   "tests/tag/test_itagwriter.py",
+   "tests/testmonitor/test_testmonitor_dataframe_utilities.py"
+  ],
+  "tail": "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/tag/test_itagwriter.py:7: in <module>\n    import mypy.api\nE   ModuleNotFoundError: No module named 'mypy'\n__ ERROR collecting tests/testmonitor/test_testmonitor_dataframe_utilities.py __\nImportError while importing test module '/tmp/study/repo/tests/testmonitor/test_testmonitor_dataframe_utilities.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/testmonitor/test_testmonitor_dataframe_utilities.py:7: in <module>\n    from nisystemlink.clients.testmonitor.models import (\nnisystemlink/clients/testmonitor/__init__.py:1: in <module>\n    from ._test_monitor_client import TestMonitorClient\nnisystemlink/clients/testmonitor/_test_monitor_client.py:6: in <module>\n    from nisystemlink.clients.core._uplink._base_client import BaseClient\nnisystemlink/clients/core/_uplink/_base_client.py:10: in <module>\n    from uplink import commands, Consumer, converters, response_handler, utils\n../venv/lib/python3.12/site-packages/uplink/__init__.py:3: in <module>\n    from uplink._extras import install, load_entry_points as _load_entry_points\n../venv/lib/python3.12/site-packages/uplink/_extras.py:4: in <module>\n    import pkg_resources\nE   ModuleNotFoundError: No module named 'pkg_resources'\n=========================== short test summary info ============================\nERROR tests/integration/artifact/test_artifact.py\nERROR tests/integration/dataframe/test_dataframe.py\nERROR tests/integration/feeds/test_feeds_client.py\nERROR tests/integration/file/test_file_client.py\nERROR tests/integration/notebook/test_notebook_client.py\nERROR tests/integration/product/test_product_client.py\nERROR tests/integration/spec/test_spec.py\nERROR tests/integration/testmonitor/test_testmonitor.py\nERROR tests/product/test_product_dataframe_utilities.py\nERROR tests/spec/test_spec_dataframe_utilitites.py\nERROR tests/tag/test_itagreader.py\nERROR tests/tag/test_itagwriter.py\nERROR tests/testmonitor/test_testmonitor_dataframe_utilities.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 13 errors during collection !!!!!!!!!!!!!!!!!!!\n13 errors in 2.61s"
+ }
+}

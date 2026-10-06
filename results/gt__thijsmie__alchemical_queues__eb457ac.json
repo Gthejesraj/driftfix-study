@@ -1,0 +1,28 @@
+{
+ "id": "gt__thijsmie__alchemical_queues__eb457ac",
+ "repo": "thijsmie/alchemical_queues",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 14,
+ "sha": "7ac7682cdf9ae20b078e9f97d224a6ea6e96143a",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 30
+  },
+  "failing": [],
+  "tail": "..............................                                           [100%]\n30 passed in 25.34s",
+  "preexisting_failures": 0
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 30
+  },
+  "failing": [],
+  "tail": "..............................                                           [100%]\n30 passed in 21.03s"
+ },
+ "status": "not_broken"
+}

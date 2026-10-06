@@ -1,0 +1,30 @@
+{
+ "id": "gt__tjcsl__cslbot__30ffa61",
+ "repo": "tjcsl/cslbot",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 15,
+ "sha": "d352badced1a07e2ecb9208411286af5ef172faa",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 35,
+   "skipped": 3
+  },
+  "failing": [],
+  "tail": "...............................sss....                                   [100%]\n35 passed, 3 skipped in 1.90s",
+  "preexisting_failures": 0
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 35,
+   "skipped": 3
+  },
+  "failing": [],
+  "tail": "...............................sss....                                   [100%]\n35 passed, 3 skipped in 2.73s"
+ },
+ "status": "not_broken"
+}

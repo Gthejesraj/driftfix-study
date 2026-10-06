@@ -1,0 +1,16 @@
+{
+ "id": "gt__danger__python__3349cfe",
+ "repo": "danger/python",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 117,
+ "sha": "be29cf5605a15b5a1b8c1b9fdcd6da0428a56cf3",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:7: in <module>\n    from pyfakefs.fake_filesystem_unittest import Patcher\nE   ModuleNotFoundError: No module named 'pyfakefs'"
+ }
+}

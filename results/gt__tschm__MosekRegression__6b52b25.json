@@ -1,0 +1,30 @@
+{
+ "id": "gt__tschm__MosekRegression__6b52b25",
+ "repo": "tschm/MosekRegression",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 11,
+ "sha": "f1d9028889404a4d0821e7e922576eaceec1422d",
+ "old": "1.26.4",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 71,
+   "skipped": 2
+  },
+  "failing": [],
+  "tail": "s................s...................................................... [ 98%]\n.                                                                        [100%]\n71 passed, 2 skipped, 1 deselected in 4.75s",
+  "preexisting_failures": 1
+ },
+ "new": "2.5.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 71,
+   "skipped": 2
+  },
+  "failing": [],
+  "tail": "s................s...................................................... [ 98%]\n.                                                                        [100%]\n71 passed, 2 skipped, 1 deselected in 4.26s"
+ },
+ "status": "not_broken"
+}

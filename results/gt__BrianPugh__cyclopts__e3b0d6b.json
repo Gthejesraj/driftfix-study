@@ -1,0 +1,20 @@
+{
+ "id": "gt__BrianPugh__cyclopts__e3b0d6b",
+ "repo": "BrianPugh/cyclopts",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 1277,
+ "sha": "749184f9bf7a001031f170cf577e54e7c48748b5",
+ "old": "1.10.26",
+ "status": "already_on_new_version",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/test_pydantic.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n___________________ ERROR collecting tests/test_pydantic.py ____________________\nImportError while importing test module '/tmp/study/repo/tests/test_pydantic.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_pydantic.py:9: in <module>\n    from pydantic import BaseModel, ConfigDict, Field, PositiveInt, SecretBytes, SecretStr, model_validator, validate_call\nE   ImportError: cannot import name 'model_validator' from 'pydantic' (/tmp/study/venv/lib/python3.12/site-packages/pydantic/__init__.cpython-312-x86_64-linux-gnu.so). Did you mean: 'root_validator'?\n=========================== short test summary info ============================\nERROR tests/test_pydantic.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 1.87s"
+ }
+}

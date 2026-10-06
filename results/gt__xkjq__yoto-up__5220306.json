@@ -1,0 +1,25 @@
+{
+ "id": "gt__xkjq__yoto-up__5220306",
+ "repo": "xkjq/yoto-up",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 22,
+ "sha": "6087e6e694c1365cf569ebbcbbdf07298cc021b2",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 6
+  },
+  "failing": [
+   "tests/test_audio_splitter.py",
+   "tests/test_icons_api.py",
+   "tests/test_progress_cb.py",
+   "tests/test_replace_icons_component.py",
+   "tests/test_upload_concurrency.py",
+   "tests/test_yoto_api.py"
+  ],
+  "tail": "E   ModuleNotFoundError: No module named 'yoto_up'\n____________ ERROR collecting tests/test_replace_icons_component.py ____________\nImportError while importing test module '/tmp/study/repo/tests/test_replace_icons_component.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_replace_icons_component.py:6: in <module>\n    from yoto_up.yoto_app import replace_icons as ri\nE   ModuleNotFoundError: No module named 'yoto_up'\n______________ ERROR collecting tests/test_upload_concurrency.py _______________\nImportError while importing test module '/tmp/study/repo/tests/test_upload_concurrency.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_upload_concurrency.py:6: in <module>\n    import httpx\nE   ModuleNotFoundError: No module named 'httpx'\n___________________ ERROR collecting tests/test_yoto_api.py ____________________\nImportError while importing test module '/tmp/study/repo/tests/test_yoto_api.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_yoto_api.py:1: in <module>\n    from yoto_up.yoto_api import YotoAPI\nE   ModuleNotFoundError: No module named 'yoto_up'\n=========================== short test summary info ============================\nERROR tests/test_audio_splitter.py\nERROR tests/test_icons_api.py\nERROR tests/test_progress_cb.py\nERROR tests/test_replace_icons_component.py\nERROR tests/test_upload_concurrency.py\nERROR tests/test_yoto_api.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!\n6 errors in 0.11s"
+ }
+}

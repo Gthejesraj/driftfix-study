@@ -1,0 +1,40 @@
+{
+ "id": "gt__DIRACGrid__diracx__6152cbf",
+ "repo": "DIRACGrid/diracx",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 20,
+ "sha": "60e584619e586b71752065afbc546301b4087d9b",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 21
+  },
+  "failing": [
+   "diracx-cli/tests/test_jobs.py",
+   "diracx-client/tests/test_auth.py",
+   "diracx-core/tests/test_s3.py",
+   "diracx-core/tests/test_utils.py",
+   "diracx-db/tests/auth/test_authorization_flow.py",
+   "diracx-db/tests/auth/test_device_flow.py",
+   "diracx-db/tests/auth/test_refresh_token.py",
+   "diracx-db/tests/jobs/test_job_db.py",
+   "diracx-db/tests/jobs/test_job_logging_db.py",
+   "diracx-db/tests/jobs/test_sandbox_metadata.py",
+   "diracx-db/tests/opensearch/test_connection.py",
+   "diracx-db/tests/opensearch/test_index_template.py",
+   "diracx-db/tests/opensearch/test_search.py",
+   "diracx-db/tests/pilot_agents/test_pilot_agents_db.py",
+   "diracx-db/tests/test_dummy_db.py",
+   "diracx-db/tests/utils/test_uuid.py",
+   "diracx-routers/tests/auth/test_standard.py",
+   "diracx-routers/tests/jobs",
+   "diracx-routers/tests/test_config_manager.py",
+   "diracx-routers/tests/test_generic.py",
+   "diracx-routers/tests/test_policy.py"
+  ],
+  "tail": "/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ndiracx-routers/tests/test_generic.py:8: in <module>\n    from diracx.routers import DIRACX_MIN_CLIENT_VERSION\nE   ModuleNotFoundError: No module named 'diracx.routers'\n_____________ ERROR collecting diracx-routers/tests/test_policy.py _____________\nImportError while importing test module '/tmp/study/repo/diracx-routers/tests/test_policy.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ndiracx-routers/tests/test_policy.py:8: in <module>\n    from diracx.routers.access_policies import (\nE   ModuleNotFoundError: No module named 'diracx.routers'\n=========================== short test summary info ============================\nERROR diracx-cli/tests/test_jobs.py\nERROR diracx-client/tests/test_auth.py\nERROR diracx-core/tests/test_s3.py\nERROR diracx-core/tests/test_utils.py\nERROR diracx-db/tests/auth/test_authorization_flow.py\nERROR diracx-db/tests/auth/test_device_flow.py\nERROR diracx-db/tests/auth/test_refresh_token.py\nERROR diracx-db/tests/jobs/test_job_db.py\nERROR diracx-db/tests/jobs/test_job_logging_db.py\nERROR diracx-db/tests/jobs/test_sandbox_metadata.py\nERROR diracx-db/tests/opensearch/test_connection.py\nERROR diracx-db/tests/opensearch/test_index_template.py\nERROR diracx-db/tests/opensearch/test_search.py\nERROR diracx-db/tests/pilot_agents/test_pilot_agents_db.py\nERROR diracx-db/tests/test_dummy_db.py\nERROR diracx-db/tests/utils/test_uuid.py\nERROR diracx-routers/tests/auth/test_standard.py\nERROR diracx-routers/tests/jobs - ModuleNotFoundError: No module named 'fastapi'\nERROR diracx-routers/tests/test_config_manager.py\nERROR diracx-routers/tests/test_generic.py\nERROR diracx-routers/tests/test_policy.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 21 errors during collection !!!!!!!!!!!!!!!!!!!\n21 errors in 2.62s"
+ }
+}
