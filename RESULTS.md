@@ -82,3 +82,30 @@ per project (range $0.29–2.93).
 - No ground-truth comparison yet. Next step: find projects whose maintainers
   already made these migrations and compare driftfix's fix with theirs.
 - Python 3.11 only; some projects may expect other versions.
+
+## Ground truth: driftfix vs. maintainers' own fixes
+
+Method in the [README](README.md#ground-truth-comparing-with-human-fixes):
+start from the commit **before** a maintainer's migration, upgrade, run
+driftfix, and compare with what the maintainer wrote.
+
+**Round 1 (37 migration commits found by commit search):** only 1 was usable.
+
+| Status | Commits |
+|---|---|
+| No passing tests at the pre-fix commit (missing services, undeclared deps, Docker, tkinter, …) | 28 |
+| Code already targeted the new version (the commit was cleanup, not a migration) | 4 |
+| Tests don't break on the upgrade | 4 |
+| **Broken and comparable** | **1** |
+
+**[simvia-tech/meshlane](https://github.com/simvia-tech/meshlane) at
+[f089a4f^](https://github.com/simvia-tech/meshlane/commit/f089a4f), numpy
+1.26 → 2.5:** 766 tests passing → 25 failing. driftfix fixed it for $0.53 and
+changed **the same 5 files** as the maintainer, with the **same 5 edits**:
+`repr` → `str` for numpy scalars in 4 writers (numpy 2's scalar repr is
+`np.float64(...)`), and an `int()` cast on a `uint32` read from an STL header,
+where NEP 50 promotion would otherwise make `num_triangles * 50` overflow on
+large files. The only differences are the maintainer's explanatory comments
+and an equivalent format-string spelling.
+
+Round 2 (date-sliced commit search for more migrations) in progress.

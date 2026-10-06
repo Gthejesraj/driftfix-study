@@ -1,0 +1,67 @@
+diff --git a/src/meshlane/dolfin/_dolfin.py b/src/meshlane/dolfin/_dolfin.py
+index e43dbd5..0a2c1ea 100644
+--- a/src/meshlane/dolfin/_dolfin.py
++++ b/src/meshlane/dolfin/_dolfin.py
+@@ -207,7 +207,7 @@ def _write_cell_data(filename, dim, cell_data):
+     )
+ 
+     for k, value in enumerate(cell_data):
+-        ET.SubElement(mesh_function, "entity", index=str(k), value=repr(value))
++        ET.SubElement(mesh_function, "entity", index=str(k), value=str(value))
+ 
+     tree = ET.ElementTree(dolfin)
+     tree.write(filename)
+diff --git a/src/meshlane/gmsh/common.py b/src/meshlane/gmsh/common.py
+index ee476a5..8a61ae8 100644
+--- a/src/meshlane/gmsh/common.py
++++ b/src/meshlane/gmsh/common.py
+@@ -273,7 +273,7 @@ def _write_data(fh, tag, name, data, binary):
+         tmp.tofile(fh)
+         fh.write(b"\n")
+     else:
+-        fmt = " ".join(["{}"] + ["{!r}"] * num_components) + "\n"
++        fmt = " ".join(["{}"] * (1 + num_components)) + "\n"
+         # TODO unify
+         if num_components == 1:
+             for k, x in enumerate(data):
+diff --git a/src/meshlane/mdpa/_mdpa.py b/src/meshlane/mdpa/_mdpa.py
+index 550b1c2..1a42f8a 100644
+--- a/src/meshlane/mdpa/_mdpa.py
++++ b/src/meshlane/mdpa/_mdpa.py
+@@ -418,7 +418,7 @@ def _write_data(fh, tag, name, data, binary):
+         data = data[:, 0]
+ 
+     # Actually write the data
+-    fmt = " ".join(["{}"] + ["{!r}"] * num_components) + "\n"
++    fmt = " ".join(["{}"] * (1 + num_components)) + "\n"
+     # TODO unify
+     if num_components == 1:
+         for k, x in enumerate(data):
+diff --git a/src/meshlane/stl/_stl.py b/src/meshlane/stl/_stl.py
+index d13a581..f2ce005 100644
+--- a/src/meshlane/stl/_stl.py
++++ b/src/meshlane/stl/_stl.py
+@@ -34,7 +34,7 @@ def read(filename):
+             return _read_ascii(f)
+ 
+         f.read(80)
+-        num_triangles = np.fromfile(f, count=1, dtype="<u4")[0]
++        num_triangles = int(np.fromfile(f, count=1, dtype="<u4")[0])
+         # for each triangle, one has 3 float32 (facet normal), 9 float32 (facet),
+         # and 1 int16 (attribute count), 50 bytes in total
+         if 84 + num_triangles * 50 == filesize_bytes:
+diff --git a/src/meshlane/ugrid/_ugrid.py b/src/meshlane/ugrid/_ugrid.py
+index 6fa57c0..02066cb 100644
+--- a/src/meshlane/ugrid/_ugrid.py
++++ b/src/meshlane/ugrid/_ugrid.py
+@@ -145,7 +145,9 @@ def read_buffer(f, file_type):
+ def _write_section(f, file_type, array, dtype):
+     if file_type["type"] == "ascii":
+         ncols = array.shape[1]
+-        fmt = " ".join(["%r"] * ncols)
++        # Use "%s": numpy scalars' str() is the shortest round-trip
++        # representation, while their repr() is "np.float64(...)" (numpy >= 2).
++        fmt = " ".join(["%s"] * ncols)
+         np.savetxt(f, array, fmt=fmt)
+     else:
+         array.astype(dtype).tofile(f)
