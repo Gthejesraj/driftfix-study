@@ -1,0 +1,57 @@
+diff --git a/arlpy/comms.py b/arlpy/comms.py
+index 1749ff7..836b844 100644
+--- a/arlpy/comms.py
++++ b/arlpy/comms.py
+@@ -393,7 +393,7 @@ def ser(x, y):
+     """
+     x = _np.asarray(x, dtype=_np.int64)
+     y = _np.asarray(y, dtype=_np.int64)
+-    n = _np.product(_np.shape(x))
++    n = _np.prod(_np.shape(x))
+     e = _np.count_nonzero(x^y)
+     return float(e)/n
+ 
+@@ -417,7 +417,7 @@ def ber(x, y, m=2):
+         return ser(x, y)
+     if m > _MAX_M:
+         raise ValueError('m > %d not supported' % (_MAX_M))
+-    n = _np.product(_np.shape(x))*_np.log2(m)
++    n = _np.prod(_np.shape(x))*_np.log2(m)
+     e = x^y
+     e = e[_np.nonzero(e)]
+     e = _np.sum(_popcount[e])
+diff --git a/arlpy/signal.py b/arlpy/signal.py
+index a9ca46d..ea131bc 100644
+--- a/arlpy/signal.py
++++ b/arlpy/signal.py
+@@ -134,7 +134,7 @@ def mseq(spec, n=None):
+     for j in range(n):
+         b = functools.reduce(_op.xor, reg[spec], 0)
+         reg = _np.roll(reg, 1)
+-        out[j] = float(2*reg[0]-1)
++        out[j] = float(2*int(reg[0])-1)
+         reg[0] = b
+     return out
+ 
+diff --git a/requirements.txt b/requirements.txt
+index a519222..c4cd4a9 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,5 +1,4 @@
+ numpy>=1.24.0
+-numpy<2.0.0
+ scipy>=1.13.0
+ scipy<1.14.0
+ utm>=0.7.0
+diff --git a/setup.py b/setup.py
+index 7adfe38..4170173 100644
+--- a/setup.py
++++ b/setup.py
+@@ -17,7 +17,6 @@ setup(
+     packages=find_packages(exclude=('tests', 'docs')),
+     install_requires=[
+         'numpy>=1.24.0',
+-        'numpy<2.0.0',
+         'scipy>=1.13.0',
+         'scipy<1.14.0',
+         'utm>=0.7.0',

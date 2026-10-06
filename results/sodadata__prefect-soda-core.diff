@@ -1,0 +1,60 @@
+diff --git a/prefect_soda_core/soda_configuration.py b/prefect_soda_core/soda_configuration.py
+index 9e23688..98074b9 100644
+--- a/prefect_soda_core/soda_configuration.py
++++ b/prefect_soda_core/soda_configuration.py
+@@ -1,13 +1,18 @@
+ """Soda configuration block"""
+ from typing import Optional
+ 
++from prefect._internal.pydantic import HAS_PYDANTIC_V2
+ from prefect.blocks.core import Block
+-from pydantic import HttpUrl, root_validator
+ from yaml import safe_dump, safe_load
+ from yaml.error import YAMLError
+ 
+ from prefect_soda_core.exceptions import SodaConfigurationException
+ 
++if HAS_PYDANTIC_V2:
++    from pydantic.v1 import HttpUrl, root_validator
++else:
++    from pydantic import HttpUrl, root_validator
++
+ 
+ class SodaConfiguration(Block):
+     """
+diff --git a/prefect_soda_core/sodacl_check.py b/prefect_soda_core/sodacl_check.py
+index ee4b13e..615c652 100644
+--- a/prefect_soda_core/sodacl_check.py
++++ b/prefect_soda_core/sodacl_check.py
+@@ -1,13 +1,18 @@
+ """SodaCL check block"""
+ from typing import Optional
+ 
++from prefect._internal.pydantic import HAS_PYDANTIC_V2
+ from prefect.blocks.core import Block
+-from pydantic import HttpUrl, root_validator
+ from yaml import safe_dump, safe_load
+ from yaml.error import YAMLError
+ 
+ from prefect_soda_core.exceptions import SodaConfigurationException
+ 
++if HAS_PYDANTIC_V2:
++    from pydantic.v1 import HttpUrl, root_validator
++else:
++    from pydantic import HttpUrl, root_validator
++
+ 
+ class SodaCLCheck(Block):
+     """
+diff --git a/requirements.txt b/requirements.txt
+index ca636b5..1a96237 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,4 +1,4 @@
+ prefect>=2.0.0
+ prefect_shell
+ soda-core
+-pydantic<2
+\ No newline at end of file
++pydantic
+\ No newline at end of file

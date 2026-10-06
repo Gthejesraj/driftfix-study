@@ -1,0 +1,192 @@
+diff --git a/kage/__init__.py b/kage/__init__.py
+index 7300578..a091f83 100644
+--- a/kage/__init__.py
++++ b/kage/__init__.py
+@@ -1 +1,6 @@
++# numpy 2 compatibility for our dependencies, must be done before importing them
++from .numpy_compat import patch_numpy_for_dependencies
++
++patch_numpy_for_dependencies()
++
+ from .node_counts import NodeCounts
+diff --git a/kage/indexing/path_variant_indexing.py b/kage/indexing/path_variant_indexing.py
+index 4e3685b..65a4f53 100644
+--- a/kage/indexing/path_variant_indexing.py
++++ b/kage/indexing/path_variant_indexing.py
+@@ -143,8 +143,8 @@ def find_tricky_variants_from_signatures(signatures: Signatures):
+     """
+     Finds variants with bad signatures.
+     """
+-    nonunique_ref = np.in1d(signatures.ref.ravel(), signatures.alt.ravel())
+-    nonunique_alt = np.in1d(signatures.alt.ravel(), signatures.ref.ravel())
++    nonunique_ref = np.isin(signatures.ref.ravel(), signatures.alt.ravel())
++    nonunique_alt = np.isin(signatures.alt.ravel(), signatures.ref.ravel())
+     #mask_ref = np.zeros_like(signatures.ref, dtype=bool)
+     #mask_ref[nonunique_ref] = True
+     mask_ref = nps.RaggedArray(nonunique_ref, signatures.ref.shape)
+diff --git a/kage/indexing/signatures.py b/kage/indexing/signatures.py
+index e0a122f..738d22d 100644
+--- a/kage/indexing/signatures.py
++++ b/kage/indexing/signatures.py
+@@ -27,7 +27,7 @@ class Signatures:
+     alt: nps.RaggedArray
+ 
+     def get_overlap(self):
+-        return np.sum(np.in1d(self.ref.ravel(), self.alt.ravel())) / len(self.ref.ravel())
++        return np.sum(np.isin(self.ref.ravel(), self.alt.ravel())) / len(self.ref.ravel())
+ 
+     def get_as_flat_kmers(self):
+         signatures = self
+diff --git a/kage/numpy_compat.py b/kage/numpy_compat.py
+new file mode 100644
+index 0000000..b35aca8
+--- /dev/null
++++ b/kage/numpy_compat.py
+@@ -0,0 +1,134 @@
++"""
++numpy >= 2 compatibility shims.
++
++KAGE's own code is numpy 2 compatible, but several of the libraries it builds on
++(``kmer_mapper``, ``obgraph``, ``graph_kmer_index`` and ``bionumpy``) have no
++release that supports numpy 2 yet, and they still rely on behaviour that numpy 2
++removed:
++
++* ``np.VisibleDeprecationWarning`` moved to ``np.exceptions`` (numpy 2.0).
++* ``np.in1d`` was removed in favour of ``np.isin`` (numpy 2.0).
++* ``np.ediff1d`` rejects a ``to_begin``/``to_end`` value whose *dtype* is not
++  castable to the dtype of the input array under the ``same_kind`` rule.
++  numpy 1 looked at the value instead, so ``np.ediff1d(uint_array, to_begin=1)``
++  used to work (NEP 50 removed value based casting).
++* integer scalars no longer participate in value based casting either, so
++  ``np.uint64(kmer) >> np.arange(k)`` (an int64 array) raises a ``TypeError``
++  instead of being promoted to a signed integer result.
++* ``int(array)`` only works for 0-dimensional arrays (numpy 2.0), not for
++  arrays that happen to hold a single element.
++
++The patches below restore the old behaviour for the few places where our
++dependencies depend on it.  They are applied once, when ``kage`` is imported,
++and should be removed as soon as the dependencies support numpy 2.
++"""
++import logging
++import numpy as np
++
++_patched = False
++
++
++def _restore_removed_aliases():
++    if not hasattr(np, "VisibleDeprecationWarning"):
++        # used by kmer_mapper.command_line_interface at import time
++        np.VisibleDeprecationWarning = np.exceptions.VisibleDeprecationWarning
++
++    if not hasattr(np, "in1d"):
++        # used by obgraph.Graph
++        def in1d(ar1, ar2, assume_unique=False, invert=False, *, kind=None):
++            return np.isin(np.asarray(ar1).ravel(), ar2, assume_unique=assume_unique,
++                           invert=invert, kind=kind)
++
++        np.in1d = in1d
++
++
++def _cast_like(value, dtype):
++    """
++    Casts a scalar/array of integers to dtype if all values are representable,
++    mimicking numpy 1's value based casting.
++    """
++    if value is None:
++        return None
++    value = np.asanyarray(value)
++    if np.can_cast(value.dtype, dtype, casting="same_kind"):
++        return value
++    if np.issubdtype(dtype, np.integer) and np.issubdtype(value.dtype, np.integer):
++        info = np.iinfo(dtype)
++        if value.size > 0 and np.all((value >= info.min) & (value <= info.max)):
++            return value.astype(dtype)
++    # not representable: let numpy raise its own error
++    return value
++
++
++def _patch_ediff1d():
++    original = np.ediff1d
++    if getattr(original, "_kage_numpy_compat", False):
++        return
++
++    def ediff1d(ary, to_end=None, to_begin=None):
++        dtype = np.asanyarray(ary).dtype
++        return original(ary, to_end=_cast_like(to_end, dtype),
++                        to_begin=_cast_like(to_begin, dtype))
++
++    ediff1d._kage_numpy_compat = True
++    np.ediff1d = ediff1d
++
++
++def _patch_bionumpy_kmer_encoding():
++    """
++    bionumpy decodes a kmer with ``kmer >> (2 * np.arange(k))``, which numpy 2
++    refuses to do for an unsigned kmer and a signed shift array.  Decoding a
++    plain python int gives the same (signed) result as numpy 1 did.
++    """
++    try:
++        from bionumpy.encodings.kmer_encodings import KmerEncoding
++    except ImportError:  # pragma: no cover
++        logging.debug("bionumpy not available, not patching KmerEncoding")
++        return
++
++    original = KmerEncoding.to_string
++    if getattr(original, "_kage_numpy_compat", False):
++        return
++
++    def to_string(self, kmer):
++        if np.asanyarray(kmer).ndim == 0:
++            kmer = int(kmer)
++        return original(self, kmer)
++
++    to_string._kage_numpy_compat = True
++    KmerEncoding.to_string = to_string
++
++
++def _patch_npstructures_get_row():
++    """
++    npstructures slices a single row with ``int(view.starts)``, where ``starts``
++    is a one element (but one dimensional) array.  numpy 2 only converts
++    0-dimensional arrays to python scalars, so use ``.item()`` instead.
++    """
++    try:
++        from npstructures.raggedarray.indexablearray import IndexableArray
++    except ImportError:  # pragma: no cover
++        logging.debug("npstructures not available, not patching IndexableArray")
++        return
++
++    if getattr(IndexableArray._get_row, "_kage_numpy_compat", False):
++        return
++
++    def _get_row(self, index):
++        view = self._shape.view(index)
++        return slice(np.asanyarray(view.starts).item(), np.asanyarray(view.ends).item()), None
++
++    _get_row._kage_numpy_compat = True
++    IndexableArray._get_row = _get_row
++
++
++def patch_numpy_for_dependencies():
++    """Makes KAGE's dependencies work with numpy >= 2. Safe to call more than once."""
++    global _patched
++    if _patched or np.lib.NumpyVersion(np.__version__) < "2.0.0":
++        return
++    _restore_removed_aliases()
++    _patch_ediff1d()
++    _patch_bionumpy_kmer_encoding()
++    _patch_npstructures_get_row()
++    _patched = True
+diff --git a/setup.py b/setup.py
+index d93549d..7bf3f98 100644
+--- a/setup.py
++++ b/setup.py
+@@ -10,7 +10,7 @@ setup(name='kage-genotyper',
+       license='MIT',
+       packages=find_packages(include=['kage', 'kage.*']),
+       zip_safe=False,
+-      install_requires=['numpy<2', 'tqdm', 'pyfaidx', 'pathos', 'cython', 'scipy',
++      install_requires=['numpy', 'tqdm', 'pyfaidx', 'pathos', 'cython', 'scipy',
+                         'obgraph>=0.0.35',
+                         'graph_kmer_index>=0.0.29',
+                         'kmer_mapper>=0.0.38',

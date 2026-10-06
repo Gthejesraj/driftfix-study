@@ -1,0 +1,73 @@
+diff --git a/botbowl/ai/__init__.py b/botbowl/ai/__init__.py
+index 12db5ca..23eac19 100755
+--- a/botbowl/ai/__init__.py
++++ b/botbowl/ai/__init__.py
+@@ -10,38 +10,49 @@ from .bots import *
+ 
+ ruleset = load_rule_set('BB2016')
+ 
++# `disable_env_checker=True`: gym 0.26.2's `PassiveEnvChecker` references `np.bool8`,
++# which was removed in numpy 2.0, so it raises an AttributeError on every `step()`/
++# `reset()` call. The checker is a debugging aid only, so it is turned off for the
++# environments we register. See `BotBowlEnv` for the (old, 4-tuple) step API it uses.
++
+ register(
+     id='botbowl-v4',
+     entry_point='botbowl.ai.env:BotBowlEnv',
+-    kwargs={}
++    kwargs={},
++    disable_env_checker=True,
+ )
+ 
+ register(
+     id='botbowl-11-v4',
+     entry_point='botbowl.ai.env:BotBowlEnv',
+-    kwargs={}
++    kwargs={},
++    disable_env_checker=True,
+ )
+ 
+ register(
+     id='botbowl-7-v4',
+     entry_point='botbowl.ai.env:BotBowlEnv',
+-    kwargs={'env_conf': EnvConf(size=7)}
++    kwargs={'env_conf': EnvConf(size=7)},
++    disable_env_checker=True,
+ )
+ 
+ register(
+     id='botbowl-5-v4',
+     entry_point='botbowl.ai.env:BotBowlEnv',
+-    kwargs={'env_conf': EnvConf(size=5)}
++    kwargs={'env_conf': EnvConf(size=5)},
++    disable_env_checker=True,
+ )
+ 
+ register(
+     id='botbowl-3-v4',
+     entry_point='botbowl.ai.env:BotBowlEnv',
+-    kwargs={'env_conf': EnvConf(size=3)}
++    kwargs={'env_conf': EnvConf(size=3)},
++    disable_env_checker=True,
+ )
+ 
+ register(
+     id='botbowl-1-v4',
+     entry_point='botbowl.ai.env:BotBowlEnv',
+-    kwargs={'env_conf': EnvConf(size=1)}
++    kwargs={'env_conf': EnvConf(size=1)},
++    disable_env_checker=True,
+ )
+diff --git a/setup.py b/setup.py
+index 5c4f973..09cb138 100755
+--- a/setup.py
++++ b/setup.py
+@@ -45,7 +45,7 @@ except DistutilsPlatformError:
+ files_to_compile = ["botbowl/core/pathfinding/cython_pathfinding.pyx"]
+ 
+ install_requires_packages = [
+-          'numpy==1.24.3',
++          'numpy>=1.24.3',
+           'untangle==1.2.1',
+           'Flask==2.3.2',
+           'gym==0.26.2',
