@@ -41,4 +41,4 @@ third-party code, so use a container or VM.
 
 ## Results
 
-See [`RESULTS.md`](RESULTS.md). Pilot: 39 candidates → 4 real breaks → 3 fixed cleanly (one needs review), 1 workaround.
+See [`RESULTS.md`](RESULTS.md): 183 candidates → 16 real breaks → 9 clean fixes, 3 needing review, 3 workarounds, 1 not fixed.
