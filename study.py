@@ -80,12 +80,16 @@ def check(c: dict) -> dict:
     r = {k: c[k] for k in ("id", "repo", "package", "upgrade", "stars")}
     sh(f"rm -rf {WORK} && mkdir -p {PLUGIN}", ROOT)
     (PLUGIN / "study_plugin.py").write_text(PLUGIN_SRC)
-    if sh(f"git clone -q --depth 1 https://github.com/{c['repo']} {REPO}")[0]:
+    clone = (f"git clone -q --filter=blob:none https://github.com/{c['repo']} {REPO} && cd {REPO} && "
+             f"git checkout -q {c['ref']}") if c.get("ref") else f"git clone -q --depth 1 https://github.com/{c['repo']} {REPO}"
+    if sh(clone)[0]:
         return {**r, "status": "clone_failed"}
     r["sha"] = sh("git rev-parse HEAD", REPO)[1].strip()
     sh(f"uv venv -q --seed -p {c['python']} {VENV}")
     if err := install(c):
         return {**r, "status": "install_failed", "error": err}
+    if c.get("force_old"):  # ground-truth cases: the version the project ran before the human's fix
+        sh(f"uv pip install -q -p {PY} '{c['force_old']}'")
     r["old"] = version(c["package"])
     if not r["old"] or int(r["old"].split(".")[0]) >= int(re.search(r">=(\d+)", c["upgrade"])[1]):
         return {**r, "status": "not_on_old_version"}
@@ -126,8 +130,26 @@ def fix(c: dict, budget: str, model: str) -> dict:
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / f"{c['id']}.diff").write_text(diff)
     (RESULTS / f"{c['id']}.md").write_text(report.read_text() if report.exists() else out[-5000:])
-    return {**r, "driftfix": {"exit": code, "fixed": code == 0, "cost": float(cost[1]) if cost else None,
-                              "model": model, "diffstat": sh("git diff --shortstat", REPO)[1].strip()}}
+    r = {**r, "driftfix": {"exit": code, "fixed": code == 0, "cost": float(cost[1]) if cost else None,
+                           "model": model, "diffstat": sh("git diff --shortstat", REPO)[1].strip()}}
+    if c.get("human"):
+        r["human"] = compare_with_human(c, json.loads(SKIP.read_text()))
+    return r
+
+
+def compare_with_human(c: dict, skip: dict) -> dict:
+    """Compare driftfix's working tree against the maintainers' own migration commit."""
+    ours = set(sh("git diff --name-only", REPO)[1].split())
+    theirs = set(sh(f"git diff --name-only {c['ref']} {c['human']}", REPO)[1].split())
+    ours_py, theirs_py = {f for f in ours if f.endswith(".py")}, {f for f in theirs if f.endswith(".py")}
+    # Run the maintainers' updated tests against driftfix's code.
+    human_tests = sorted(f for f in theirs if "test" in f and f.endswith(".py"))
+    if human_tests:
+        sh(f"git checkout {c['human']} -- " + " ".join(human_tests), REPO)
+    result = run_tests(skip)
+    return {"files_ours": sorted(ours_py), "files_theirs": sorted(theirs_py),
+            "overlap": len(ours_py & theirs_py), "human_tests_applied": human_tests,
+            "passes_human_tests": result["code"] == 0, "human_tests_tail": result["tail"][-2000:]}
 
 
 def report() -> str:

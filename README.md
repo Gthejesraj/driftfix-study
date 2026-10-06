@@ -42,3 +42,16 @@ third-party code, so use a container or VM.
 ## Results
 
 See [`RESULTS.md`](RESULTS.md): 183 candidates → 16 real breaks → 9 clean fixes, 3 needing review, 3 workarounds, 1 not fixed.
+
+## Ground truth: comparing with human fixes
+
+Candidates with ids starting `gt__` come from commits where maintainers
+already did the migration (GitHub commit search for "migrate to pydantic v2",
+"sqlalchemy 2.0 migration", "support numpy 2" and similar; Python repos with
+tests, ≥10★, commits that change `.py` files). For each, the study checks out
+the commit **before** the human fix, installs the old major version, and runs
+the usual check and fix. It then records:
+
+- which `.py` files driftfix changed versus the human commit (overlap)
+- whether driftfix's code passes the **maintainers' updated tests** (the test
+  files from the human commit are checked out on top of driftfix's changes)
