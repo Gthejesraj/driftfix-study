@@ -1,0 +1,10 @@
+{
+ "id": "opencv__opencv-python",
+ "repo": "opencv/opencv-python",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 5414,
+ "sha": "031876bd46b781b8f4db2075327e5a78a53dff63",
+ "old": "",
+ "status": "not_on_old_version"
+}

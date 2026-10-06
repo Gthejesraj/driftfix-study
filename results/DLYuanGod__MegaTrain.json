@@ -1,0 +1,10 @@
+{
+ "id": "DLYuanGod__MegaTrain",
+ "repo": "DLYuanGod/MegaTrain",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 695,
+ "sha": "9d88c6898d83da6a92705ebe1a16872a4bea0d3b",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "horietakehiro__cfn-docgen",
+ "repo": "horietakehiro/cfn-docgen",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 11,
+ "sha": "a79bb3114192ec1d5010fb7fc7d052a25daa1ee4",
+ "old": "2.13.5",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,29 @@
+{
+ "id": "onnx__neural-compressor",
+ "repo": "onnx/neural-compressor",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 102,
+ "sha": "e3ebdfc752c72120654b8166e055c965ff19592f",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 10
+  },
+  "failing": [
+   "test/quantization/layer_wise/test_layer_wise.py",
+   "test/quantization/post_training_quant/test_post_training_quant.py",
+   "test/quantization/test_autotune.py",
+   "test/quantization/test_config.py",
+   "test/quantization/test_smooth_quant.py",
+   "test/quantization/weight_only/test_awq.py",
+   "test/quantization/weight_only/test_gptq.py",
+   "test/quantization/weight_only/test_rtn.py",
+   "test/utils/test_onnx_model.py",
+   "test/utils/test_utility.py"
+  ],
+  "tail": "Traceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest/utils/test_utility.py:9: in <module>\n    import onnxruntime.tools.symbolic_shape_infer as symbolic_shape_infer\n../venv/lib/python3.11/site-packages/onnxruntime/tools/symbolic_shape_infer.py:14: in <module>\n    raise ImportError(\"sympy is required for symbolic shape inference. Install with: pip install sympy\") from None\nE   ImportError: sympy is required for symbolic shape inference. Install with: pip install sympy\n=============================== warnings summary ===============================\nonnx_neural_compressor/algorithms/utility.py:701\n  /tmp/study/repo/onnx_neural_compressor/algorithms/utility.py:701: DeprecationWarning: invalid escape sequence '\\d'\n    if re.match(\"^.*_Q\\d*G\\d*\", inp):\n\nonnx_neural_compressor/algorithms/utility.py:702\n  /tmp/study/repo/onnx_neural_compressor/algorithms/utility.py:702: DeprecationWarning: invalid escape sequence '\\d'\n    Q_position = re.search(\"_Q\\d*\", inp)\n\nonnx_neural_compressor/algorithms/utility.py:703\n  /tmp/study/repo/onnx_neural_compressor/algorithms/utility.py:703: DeprecationWarning: invalid escape sequence '\\d'\n    full_position = re.search(\"_Q\\d*G\\d*\", inp)\n\nonnx_neural_compressor/quantization/config.py:453\n  /tmp/study/repo/onnx_neural_compressor/quantization/config.py:453: DeprecationWarning: invalid escape sequence '\\ '\n    \"\"\"Expand the config.\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR test/quantization/layer_wise/test_layer_wise.py\nERROR test/quantization/post_training_quant/test_post_training_quant.py\nERROR test/quantization/test_autotune.py\nERROR test/quantization/test_config.py\nERROR test/quantization/test_smooth_quant.py\nERROR test/quantization/weight_only/test_awq.py\nERROR test/quantization/weight_only/test_gptq.py\nERROR test/quantization/weight_only/test_rtn.py\nERROR test/utils/test_onnx_model.py\nERROR test/utils/test_utility.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 10 errors during collection !!!!!!!!!!!!!!!!!!!\n4 warnings, 10 errors in 5.03s"
+ }
+}

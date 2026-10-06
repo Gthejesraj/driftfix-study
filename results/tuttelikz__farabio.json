@@ -1,0 +1,10 @@
+{
+ "id": "tuttelikz__farabio",
+ "repo": "tuttelikz/farabio",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 50,
+ "sha": "59d17730bb965dbe1114427b419a6147edddfdc8",
+ "old": "",
+ "status": "not_on_old_version"
+}

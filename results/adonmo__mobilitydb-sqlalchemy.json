@@ -1,0 +1,10 @@
+{
+ "id": "adonmo__mobilitydb-sqlalchemy",
+ "repo": "adonmo/mobilitydb-sqlalchemy",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 16,
+ "sha": "a45db1f7fdfb1c39e65bca432c442000e0855b82",
+ "old": "",
+ "status": "not_on_old_version"
+}

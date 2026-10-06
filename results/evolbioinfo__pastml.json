@@ -1,0 +1,10 @@
+{
+ "id": "evolbioinfo__pastml",
+ "repo": "evolbioinfo/pastml",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 42,
+ "sha": "98993d60aef16b1d56f01fd7e678853fb2905deb",
+ "old": "2.2.6",
+ "status": "not_on_old_version"
+}

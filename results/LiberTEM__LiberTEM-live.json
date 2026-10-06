@@ -1,0 +1,10 @@
+{
+ "id": "LiberTEM__LiberTEM-live",
+ "repo": "LiberTEM/LiberTEM-live",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 12,
+ "sha": "eaa7714332fa57e268cb974c13b5040442e885c2",
+ "old": "2.0.2",
+ "status": "not_on_old_version"
+}

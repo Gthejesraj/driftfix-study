@@ -1,0 +1,23 @@
+{
+ "id": "flakas__Latte",
+ "repo": "flakas/Latte",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 32,
+ "sha": "e4ad7b49cd1f3f2e2179a8eb1ef5df6e90cad55a",
+ "old": "1.4.5",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "tests/trackers/tag_test.py",
+   "tests/trackers/time_test.py",
+   "tests/trackers/usage_test.py",
+   "tests/trackers/user_activity_test.py"
+  ],
+  "tail": "tests/trackers/tag_test.py:2: in <module>\n    import mock\nE   ModuleNotFoundError: No module named 'mock'\n_________________ ERROR collecting tests/trackers/time_test.py _________________\nImportError while importing test module '/tmp/study/repo/tests/trackers/time_test.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/trackers/time_test.py:5: in <module>\n    import mock\nE   ModuleNotFoundError: No module named 'mock'\n________________ ERROR collecting tests/trackers/usage_test.py _________________\nImportError while importing test module '/tmp/study/repo/tests/trackers/usage_test.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/trackers/usage_test.py:2: in <module>\n    import mock\nE   ModuleNotFoundError: No module named 'mock'\n____________ ERROR collecting tests/trackers/user_activity_test.py _____________\nImportError while importing test module '/tmp/study/repo/tests/trackers/user_activity_test.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/trackers/user_activity_test.py:5: in <module>\n    import mock\nE   ModuleNotFoundError: No module named 'mock'\n=========================== short test summary info ============================\nERROR tests/trackers/tag_test.py\nERROR tests/trackers/time_test.py\nERROR tests/trackers/usage_test.py\nERROR tests/trackers/user_activity_test.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n4 errors in 0.63s"
+ }
+}

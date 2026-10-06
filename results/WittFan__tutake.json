@@ -1,0 +1,22 @@
+{
+ "id": "WittFan__tutake",
+ "repo": "WittFan/tutake",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 10,
+ "sha": "5c46967b797c8ba21ab39f27c062dae2c130a8ac",
+ "old": "1.4.42",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 3
+  },
+  "failing": [
+   "test/config_test.py",
+   "test/query_test.py",
+   "tutake/api/ts/tushare_test.py"
+  ],
+  "tail": "    from pandas.compat import is_numpy_dev as _is_numpy_dev  # pyright: ignore # noqa:F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/pandas/compat/__init__.py:18: in <module>\n    from pandas.compat.numpy import (\n../venv/lib/python3.11/site-packages/pandas/compat/numpy/__init__.py:4: in <module>\n    from pandas.util.version import Version\n../venv/lib/python3.11/site-packages/pandas/util/__init__.py:2: in <module>\n    from pandas.util._decorators import (  # noqa:F401\n../venv/lib/python3.11/site-packages/pandas/util/_decorators.py:14: in <module>\n    from pandas._libs.properties import cache_readonly\n../venv/lib/python3.11/site-packages/pandas/_libs/__init__.py:13: in <module>\n    from pandas._libs.interval import Interval\npandas/_libs/interval.pyx:1: in init pandas._libs.interval\n    ???\nE   ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n________________ ERROR collecting tutake/api/ts/tushare_test.py ________________\ntutake/api/ts/tushare_test.py:1: in <module>\n    import pandas as pd\n../venv/lib/python3.11/site-packages/pandas/__init__.py:22: in <module>\n    from pandas.compat import is_numpy_dev as _is_numpy_dev  # pyright: ignore # noqa:F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/pandas/compat/__init__.py:18: in <module>\n    from pandas.compat.numpy import (\n../venv/lib/python3.11/site-packages/pandas/compat/numpy/__init__.py:4: in <module>\n    from pandas.util.version import Version\n../venv/lib/python3.11/site-packages/pandas/util/__init__.py:2: in <module>\n    from pandas.util._decorators import (  # noqa:F401\n../venv/lib/python3.11/site-packages/pandas/util/_decorators.py:14: in <module>\n    from pandas._libs.properties import cache_readonly\n../venv/lib/python3.11/site-packages/pandas/_libs/__init__.py:13: in <module>\n    from pandas._libs.interval import Interval\npandas/_libs/interval.pyx:1: in init pandas._libs.interval\n    ???\nE   ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n=========================== short test summary info ============================\nERROR test/config_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR test/query_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tutake/api/ts/tushare_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 1.43s"
+ }
+}

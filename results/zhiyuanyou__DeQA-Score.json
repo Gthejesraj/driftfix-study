@@ -1,0 +1,20 @@
+{
+ "id": "zhiyuanyou__DeQA-Score",
+ "repo": "zhiyuanyou/DeQA-Score",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 248,
+ "sha": "4342013af7fa5f450bb3a0cc8e135a61928d50bf",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/model/test_find_prefix.py"
+  ],
+  "tail": "/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/model/test_find_prefix.py:27: in <module>\n    tokenizer = AutoTokenizer.from_pretrained(pretrained, use_fast=False)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py:787: in from_pretrained\n    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:2028: in from_pretrained\n    return cls._from_pretrained(\n../venv/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:2260: in _from_pretrained\n    tokenizer = cls(*init_inputs, **init_kwargs)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/transformers/models/llama/tokenization_llama.py:178: in __init__\n    self.sp_model = self.get_spm_processor(kwargs.pop(\"from_slow\", False))\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/transformers/models/llama/tokenization_llama.py:208: in get_spm_processor\n    model_pb2 = import_protobuf(f\"The new behaviour of {self.__class__.__name__} (with `self.legacy = False`)\")\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/transformers/convert_slow_tokenizer.py:43: in import_protobuf\n    raise ImportError(PROTOBUF_IMPORT_ERROR.format(error_message))\nE   ImportError: \nE   The new behaviour of LlamaTokenizer (with `self.legacy = False`) requires the protobuf library but it was not found in your environment. Checkout the instructions on the\nE   installation page of its repo: https://github.com/protocolbuffers/protobuf/tree/master/python#installation and follow the ones\nE   that match your environment. Please note that you may need to restart your runtime after installation.\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/bitsandbytes/cextension.py:34\n  /tmp/study/venv/lib/python3.11/site-packages/bitsandbytes/cextension.py:34: UserWarning: The installed version of bitsandbytes was compiled without GPU support. 8-bit optimizers, 8-bit multiplication, and GPU quantization are unavailable.\n    warn(\"The installed version of bitsandbytes was compiled without GPU support. \"\n\n../venv/lib/python3.11/site-packages/bitsandbytes/functional.py:169\n  /tmp/study/venv/lib/python3.11/site-packages/bitsandbytes/functional.py:169: UserWarning: Failed to initialize NumPy: _ARRAY_API not found (Triggered internally at ../torch/csrc/utils/tensor_numpy.cpp:84.)\n    def get_paged(*shape, dtype=torch.float32, device=torch.device('cuda', index=0)):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/model/test_find_prefix.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n2 warnings, 1 error in 7.16s"
+ }
+}

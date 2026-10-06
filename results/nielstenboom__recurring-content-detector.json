@@ -1,0 +1,16 @@
+{
+ "id": "nielstenboom__recurring-content-detector",
+ "repo": "nielstenboom/recurring-content-detector",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 106,
+ "sha": "b248e17fa9f8d384ae8a146abc7a5d47190aaaa6",
+ "old": "1.5.3",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 1,
+  "counts": {},
+  "failing": [],
+  "tail": "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 167, in _multicall\n    raise exception\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 139, in _multicall\n    teardown.throw(exception)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 43, in run_old_style_hookwrapper\n    teardown.send(result)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/helpconfig.py\", line 100, in pytest_cmdline_parse\n    config: Config = outcome.get_result()\n                     ^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_result.py\", line 103, in get_result\n    raise exc.with_traceback(tb)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 38, in run_old_style_hookwrapper\n    res = yield\n          ^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_callers.py\", line 121, in _multicall\n    res = hook_impl.function(*args)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 1003, in pytest_cmdline_parse\n    self.parse(args)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 1283, in parse\n    self._preparse(args, addopts=addopts)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 1168, in _preparse\n    self.pluginmanager.consider_preparse(args, exclude_only=False)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 635, in consider_preparse\n    self.consider_pluginarg(parg)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 660, in consider_pluginarg\n    self.import_plugin(arg, consider_entry_points=True)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 713, in import_plugin\n    self.register(mod, modname)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 436, in register\n    ret: Optional[str] = super().register(plugin, name)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_manager.py\", line 168, in register\n    self._verify_hook(hook, hookimpl)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/pluggy/_manager.py\", line 343, in _verify_hook\n    raise PluginValidationError(\npluggy._manager.PluginValidationError: Plugin 'study_plugin' for hook 'pytest_ignore_collect'\nhookimpl definition: pytest_ignore_collect(collection_path, config)\nArgument(s) {'collection_path'} are declared in the hookimpl but can not be found in the hookspec"
+ }
+}

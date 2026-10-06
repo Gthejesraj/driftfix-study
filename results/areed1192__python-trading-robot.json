@@ -1,0 +1,10 @@
+{
+ "id": "areed1192__python-trading-robot",
+ "repo": "areed1192/python-trading-robot",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 577,
+ "sha": "abe7ac9189873f376e6fd968f57f403a8ffd45d2",
+ "old": "",
+ "status": "not_on_old_version"
+}

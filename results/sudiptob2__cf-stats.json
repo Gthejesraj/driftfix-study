@@ -1,0 +1,32 @@
+{
+ "id": "sudiptob2__cf-stats",
+ "repo": "sudiptob2/cf-stats",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 254,
+ "sha": "21eeb1c8dbc8b638c1e568e7683de455318a1d2b",
+ "old": "1.9.2",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 10
+  },
+  "failing": [],
+  "tail": "..........                                                               [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/certifi/core.py:36\n  /tmp/study/venv/lib/python3.11/site-packages/certifi/core.py:36: DeprecationWarning: path is deprecated. Use files() instead. Refer to https://importlib-resources.readthedocs.io/en/latest/using.html#migrating-from-legacy for migration advice.\n    _CACERT_CTX = get_path(\"certifi\", \"cacert.pem\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n10 passed, 1 warning in 0.09s",
+  "preexisting_failures": 0
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 2,
+  "counts": {
+   "errors": 3
+  },
+  "failing": [
+   "tests/test_utils/test_cf_request_handler.py",
+   "tests/test_utils/test_cf_request_parser.py",
+   "tests/test_utils/test_string_utils.py"
+  ],
+  "tail": "app/utils/string_utils.py:1: in <module>\n    from app.constant import Constant\napp/constant.py:1: in <module>\n    from config.config import settings\nconfig/config.py:3: in <module>\n    from pydantic import BaseSettings\n../venv/lib/python3.11/site-packages/pydantic/__init__.py:437: in __getattr__\n    return _getattr_migration(attr_name)\n../venv/lib/python3.11/site-packages/pydantic/_migration.py:304: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.13/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n____________ ERROR collecting tests/test_utils/test_string_utils.py ____________\nImportError while importing test module '/tmp/study/repo/tests/test_utils/test_string_utils.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\ntests/test_utils/test_string_utils.py:1: in <module>\n    from app.utils.string_utils import Acronym, StringSlicer\napp/utils/string_utils.py:1: in <module>\n    from app.constant import Constant\napp/constant.py:1: in <module>\n    from config.config import settings\nconfig/config.py:3: in <module>\n    from pydantic import BaseSettings\n../venv/lib/python3.11/site-packages/pydantic/__init__.py:437: in __getattr__\n    return _getattr_migration(attr_name)\n../venv/lib/python3.11/site-packages/pydantic/_migration.py:304: in wrapper\n    raise PydanticImportError(\nE   pydantic.errors.PydanticImportError: `BaseSettings` has been moved to the `pydantic-settings` package. See https://docs.pydantic.dev/2.13/migration/#basesettings-has-moved-to-pydantic-settings for more details.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n=========================== short test summary info ============================\nERROR tests/test_utils/test_cf_request_handler.py\nERROR tests/test_utils/test_cf_request_parser.py\nERROR tests/test_utils/test_string_utils.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 0.14s"
+ },
+ "status": "broken"
+}

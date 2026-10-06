@@ -1,0 +1,10 @@
+{
+ "id": "konveyor__tackle-data-gravity-insights",
+ "repo": "konveyor/tackle-data-gravity-insights",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 15,
+ "sha": "5b0de4c47b48999e817552adceb25097a6df95e8",
+ "old": "",
+ "status": "not_on_old_version"
+}

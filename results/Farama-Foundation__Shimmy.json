@@ -1,0 +1,10 @@
+{
+ "id": "Farama-Foundation__Shimmy",
+ "repo": "Farama-Foundation/Shimmy",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 938,
+ "sha": "8f72ed3210050f96db9a4efcb445c83a1a71012a",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

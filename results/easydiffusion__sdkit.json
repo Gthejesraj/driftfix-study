@@ -1,0 +1,18 @@
+{
+ "id": "easydiffusion__sdkit",
+ "repo": "easydiffusion/sdkit",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 171,
+ "sha": "ecdf791aab21392276171444981e726a64ee24bb",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {},
+  "failing": [
+   "tests/test_vram_memory_leaks.py"
+  ],
+  "tail": "=============================== warnings summary ===============================\nsdkit/utils/memory_utils.py:68\n  /tmp/study/repo/sdkit/utils/memory_utils.py:68: DeprecationWarning: invalid escape sequence '\\G'\n    ps_cmd = \"(Get-Counter -Counter '\\GPU Adapter Memory(*)\\Dedicated Usage').CounterSamples[0].CookedValue\"\n\n../venv/lib/python3.11/site-packages/torchmetrics/utilities/imports.py:21\n  /tmp/study/venv/lib/python3.11/site-packages/torchmetrics/utilities/imports.py:21: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html\n    from pkg_resources import DistributionNotFound, get_distribution\n\n../venv/lib/python3.11/site-packages/antlr4/Lexer.py:12\n  /tmp/study/venv/lib/python3.11/site-packages/antlr4/Lexer.py:12: DeprecationWarning: typing.io is deprecated, import directly from typing instead. typing.io will be removed in Python 3.12.\n    from typing.io import TextIO\n\n../venv/lib/python3.11/site-packages/antlr4/Parser.py:6\n  /tmp/study/venv/lib/python3.11/site-packages/antlr4/Parser.py:6: DeprecationWarning: typing.io is deprecated, import directly from typing instead. typing.io will be removed in Python 3.12.\n    from typing.io import TextIO\n\n../venv/lib/python3.11/site-packages/omegaconf/grammar/gen/OmegaConfGrammarLexer.py:4\n  /tmp/study/venv/lib/python3.11/site-packages/omegaconf/grammar/gen/OmegaConfGrammarLexer.py:4: DeprecationWarning: typing.io is deprecated, import directly from typing instead. typing.io will be removed in Python 3.12.\n    from typing.io import TextIO\n\n../venv/lib/python3.11/site-packages/pytorch_lightning/__init__.py:29\n  /tmp/study/venv/lib/python3.11/site-packages/pytorch_lightning/__init__.py:29: DeprecationWarning: Deprecated call to `pkg_resources.declare_namespace('pytorch_lightning')`.\n  Implementing implicit namespace packages (as specified in PEP 420) is preferred to `pkg_resources.declare_namespace`. See https://setuptools.pypa.io/en/latest/references/keywords.html#keyword-namespace-packages\n    __import__(\"pkg_resources\").declare_namespace(__name__)\n\n../venv/lib/python3.11/site-packages/ldm/models/diffusion/dpm_solver/dpm_solver.py:16\n  /tmp/study/venv/lib/python3.11/site-packages/ldm/models/diffusion/dpm_solver/dpm_solver.py:16: DeprecationWarning: invalid escape sequence '\\h'\n    \"\"\"Create a wrapper class for the forward SDE (VP type).\n\n../venv/lib/python3.11/site-packages/jsonmerge/resolver.py:2\n  /tmp/study/venv/lib/python3.11/site-packages/jsonmerge/resolver.py:2: DeprecationWarning: jsonschema.RefResolver is deprecated as of v4.18.0, in favor of the https://github.com/python-jsonschema/referencing library, which provides more compliant referencing behavior as well as more flexible APIs for customization. A future release will remove RefResolver. Please file a feature request (on referencing) if you are missing an API for the kind of customization you need.\n    from jsonschema.validators import RefResolver, urldefrag, urljoin\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/test_vram_memory_leaks.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n8 warnings, 1 error in 7.49s\nCloning into 'sdkit-test-data'..."
+ }
+}

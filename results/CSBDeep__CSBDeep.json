@@ -1,0 +1,10 @@
+{
+ "id": "CSBDeep__CSBDeep",
+ "repo": "CSBDeep/CSBDeep",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 337,
+ "sha": "35f135fb1de64170dd339094302bb40283a6d1d9",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

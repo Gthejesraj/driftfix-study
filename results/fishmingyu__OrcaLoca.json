@@ -1,0 +1,10 @@
+{
+ "id": "fishmingyu__OrcaLoca",
+ "repo": "fishmingyu/OrcaLoca",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 46,
+ "sha": "cbaf265f87c3b046c658727ca1c6601a985f8443",
+ "old": "2.9.2",
+ "status": "not_on_old_version"
+}

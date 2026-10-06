@@ -1,0 +1,10 @@
+{
+ "id": "bigcode-project__bigcode-evaluation-harness",
+ "repo": "bigcode-project/bigcode-evaluation-harness",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 1062,
+ "sha": "8fc5bae6479c4fbbb28c3f8b644f6a15b3f3b5bd",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

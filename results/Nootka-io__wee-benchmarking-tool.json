@@ -1,0 +1,10 @@
+{
+ "id": "Nootka-io__wee-benchmarking-tool",
+ "repo": "Nootka-io/wee-benchmarking-tool",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 13,
+ "sha": "cb916c029487acf0c0025cffb3a2138085a59686",
+ "status": "install_failed",
+ "error": "requirements freeze-requirements.txt: error: No solution found when resolving dependencies\n  cause: Because there is no version of newspaper3k==0.3.0 and you require newspaper3k==0.3.0, we can conclude that your requirements are unsatisfiable.\n"
+}

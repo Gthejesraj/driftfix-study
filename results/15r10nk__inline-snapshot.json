@@ -1,0 +1,10 @@
+{
+ "id": "15r10nk__inline-snapshot",
+ "repo": "15r10nk/inline-snapshot",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 754,
+ "sha": "a35fc5f509033adb70a4c0f7a69625e24a1c42c7",
+ "old": "",
+ "status": "not_on_old_version"
+}

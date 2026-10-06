@@ -1,0 +1,10 @@
+{
+ "id": "SU-JonesLab__Greenchip",
+ "repo": "SU-JonesLab/Greenchip",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 13,
+ "sha": "3ea3b174d7765a43b2c4e99a24a9b118ea6078b7",
+ "status": "install_failed",
+ "error": "requirements windows-requirements.txt: ModuleNotFoundError: No module named 'pkg_resources'\n\nhint: This error likely indicates that `pandas@1.4.3` depends on `pkg_resources`, but doesn't declare it as a build dependency. If `pandas` is a first-party package, consider adding `pkg_resources` to its `build-system.requires`. Otherwise, either add it to your `pyproject.toml` under:\n\n[tool.uv.extra-build-dependencies]\npandas = [\"pkg_resources\"]\n\nor `uv pip install pkg_resources` into the environment and re-run with `--no-build-isolation`.\n"
+}

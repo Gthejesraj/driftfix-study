@@ -1,0 +1,16 @@
+{
+ "id": "marcua__datools",
+ "repo": "marcua/datools",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 114,
+ "sha": "ad428040b0152b8ec7af0e3b2ad51831c6c0d593",
+ "old": "1.4.17",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:329: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nUsageError: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: the following arguments are required: --db-type\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: the following arguments are required: --db-type\n"
+ }
+}

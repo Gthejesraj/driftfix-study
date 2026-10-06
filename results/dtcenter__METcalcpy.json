@@ -1,0 +1,10 @@
+{
+ "id": "dtcenter__METcalcpy",
+ "repo": "dtcenter/METcalcpy",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 16,
+ "sha": "d624151277847e9efc7cf34f6784949abff2196d",
+ "old": "3.0.6",
+ "status": "not_on_old_version"
+}

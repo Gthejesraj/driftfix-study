@@ -1,0 +1,10 @@
+{
+ "id": "eniocc__bdgd-tools",
+ "repo": "eniocc/bdgd-tools",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 10,
+ "sha": "e50529475a6c5ccfac4d8ce122528c4cb3375f05",
+ "old": "",
+ "status": "not_on_old_version"
+}

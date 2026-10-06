@@ -1,0 +1,10 @@
+{
+ "id": "mosaicml__diffusion",
+ "repo": "mosaicml/diffusion",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 722,
+ "sha": "f56a7a81ea6c499fc79ebbf287a329b6fbf7a763",
+ "old": "",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "epfl-dlab__SynthIE",
+ "repo": "epfl-dlab/SynthIE",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 63,
+ "sha": "22f3c8dbec80453738d4bef3a758d335175fe506",
+ "status": "install_failed",
+ "error": "requirements pip_requirements.txt: al here\n             ^^^^^^^^^^^^^^^^^^^^\n           File \"<string>\", line 6, in <module>\n           File \"/home/runner/work/_temp/setup-uv-cache/sdists-v9/pypi/pyext/0.7/tqTR087G4o9HgJAj/src/pyext.py\", line 117, in <module>\n             oargspec = inspect.getargspec\n                        ^^^^^^^^^^^^^^^^^^\n         AttributeError: module 'inspect' has no attribute 'getargspec'. Did you mean: 'getargs'?\n\nhint: Build failures usually indicate a problem with the package or the build environment\n"
+}

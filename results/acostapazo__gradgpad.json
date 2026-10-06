@@ -1,0 +1,47 @@
+{
+ "id": "acostapazo__gradgpad",
+ "repo": "acostapazo/gradgpad",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 14,
+ "sha": "ced4cc960b2f366896b8268dc447abbbe61572f1",
+ "old": "1.5.3",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 28
+  },
+  "failing": [
+   "tests/unit/foundations/metrics/test_acer.py",
+   "tests/unit/foundations/metrics/test_apcer_fixing_bpcer.py",
+   "tests/unit/foundations/metrics/test_bpcer_fixing_apcer.py",
+   "tests/unit/foundations/metrics/test_eer.py",
+   "tests/unit/foundations/metrics/test_far.py",
+   "tests/unit/foundations/metrics/test_frr.py",
+   "tests/unit/foundations/metrics/test_generalization_metrics.py",
+   "tests/unit/foundations/metrics/test_hter.py",
+   "tests/unit/foundations/metrics/test_indepth_error_rates_analysis.py",
+   "tests/unit/foundations/metrics/test_metrics.py",
+   "tests/unit/foundations/metrics/test_metrics_demographic.py",
+   "tests/unit/foundations/results/test_results_provider.py",
+   "tests/unit/foundations/results/test_results_values.py",
+   "tests/unit/foundations/scores/test_scores.py",
+   "tests/unit/foundations/scores/test_scores_provider.py",
+   "tests/unit/tools/test_demographics.py",
+   "tests/unit/tools/test_group_dataframe.py",
+   "tests/unit/tools/visualization/det/test_colors.py",
+   "tests/unit/tools/visualization/det/test_det_plotter.py",
+   "tests/unit/tools/visualization/histogram/test_histogram_plotter.py",
+   "tests/unit/tools/visualization/percentile/test_bias_percentile_comparison_plotter.py",
+   "tests/unit/tools/visualization/percentile/test_bias_percentile_plotter.py",
+   "tests/unit/tools/visualization/radar/test_create_apcer_by_pai.py",
+   "tests/unit/tools/visualization/radar/test_create_apcer_by_subprotocol.py",
+   "tests/unit/tools/visualization/radar/test_fine_grained_pais_provider.py",
+   "tests/unit/tools/visualization/radar/test_pad_radar_pai_plotter.py",
+   "tests/unit/tools/visualization/radar/test_pad_radar_protocol_plotter.py",
+   "tests/unit/tools/visualization/test_scores_and_labels_formatter.py"
+  ],
+  "tail": "../venv/lib/python3.11/site-packages/pandas/util/__init__.py:2: in <module>\n    from pandas.util._decorators import (  # noqa:F401\n../venv/lib/python3.11/site-packages/pandas/util/_decorators.py:14: in <module>\n    from pandas._libs.properties import cache_readonly\n../venv/lib/python3.11/site-packages/pandas/_libs/__init__.py:13: in <module>\n    from pandas._libs.interval import Interval\npandas/_libs/interval.pyx:1: in init pandas._libs.interval\n    ???\nE   ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n=========================== short test summary info ============================\nERROR tests/unit/foundations/metrics/test_acer.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_apcer_fixing_bpcer.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_bpcer_fixing_apcer.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_eer.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_far.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_frr.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_generalization_metrics.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_hter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_indepth_error_rates_analysis.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_metrics.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/metrics/test_metrics_demographic.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/results/test_results_provider.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/results/test_results_values.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/scores/test_scores.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/foundations/scores/test_scores_provider.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/test_demographics.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/test_group_dataframe.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/det/test_colors.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/det/test_det_plotter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/histogram/test_histogram_plotter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/percentile/test_bias_percentile_comparison_plotter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/percentile/test_bias_percentile_plotter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/radar/test_create_apcer_by_pai.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/radar/test_create_apcer_by_subprotocol.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/radar/test_fine_grained_pais_provider.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/radar/test_pad_radar_pai_plotter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/radar/test_pad_radar_protocol_plotter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/unit/tools/visualization/test_scores_and_labels_formatter.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n!!!!!!!!!!!!!!!!!!! Interrupted: 28 errors during collection !!!!!!!!!!!!!!!!!!!\n28 errors in 3.72s"
+ }
+}

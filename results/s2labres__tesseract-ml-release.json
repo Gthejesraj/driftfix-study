@@ -1,0 +1,10 @@
+{
+ "id": "s2labres__tesseract-ml-release",
+ "repo": "s2labres/tesseract-ml-release",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 21,
+ "sha": "05132c83eccaa0be24b5403bfe9a73c22199ddef",
+ "old": "",
+ "status": "not_on_old_version"
+}

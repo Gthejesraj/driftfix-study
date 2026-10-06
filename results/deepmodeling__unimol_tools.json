@@ -1,0 +1,10 @@
+{
+ "id": "deepmodeling__unimol_tools",
+ "repo": "deepmodeling/unimol_tools",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 35,
+ "sha": "670afbd3144b58caef1d76cc618ddfeaecab8424",
+ "old": "2.2.6",
+ "status": "not_on_old_version"
+}

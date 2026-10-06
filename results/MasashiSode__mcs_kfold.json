@@ -1,0 +1,10 @@
+{
+ "id": "MasashiSode__mcs_kfold",
+ "repo": "MasashiSode/mcs_kfold",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 54,
+ "sha": "d54de951f4d800a69beb8059826a6d1dd0cc53c0",
+ "old": "",
+ "status": "not_on_old_version"
+}

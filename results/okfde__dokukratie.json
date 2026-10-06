@@ -1,0 +1,38 @@
+{
+ "id": "okfde__dokukratie",
+ "repo": "okfde/dokukratie",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 47,
+ "sha": "084524591d654abd3321dc609b5ffde10112ea47",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 1,
+  "counts": {
+   "failed": 19
+  },
+  "failing": [
+   "tests/test_scrapers.py::Test::test_bb",
+   "tests/test_scrapers.py::Test::test_be",
+   "tests/test_scrapers.py::Test::test_bw",
+   "tests/test_scrapers.py::Test::test_by",
+   "tests/test_scrapers.py::Test::test_dip",
+   "tests/test_scrapers.py::Test::test_hb",
+   "tests/test_scrapers.py::Test::test_he",
+   "tests/test_scrapers.py::Test::test_hh",
+   "tests/test_scrapers.py::Test::test_mv",
+   "tests/test_scrapers.py::Test::test_ni",
+   "tests/test_scrapers.py::Test::test_nw",
+   "tests/test_scrapers.py::Test::test_rp",
+   "tests/test_scrapers.py::Test::test_sehrgutachten",
+   "tests/test_scrapers.py::Test::test_sh",
+   "tests/test_scrapers.py::Test::test_sl",
+   "tests/test_scrapers.py::Test::test_sn",
+   "tests/test_scrapers.py::Test::test_st",
+   "tests/test_scrapers.py::Test::test_th",
+   "tests/test_scrapers.py::Test::test_vsberichte"
+  ],
+  "tail": "self = <test_scrapers.Test testMethod=test_vsberichte>\n\n    def test_vsberichte(self):\n>       self.run_scraper(\"vsberichte\", start_date=\"2020-01-01\")\n\ntests/test_scrapers.py:428: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_scrapers.py:78: in run_scraper\n    self.assertEqual(ret, 0)\nE   AssertionError: 32512 != 0\n----------------------------- Captured stdout call -----------------------------\nenv: ('TESTING_MODE=True MEMORIOUS_DEBUG=True MEMORIOUS_INCREMENTAL=False '\n 'MEMORIOUS_CONFIG_PATH=dokukratie '\n 'MEMORIOUS_DATASTORE_URI=sqlite:///testdata/vsberichte/datastore.sqlite3 '\n 'MEMORIOUS_HTTP_TIMEOUT=60 MEMORIOUS_BASE_PATH=testdata/vsberichte '\n 'ARCHIVE_TYPE=file ARCHIVE_PATH=testdata/archive START_DATE=2020-01-01 '\n 'END_DATE=2026-10-06')\n----------------------------- Captured stderr call -----------------------------\nsh: 1: memorious: not found\n=========================== short test summary info ============================\nFAILED tests/test_scrapers.py::Test::test_bb - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_be - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_bw - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_by - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_dip - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_hb - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_he - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_hh - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_mv - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_ni - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_nw - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_rp - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_sehrgutachten - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_sh - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_sl - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_sn - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_st - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_th - AssertionError: 32512 != 0\nFAILED tests/test_scrapers.py::Test::test_vsberichte - AssertionError: 32512 != 0\n19 failed in 0.55s"
+ }
+}

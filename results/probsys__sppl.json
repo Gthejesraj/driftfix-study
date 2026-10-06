@@ -1,0 +1,10 @@
+{
+ "id": "probsys__sppl",
+ "repo": "probsys/sppl",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 86,
+ "sha": "e537b0c387a06b8604835014b97702e0b8a1aab4",
+ "old": "",
+ "status": "not_on_old_version"
+}

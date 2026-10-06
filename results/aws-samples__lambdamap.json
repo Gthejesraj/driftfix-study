@@ -1,0 +1,21 @@
+{
+ "id": "aws-samples__lambdamap",
+ "repo": "aws-samples/lambdamap",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 12,
+ "sha": "74d845702d52fd5afa1493eabaa09b2505a318a7",
+ "old": "1.5.3",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "tests/test_handler.py",
+   "tests/test_lambdamap.py"
+  ],
+  "tail": "../venv/lib/python3.11/site-packages/pandas/__init__.py:22: in <module>\n    from pandas.compat import is_numpy_dev as _is_numpy_dev  # pyright: ignore # noqa:F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/pandas/compat/__init__.py:18: in <module>\n    from pandas.compat.numpy import (\n../venv/lib/python3.11/site-packages/pandas/compat/numpy/__init__.py:4: in <module>\n    from pandas.util.version import Version\n../venv/lib/python3.11/site-packages/pandas/util/__init__.py:2: in <module>\n    from pandas.util._decorators import (  # noqa:F401\n../venv/lib/python3.11/site-packages/pandas/util/_decorators.py:14: in <module>\n    from pandas._libs.properties import cache_readonly\n../venv/lib/python3.11/site-packages/pandas/_libs/__init__.py:13: in <module>\n    from pandas._libs.interval import Interval\npandas/_libs/interval.pyx:1: in init pandas._libs.interval\n    ???\nE   ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n___________________ ERROR collecting tests/test_lambdamap.py ___________________\ntests/test_lambdamap.py:6: in <module>\n    import pandas as pd\n../venv/lib/python3.11/site-packages/pandas/__init__.py:22: in <module>\n    from pandas.compat import is_numpy_dev as _is_numpy_dev  # pyright: ignore # noqa:F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/pandas/compat/__init__.py:18: in <module>\n    from pandas.compat.numpy import (\n../venv/lib/python3.11/site-packages/pandas/compat/numpy/__init__.py:4: in <module>\n    from pandas.util.version import Version\n../venv/lib/python3.11/site-packages/pandas/util/__init__.py:2: in <module>\n    from pandas.util._decorators import (  # noqa:F401\n../venv/lib/python3.11/site-packages/pandas/util/_decorators.py:14: in <module>\n    from pandas._libs.properties import cache_readonly\n../venv/lib/python3.11/site-packages/pandas/_libs/__init__.py:13: in <module>\n    from pandas._libs.interval import Interval\npandas/_libs/interval.pyx:1: in init pandas._libs.interval\n    ???\nE   ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n=========================== short test summary info ============================\nERROR tests/test_handler.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR tests/test_lambdamap.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.24s"
+ }
+}

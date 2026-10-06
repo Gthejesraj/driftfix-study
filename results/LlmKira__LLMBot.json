@@ -1,0 +1,16 @@
+{
+ "id": "LlmKira__LLMBot",
+ "repo": "LlmKira/LLMBot",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 17,
+ "sha": "063f94b56cd5f6b62d5d583e1dc52a41f8ca8f04",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 5,
+  "counts": {},
+  "failing": [],
+  "tail": "\nno tests ran in 0.01s"
+ }
+}

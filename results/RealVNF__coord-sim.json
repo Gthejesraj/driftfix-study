@@ -1,0 +1,10 @@
+{
+ "id": "RealVNF__coord-sim",
+ "repo": "RealVNF/coord-sim",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 61,
+ "sha": "281f77f9f273cfd41536a66f3c0180aabc94f4b1",
+ "old": "",
+ "status": "not_on_old_version"
+}

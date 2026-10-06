@@ -1,0 +1,23 @@
+{
+ "id": "jerome3o__schemallm",
+ "repo": "jerome3o/schemallm",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 12,
+ "sha": "048167f3a6cc4ba0c0a0c074acea280517803a97",
+ "old": "1.10.9",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "legacy/rellm_outer/tests/test_constant_regex.py",
+   "tests/test_completion_cfg.py",
+   "tests/test_completion_standard.py",
+   "tests/test_server.py"
+  ],
+  "tail": "    content = re.sub(\"\\s*-\\s\\[\\s\\]\\s.*|\\s*\\[\\s\\]\\s.*\", \"\", content)  # rm tasks\n\n../venv/lib/python3.11/site-packages/langchain/document_loaders/acreom.py:49\n  /tmp/study/venv/lib/python3.11/site-packages/langchain/document_loaders/acreom.py:49: DeprecationWarning: invalid escape sequence '\\['\n    content = re.sub(\"\\[\\[.*?\\]\\]\", \"\", content)  # rm doclinks\n\n../venv/lib/python3.11/site-packages/langchain/text_splitter.py:785\n  /tmp/study/venv/lib/python3.11/site-packages/langchain/text_splitter.py:785: DeprecationWarning: invalid escape sequence '\\*'\n    \"\\n\\*+\\n\",\n\n../venv/lib/python3.11/site-packages/langchain/text_splitter.py:884\n  /tmp/study/venv/lib/python3.11/site-packages/langchain/text_splitter.py:884: DeprecationWarning: invalid escape sequence '\\*'\n    \"\\n\\*\\*\\*+\\n\",\n\n../venv/lib/python3.11/site-packages/langchain/text_splitter.py:897\n  /tmp/study/venv/lib/python3.11/site-packages/langchain/text_splitter.py:897: DeprecationWarning: invalid escape sequence '\\c'\n    \"\\n\\\\\\chapter{\",\n\n../venv/lib/python3.11/site-packages/langchain/text_splitter.py:898\n  /tmp/study/venv/lib/python3.11/site-packages/langchain/text_splitter.py:898: DeprecationWarning: invalid escape sequence '\\s'\n    \"\\n\\\\\\section{\",\n\n../venv/lib/python3.11/site-packages/langchain/text_splitter.py:899\n  /tmp/study/venv/lib/python3.11/site-packages/langchain/text_splitter.py:899: DeprecationWarning: invalid escape sequence '\\s'\n    \"\\n\\\\\\subsection{\",\n\n../venv/lib/python3.11/site-packages/langchain/text_splitter.py:900\n  /tmp/study/venv/lib/python3.11/site-packages/langchain/text_splitter.py:900: DeprecationWarning: invalid escape sequence '\\s'\n    \"\\n\\\\\\subsubsection{\",\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR legacy/rellm_outer/tests/test_constant_regex.py\nERROR tests/test_completion_cfg.py - RuntimeError: Failed to import transformers.modeling_utils because of the following error (look up to see its traceback):\nNo module named 'pkg_resources'\nERROR tests/test_completion_standard.py - RuntimeError: Failed to import transformers.modeling_utils because of the following error (look up to see its traceback):\nNo module named 'pkg_resources'\nERROR tests/test_server.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n9 warnings, 4 errors in 4.93s"
+ }
+}

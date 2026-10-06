@@ -1,0 +1,24 @@
+{
+ "id": "augerai__a2ml",
+ "repo": "augerai/a2ml",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 38,
+ "sha": "7fcce9851fb69e0223d1c0538a22f066a8e13bbc",
+ "old": "1.23.5",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 5
+  },
+  "failing": [
+   "tests/model_review/test_model_review.py",
+   "tests/server/test_server.py",
+   "tests/tasks_queue/test_tasks_api_auger.py",
+   "tests/tasks_queue/test_tasks_hub_api.py",
+   "tests/test_celery_tasks/test_tasks.py"
+  ],
+  "tail": "____________ ERROR collecting tests/test_celery_tasks/test_tasks.py ____________\nImportError while importing test module '/tmp/study/repo/tests/test_celery_tasks/test_tasks.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_celery_tasks/test_tasks.py:3: in <module>\n    from a2ml.tasks_queue.tasks_api import (\na2ml/tasks_queue/tasks_api.py:1: in <module>\n    from .celery_app import celeryApp\na2ml/tasks_queue/celery_app.py:2: in <module>\n    from celery import Celery\nE   ModuleNotFoundError: No module named 'celery'\n=============================== warnings summary ===============================\na2ml/api/utils/context.py:96\n  /tmp/study/repo/a2ml/api/utils/context.py:96: DeprecationWarning: invalid escape sequence '\\p'\n    raise Exception('Expecting list of providers in config.yaml\\providers')\n\ntests/api/roi/test_calculator.py:171\n  /tmp/study/repo/tests/api/roi/test_calculator.py:171: DeprecationWarning: invalid escape sequence '\\$'\n    with pytest.raises(MissedVariable, match='missed var `\\$symbol` in row `{\"A\": 0.3, \"P\": 0.3, \"\\$spread\": 0.3}'):\n\ntests/api/roi/test_validator.py:18\n  /tmp/study/repo/tests/api/roi/test_validator.py:18: DeprecationWarning: invalid escape sequence '\\$'\n    pytest.param(\"$a + $b + $c\", \"warning\", \"unknown variable '\\$c' at position 11\"),\n\na2ml/cmdl/cmdl.py:23\n  /tmp/study/repo/a2ml/cmdl/cmdl.py:23: DeprecationWarning: 'MultiCommand' is deprecated and will be removed in Click 9.0. Use 'Group' instead.\n    class A2mlCli(click.MultiCommand):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/model_review/test_model_review.py\nERROR tests/server/test_server.py\nERROR tests/tasks_queue/test_tasks_api_auger.py\nERROR tests/tasks_queue/test_tasks_hub_api.py\nERROR tests/test_celery_tasks/test_tasks.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!\n4 warnings, 5 errors in 1.25s"
+ }
+}

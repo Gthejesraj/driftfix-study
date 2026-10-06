@@ -1,0 +1,25 @@
+{
+ "id": "benedekrozemberczki__littleballoffur",
+ "repo": "benedekrozemberczki/littleballoffur",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 714,
+ "sha": "67b3f6ba624d94384339eb859417d73ebeca1b02",
+ "old": "1.5.3",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 6
+  },
+  "failing": [
+   "test/backend_test.py",
+   "test/edge_sampler_test.py",
+   "test/exploration_sampler_test.py",
+   "test/node_sampler_test.py",
+   "test/reader_test.py",
+   "test/sampler_test.py"
+  ],
+  "tail": "    from pandas._libs.properties import cache_readonly\n../venv/lib/python3.11/site-packages/pandas/_libs/__init__.py:13: in <module>\n    from pandas._libs.interval import Interval\npandas/_libs/interval.pyx:1: in init pandas._libs.interval\n    ???\nE   ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n____________________ ERROR collecting test/sampler_test.py _____________________\ntest/sampler_test.py:3: in <module>\n    from littleballoffur import Sampler\nlittleballoffur/__init__.py:1: in <module>\n    from littleballoffur.dataset import *\nlittleballoffur/dataset/__init__.py:1: in <module>\n    from .dataset_reader import GraphReader\nlittleballoffur/dataset/dataset_reader.py:4: in <module>\n    import pandas as pd\n../venv/lib/python3.11/site-packages/pandas/__init__.py:22: in <module>\n    from pandas.compat import is_numpy_dev as _is_numpy_dev  # pyright: ignore # noqa:F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/pandas/compat/__init__.py:18: in <module>\n    from pandas.compat.numpy import (\n../venv/lib/python3.11/site-packages/pandas/compat/numpy/__init__.py:4: in <module>\n    from pandas.util.version import Version\n../venv/lib/python3.11/site-packages/pandas/util/__init__.py:2: in <module>\n    from pandas.util._decorators import (  # noqa:F401\n../venv/lib/python3.11/site-packages/pandas/util/_decorators.py:14: in <module>\n    from pandas._libs.properties import cache_readonly\n../venv/lib/python3.11/site-packages/pandas/_libs/__init__.py:13: in <module>\n    from pandas._libs.interval import Interval\npandas/_libs/interval.pyx:1: in init pandas._libs.interval\n    ???\nE   ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n=========================== short test summary info ============================\nERROR test/backend_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR test/edge_sampler_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR test/exploration_sampler_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR test/node_sampler_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR test/reader_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\nERROR test/sampler_test.py - ValueError: numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject\n!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!\n6 errors in 1.78s"
+ }
+}

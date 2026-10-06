@@ -1,0 +1,20 @@
+{
+ "id": "HobnobMancer__cazy_webscraper",
+ "repo": "HobnobMancer/cazy_webscraper",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 18,
+ "sha": "b8f0c3d5e1d43d22803f3b3a1e8e690816e2f73d",
+ "old": "1.4.20",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/test_extract_seqs.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n_________________ ERROR collecting tests/test_extract_seqs.py __________________\nImportError while importing test module '/tmp/study/repo/tests/test_extract_seqs.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_extract_seqs.py:57: in <module>\n    from cazy_webscraper.expand.extract_seqs import extract_db_seqs\ncazy_webscraper/expand/extract_seqs/extract_db_seqs.py:56: in <module>\n    from Bio.Blast.Applications import NcbimakeblastdbCommandline\nE   ModuleNotFoundError: No module named 'Bio.Blast.Applications'\n=========================== short test summary info ============================\nERROR tests/test_extract_seqs.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 3.10s"
+ }
+}

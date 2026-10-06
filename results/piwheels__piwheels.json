@@ -1,0 +1,30 @@
+{
+ "id": "piwheels__piwheels",
+ "repo": "piwheels/piwheels",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 276,
+ "sha": "a700636597e83c75afac694ef51c959ef82d6969",
+ "old": "1.4.46",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 11
+  },
+  "failing": [
+   "tests/audit/test_audit.py",
+   "tests/importer/test_importer.py",
+   "tests/logger/test_logger.py",
+   "tests/master/test_cloud_gazer.py",
+   "tests/master/test_lumberjack.py",
+   "tests/master/test_master.py",
+   "tests/master/test_mr_chase.py",
+   "tests/master/test_the_scribe.py",
+   "tests/master/test_version.py",
+   "tests/slave/test_builder.py",
+   "tests/slave/test_slave.py"
+  ],
+  "tail": "Hint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/slave/test_builder.py:43: in <module>\n    from piwheels.slave import builder\npiwheels/slave/__init__.py:54: in <module>\n    from .builder import Builder\npiwheels/slave/builder.py:50: in <module>\n    import apt\nE   ModuleNotFoundError: No module named 'apt'\n__________________ ERROR collecting tests/slave/test_slave.py __________________\nImportError while importing test module '/tmp/study/repo/tests/slave/test_slave.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/slave/test_slave.py:39: in <module>\n    from piwheels.slave import PiWheelsSlave\npiwheels/slave/__init__.py:54: in <module>\n    from .builder import Builder\npiwheels/slave/builder.py:50: in <module>\n    import apt\nE   ModuleNotFoundError: No module named 'apt'\n=========================== short test summary info ============================\nERROR tests/audit/test_audit.py\nERROR tests/importer/test_importer.py\nERROR tests/logger/test_logger.py\nERROR tests/master/test_cloud_gazer.py\nERROR tests/master/test_lumberjack.py\nERROR tests/master/test_master.py\nERROR tests/master/test_mr_chase.py\nERROR tests/master/test_the_scribe.py\nERROR tests/master/test_version.py\nERROR tests/slave/test_builder.py\nERROR tests/slave/test_slave.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 11 errors during collection !!!!!!!!!!!!!!!!!!!\n11 errors in 1.90s"
+ }
+}

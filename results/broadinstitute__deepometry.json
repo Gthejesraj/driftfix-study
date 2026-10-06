@@ -1,0 +1,10 @@
+{
+ "id": "broadinstitute__deepometry",
+ "repo": "broadinstitute/deepometry",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 29,
+ "sha": "7e463b41c4b76895822be74053ecacdf17ab587d",
+ "old": "",
+ "status": "not_on_old_version"
+}

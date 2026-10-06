@@ -1,0 +1,16 @@
+{
+ "id": "codemation__pydbantic",
+ "repo": "codemation/pydbantic",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 240,
+ "sha": "1f042ec31446cad4f78a4adbfce3005347f3a7c6",
+ "old": "1.4.49",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:329: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.\nPlugin: helpconfig, Hook: pytest_cmdline_parse\nConftestImportFailure: KeyError: 'ENV' (from /tmp/study/repo/tests/conftest.py)\nFor more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning\n  config = pluginmanager.hook.pytest_cmdline_parse(\nImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:19: in <module>\n    DB_URL = DB_PATH[os.environ[\"ENV\"]]\nE   KeyError: 'ENV'"
+ }
+}

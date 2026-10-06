@@ -1,0 +1,21 @@
+{
+ "id": "ai-decentralized__BloomBee",
+ "repo": "ai-decentralized/BloomBee",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 134,
+ "sha": "33cbcd1e49e55c36f699eaacac05b9960e80f436",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "skipped": 13,
+   "error": 1
+  },
+  "failing": [
+   "tests/test_cache.py"
+  ],
+  "tail": "  /tmp/study/venv/lib/python3.11/site-packages/peft/tuners/loha/model.py:105: DeprecationWarning: invalid escape sequence '\\.'\n    target_name_key = next(filter(lambda key: re.match(f\"(.*\\.)?{key}$\", current_key), pattern_keys), target_name)\n\n../venv/lib/python3.11/site-packages/peft/tuners/lokr/model.py:106\n  /tmp/study/venv/lib/python3.11/site-packages/peft/tuners/lokr/model.py:106: DeprecationWarning: invalid escape sequence '\\.'\n    target_name_key = next(filter(lambda key: re.match(f\"(.*\\.)?{key}$\", current_key), pattern_keys), target_name)\n\n../venv/lib/python3.11/site-packages/peft/tuners/oft/model.py:98\n  /tmp/study/venv/lib/python3.11/site-packages/peft/tuners/oft/model.py:98: DeprecationWarning: invalid escape sequence '\\.'\n    target_name_key = next(filter(lambda key: re.match(f\"(.*\\.)?{key}$\", current_key), pattern_keys), target_name)\n\ntests/test_peft.py:24\n  /tmp/study/repo/tests/test_peft.py:24: PytestUnknownMarkWarning: Unknown pytest.mark.forked - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.forked\n\ntests/test_peft.py:30\n  /tmp/study/repo/tests/test_peft.py:30: PytestUnknownMarkWarning: Unknown pytest.mark.forked - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.forked\n\ntests/test_peft.py:43\n  /tmp/study/repo/tests/test_peft.py:43: PytestUnknownMarkWarning: Unknown pytest.mark.forked - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.forked\n\ntests/test_peft.py:51\n  /tmp/study/repo/tests/test_peft.py:51: PytestUnknownMarkWarning: Unknown pytest.mark.forked - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.forked\n\ntests/test_peft.py:58\n  /tmp/study/repo/tests/test_peft.py:58: PytestUnknownMarkWarning: Unknown pytest.mark.forked - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.forked\n\ntests/test_priority_pool.py:32\n  /tmp/study/repo/tests/test_priority_pool.py:32: PytestUnknownMarkWarning: Unknown pytest.mark.forked - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.forked\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/test_cache.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n13 skipped, 15 warnings, 1 error in 7.41s"
+ }
+}

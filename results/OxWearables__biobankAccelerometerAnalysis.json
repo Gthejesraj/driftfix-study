@@ -1,0 +1,10 @@
+{
+ "id": "OxWearables__biobankAccelerometerAnalysis",
+ "repo": "OxWearables/biobankAccelerometerAnalysis",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 251,
+ "sha": "95e1d790f745bbb5b44112166b522e58a47c485d",
+ "old": "",
+ "status": "not_on_old_version"
+}

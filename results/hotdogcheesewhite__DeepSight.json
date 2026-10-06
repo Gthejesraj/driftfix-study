@@ -1,0 +1,10 @@
+{
+ "id": "hotdogcheesewhite__DeepSight",
+ "repo": "hotdogcheesewhite/DeepSight",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 31,
+ "sha": "2ad3cb7964949ea1a8f735514721e27a79563c0a",
+ "old": "",
+ "status": "not_on_old_version"
+}

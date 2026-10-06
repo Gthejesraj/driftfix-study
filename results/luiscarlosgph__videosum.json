@@ -1,0 +1,10 @@
+{
+ "id": "luiscarlosgph__videosum",
+ "repo": "luiscarlosgph/videosum",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 25,
+ "sha": "097f181d0700ea7f65bcd9864b1e15feb440f290",
+ "old": "",
+ "status": "not_on_old_version"
+}

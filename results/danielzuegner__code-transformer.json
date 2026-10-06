@@ -1,0 +1,10 @@
+{
+ "id": "danielzuegner__code-transformer",
+ "repo": "danielzuegner/code-transformer",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 174,
+ "sha": "c7eb56e895cd70307cf4a69cb6c5d8495d17b469",
+ "old": "",
+ "status": "not_on_old_version"
+}

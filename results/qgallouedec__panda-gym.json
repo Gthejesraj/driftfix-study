@@ -1,0 +1,25 @@
+{
+ "id": "qgallouedec__panda-gym",
+ "repo": "qgallouedec/panda-gym",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 769,
+ "sha": "10c4d8adaab07d8a29b2f8dc0aa85f8edd8532ae",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 1,
+  "counts": {},
+  "failing": [
+   "test/envs_test.py::test_check_env[PandaPickAndPlace-v3]",
+   "test/envs_test.py::test_check_env[PandaPickAndPlaceJoints-v3]",
+   "test/envs_test.py::test_check_env[PandaPickAndPlaceDense-v3]",
+   "test/envs_test.py::test_check_env[PandaPickAndPlaceJointsDense-v3]",
+   "test/envs_test.py::test_check_env[PandaFlip-v3]",
+   "test/envs_test.py::test_check_env[PandaFlipJoints-v3]",
+   "test/envs_test.py::test_check_env[PandaFlipDense-v3]",
+   "test/envs_test.py::test_check_env[PandaFlipJointsDense-v3]"
+  ],
+  "tail": "\n../venv/lib/python3.11/site-packages/gymnasium/utils/env_checker.py:240: AssertionError\n=============================== warnings summary ===============================\ntest/envs_test.py::test_check_env[PandaPush-v3]\ntest/envs_test.py::test_check_env[PandaPushJoints-v3]\ntest/envs_test.py::test_check_env[PandaPushDense-v3]\ntest/envs_test.py::test_check_env[PandaPushJointsDense-v3]\ntest/envs_test.py::test_check_env[PandaStack-v3]\ntest/envs_test.py::test_check_env[PandaStackJoints-v3]\ntest/envs_test.py::test_check_env[PandaStackDense-v3]\ntest/envs_test.py::test_check_env[PandaStackJointsDense-v3]\n  /tmp/study/venv/lib/python3.11/site-packages/gymnasium/utils/env_checker.py:244: UserWarning: \u001b[33mWARN: Step observations are not equal although similar given the same seed and action\u001b[0m\n    logger.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED test/envs_test.py::test_check_env[PandaPickAndPlace-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\nFAILED test/envs_test.py::test_check_env[PandaPickAndPlaceJoints-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\nFAILED test/envs_test.py::test_check_env[PandaPickAndPlaceDense-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\nFAILED test/envs_test.py::test_check_env[PandaPickAndPlaceJointsDense-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\nFAILED test/envs_test.py::test_check_env[PandaFlip-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\nFAILED test/envs_test.py::test_check_env[PandaFlipJoints-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\nFAILED test/envs_test.py::test_check_env[PandaFlipDense-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\nFAILED test/envs_test.py::test_check_env[PandaFlipJointsDense-v3] - AssertionError: Deterministic step observations are not equivalent for the same seed and action\n8 failed, 79 passed, 8 warnings in 39.25s\nargv[0]=--background_color_red=0.8745098114013672\nargv[1]=--background_color_green=0.21176470816135406\nargv[2]=--background_color_blue=0.1764705926179886\nargv[0]=--background_color_red=0.8745098114013672\nargv[1]=--background_color_green=0.21176470816135406\nargv[2]=--background_color_blue=0.1764705926179886\nargv[0]=--background_color_red=0.8745098114013672\nargv[1]=--background_color_green=0.21176470816135406\nargv[2]=--background_color_blue=0.1764705926179886\nargv[0]=--background_color_red=0.8745098114013672\nargv[1]=--background_color_green=0.21176470816135406\nargv[2]=--background_color_blue=0.1764705926179886\nargv[0]=--background_color_red=0.8745098114013672\nargv[1]=--background_color_green=0.21176470816135406\nargv[2]=--background_color_blue=0.1764705926179886"
+ }
+}

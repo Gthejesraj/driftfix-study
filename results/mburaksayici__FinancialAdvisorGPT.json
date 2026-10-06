@@ -1,0 +1,10 @@
+{
+ "id": "mburaksayici__FinancialAdvisorGPT",
+ "repo": "mburaksayici/FinancialAdvisorGPT",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 46,
+ "sha": "e9a338bf6f12c609439d4e4bf79a341c6b32ad21",
+ "status": "install_failed",
+ "error": "requirements all_requirements.txt: error: No solution found when resolving dependencies\n  cause: Because chromadb==0.4.22 depends on tqdm>=4.65.0 and you require chromadb==0.4.22, we can conclude that you require tqdm>=4.65.0.\n         And because you require tqdm==4.62.3, we can conclude that your requirements are unsatisfiable.\n"
+}

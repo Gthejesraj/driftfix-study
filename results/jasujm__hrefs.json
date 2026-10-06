@@ -1,0 +1,10 @@
+{
+ "id": "jasujm__hrefs",
+ "repo": "jasujm/hrefs",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 16,
+ "sha": "b1153d5c598f366185ae16db5353a005c562d63d",
+ "old": "2.13.5",
+ "status": "not_on_old_version"
+}

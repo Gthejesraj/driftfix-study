@@ -1,0 +1,23 @@
+{
+ "id": "CentreSecuriteIA__BELLS",
+ "repo": "CentreSecuriteIA/BELLS",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 35,
+ "sha": "ecf7544945458b255f6a0d1d4b880c235918f2fd",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 4
+  },
+  "failing": [
+   "tests/test_cli.py",
+   "tests/test_core.py",
+   "tests/test_hide.py",
+   "tests/test_safeguards.py"
+  ],
+  "tail": "tests/test_cli.py:5: in <module>\n    from bells import utils\nE   ModuleNotFoundError: No module named 'bells'\n_____________________ ERROR collecting tests/test_core.py ______________________\nImportError while importing test module '/tmp/study/repo/tests/test_core.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_core.py:4: in <module>\n    from bells.core import Trace, ApiCall, Message, FailureType, dict_to_dataclass\nE   ModuleNotFoundError: No module named 'bells'\n_____________________ ERROR collecting tests/test_hide.py ______________________\nImportError while importing test module '/tmp/study/repo/tests/test_hide.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_hide.py:4: in <module>\n    from bells.utils import hide_strings\nE   ModuleNotFoundError: No module named 'bells'\n__________________ ERROR collecting tests/test_safeguards.py ___________________\nImportError while importing test module '/tmp/study/repo/tests/test_safeguards.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_safeguards.py:5: in <module>\n    from bells import utils\nE   ModuleNotFoundError: No module named 'bells'\n=========================== short test summary info ============================\nERROR tests/test_cli.py\nERROR tests/test_core.py\nERROR tests/test_hide.py\nERROR tests/test_safeguards.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n4 errors in 0.13s"
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "OpenCSGs__llm-inference",
+ "repo": "OpenCSGs/llm-inference",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 96,
+ "sha": "4ea759902cdaa07f37adc0510d13e5505afa1136",
+ "old": "",
+ "status": "not_on_old_version"
+}

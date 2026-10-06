@@ -1,0 +1,10 @@
+{
+ "id": "MikePia__structjour",
+ "repo": "MikePia/structjour",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 44,
+ "sha": "b4c2996b93afca466543b8652a08edb83e7eaa6d",
+ "old": "",
+ "status": "not_on_old_version"
+}

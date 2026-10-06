@@ -1,0 +1,20 @@
+{
+ "id": "OCHA-DAP__ocha-anticipy",
+ "repo": "OCHA-DAP/ocha-anticipy",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 11,
+ "sha": "c9e49cb290ee794807cdce4ed8bb6576b7c74817",
+ "old": "1.10.10",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   ""
+  ],
+  "tail": "    importlib.import_module(module_name)\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n<frozen importlib._bootstrap>:1204: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1176: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:690: in _load_unlocked\n    ???\n../venv/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:178: in exec_module\n    exec(co, module.__dict__)\ntests/datasources/conftest.py:4: in <module>\n    from ochanticipy import GeoBoundingBox, create_custom_country_config\nsrc/ochanticipy/__init__.py:14: in <module>\n    from ochanticipy.datasources.codab.codab import CodAB\nsrc/ochanticipy/datasources/codab/codab.py:12: in <module>\n    from ochanticipy.utils.hdx_api import load_resource_from_hdx\nsrc/ochanticipy/utils/hdx_api.py:7: in <module>\n    from hdx.api.configuration import Configuration\n../venv/lib/python3.11/site-packages/hdx/api/configuration.py:9: in <module>\n    import ckanapi\n../venv/lib/python3.11/site-packages/ckanapi/__init__.py:19: in <module>\n    from ckanapi.remoteckan import RemoteCKAN\n../venv/lib/python3.11/site-packages/ckanapi/remoteckan.py:11: in <module>\n    from ckanapi.version import __version__\n../venv/lib/python3.11/site-packages/ckanapi/version.py:1: in <module>\n    import pkg_resources\nE   ModuleNotFoundError: No module named 'pkg_resources'\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/ckanapi/localckan.py:1\n  /tmp/study/venv/lib/python3.11/site-packages/ckanapi/localckan.py:1: DeprecationWarning: 'cgi' is deprecated and slated for removal in Python 3.13\n    from cgi import FieldStorage\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR  - ModuleNotFoundError: No module named 'pkg_resources'\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 warning, 1 error in 1.92s"
+ }
+}

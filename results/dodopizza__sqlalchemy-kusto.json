@@ -1,0 +1,20 @@
+{
+ "id": "dodopizza__sqlalchemy-kusto",
+ "repo": "dodopizza/sqlalchemy-kusto",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 15,
+ "sha": "97b54071a9bb21cee55853108b717dcfa5e3c22e",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/integration"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n______________________ ERROR collecting tests/integration ______________________\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1204: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1176: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:690: in _load_unlocked\n    ???\n../venv/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/integration/conftest.py:18: in <module>\n    from dotenv import load_dotenv\nE   ModuleNotFoundError: No module named 'dotenv'\n=========================== short test summary info ============================\nERROR tests/integration - ModuleNotFoundError: No module named 'dotenv'\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 1.01s"
+ }
+}

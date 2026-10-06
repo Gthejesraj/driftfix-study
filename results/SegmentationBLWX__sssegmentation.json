@@ -1,0 +1,10 @@
+{
+ "id": "SegmentationBLWX__sssegmentation",
+ "repo": "SegmentationBLWX/sssegmentation",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 881,
+ "sha": "ac52faea8f68f4a83d69d177cc74d99c98500081",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

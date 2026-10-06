@@ -1,0 +1,10 @@
+{
+ "id": "shaoyifei96__Symskill",
+ "repo": "shaoyifei96/Symskill",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 68,
+ "sha": "dcc3bf7ccd863c825e86228c8b21e24182dd5c44",
+ "old": "",
+ "status": "not_on_old_version"
+}

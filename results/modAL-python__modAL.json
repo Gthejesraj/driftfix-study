@@ -1,0 +1,10 @@
+{
+ "id": "modAL-python__modAL",
+ "repo": "modAL-python/modAL",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 2369,
+ "sha": "bba6f6fd00dbb862b1e09259b78caf6cffa2e755",
+ "status": "install_failed",
+ "error": "requirements rtd_requirements.txt: 1 -I/home/runner/.local/share/uv/python/cpython-3.11-linux-x86_64-gnu/include/python3.11 -Ibuild/src.linux-x86_64-3.11/numpy/core/src/common -Ibuild/src.linux-x86_64-3.11/numpy/core/src/npymath -c build/src.linux-x86_64-3.11/numpy/core/src/multiarray/scalartypes.c -o build/temp.linux-x86_64-3.11/build/src.linux-x86_64-3.11/numpy/core/src/multiarray/scalartypes.o -MMD -MF build/temp.linux-x86_64-3.11/build/src.linux-x86_64-3.11/numpy/core/src/multiarray/scalartypes.o.d\" failed with exit status 1\n"
+}

@@ -1,0 +1,26 @@
+{
+ "id": "glottolog__pyglottolog",
+ "repo": "glottolog/pyglottolog",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 33,
+ "sha": "8779af14ff0121373485d9ac296ac60f41accbf7",
+ "old": "1.4.54",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 188
+  },
+  "failing": [],
+  "tail": "........................................................................ [ 38%]\n........................................................................ [ 76%]\n............................................                             [100%]\n188 passed in 4.80s",
+  "preexisting_failures": 0
+ },
+ "new": "2.1.3",
+ "after": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ERROR: while parsing the following warning configuration:\n\n  ignore::sqlalchemy.exc.RemovedIn20Warning\n\nThis error occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 2170, in parse_warning_filter\n    category: type[Warning] = _resolve_warning_category(category_)\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 2218, in _resolve_warning_category\n    cat = getattr(m, klass)\n          ^^^^^^^^^^^^^^^^^\nAttributeError: module 'sqlalchemy.exc' has no attribute 'RemovedIn20Warning'\n\n"
+ },
+ "status": "broken"
+}

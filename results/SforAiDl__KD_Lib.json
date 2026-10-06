@@ -1,0 +1,10 @@
+{
+ "id": "SforAiDl__KD_Lib",
+ "repo": "SforAiDl/KD_Lib",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 652,
+ "sha": "a94d236050e81965d7e0c03d7dee3b63e67b675a",
+ "old": "",
+ "status": "not_on_old_version"
+}

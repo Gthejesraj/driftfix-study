@@ -1,0 +1,10 @@
+{
+ "id": "KOSASIH__eulers-shield",
+ "repo": "KOSASIH/eulers-shield",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 242,
+ "sha": "6280637efc6d767e6c8433766d98342186f6bf6c",
+ "old": "",
+ "status": "not_on_old_version"
+}

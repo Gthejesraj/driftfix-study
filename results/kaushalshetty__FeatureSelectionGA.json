@@ -1,0 +1,10 @@
+{
+ "id": "kaushalshetty__FeatureSelectionGA",
+ "repo": "kaushalshetty/FeatureSelectionGA",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 377,
+ "sha": "5aa3db531d304c4262dcce16a392d60017a71658",
+ "status": "install_failed",
+ "error": "requirements requirements.txt: ad of 'scikit-learn' and report it to their issue tracker\n         - as a last resort, set the environment variable\n           SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True to avoid this error\n\n         More information is available at\n         https://github.com/scikit-learn/sklearn-pypi-package\n\nhint: `sklearn` is often confused for `scikit-learn`. Did you mean to install `scikit-learn` instead?\n\nhint: Build failures usually indicate a problem with the package or the build environment\n"
+}

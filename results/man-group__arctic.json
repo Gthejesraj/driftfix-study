@@ -1,0 +1,10 @@
+{
+ "id": "man-group__arctic",
+ "repo": "man-group/arctic",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 3087,
+ "sha": "3cf2a9ce3a7f2c2544ececd20d0f4f5b917f7b2a",
+ "old": "2.4.6",
+ "status": "not_on_old_version"
+}

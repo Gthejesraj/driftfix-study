@@ -1,0 +1,20 @@
+{
+ "id": "edelvalle__reactor",
+ "repo": "edelvalle/reactor",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 638,
+ "sha": "20bbe7d606b01b72b727ad3ed74af04e5a143e39",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/fision/todo/tests.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n_________________ ERROR collecting tests/fision/todo/tests.py __________________\nImportError while importing test module '/tmp/study/repo/tests/fision/todo/tests.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/fision/todo/tests.py:8: in <module>\n    from uvicorn.main import Server as Uvicorn\nE   ModuleNotFoundError: No module named 'uvicorn'\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1464\n  /tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py:1464: PytestConfigWarning: Unknown config option: DJANGO_SETTINGS_MODULE\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/fision/todo/tests.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 warning, 1 error in 0.17s"
+ }
+}

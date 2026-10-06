@@ -1,0 +1,20 @@
+{
+ "id": "goamegah__pytorch-stc",
+ "repo": "goamegah/pytorch-stc",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 11,
+ "sha": "e233d7e4a1642b9630940c2eb58b74dd937c5cfd",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "tests/modules/test_cluster.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n________________ ERROR collecting tests/modules/test_cluster.py ________________\nImportError while importing test module '/tmp/study/repo/tests/modules/test_cluster.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/modules/test_cluster.py:5: in <module>\n    from torchSTC.modules import ClusteringLayer\ntorchSTC/modules/__init__.py:2: in <module>\n    from .stc import STC\ntorchSTC/modules/stc.py:13: in <module>\n    from torchSTC.metrics import metrics\ntorchSTC/metrics/__init__.py:2: in <module>\n    from .space_plot import SpacePlot\ntorchSTC/metrics/space_plot.py:16: in <module>\n    import umap\nE   ModuleNotFoundError: No module named 'umap'\n=========================== short test summary info ============================\nERROR tests/modules/test_cluster.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 7.23s"
+ }
+}

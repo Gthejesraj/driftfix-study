@@ -1,0 +1,10 @@
+{
+ "id": "melloddy__MELLODDY-Predictor",
+ "repo": "melloddy/MELLODDY-Predictor",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 12,
+ "sha": "979e95b0a4d5885a7e5a653030828bbd7a269369",
+ "old": "",
+ "status": "not_on_old_version"
+}

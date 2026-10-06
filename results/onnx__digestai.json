@@ -1,0 +1,20 @@
+{
+ "id": "onnx__digestai",
+ "repo": "onnx/digestai",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 53,
+ "sha": "0eba85b1b43858171eed977c31e5bca5e5ea3f25",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "error": 1
+  },
+  "failing": [
+   "test/test_gui.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n______________________ ERROR collecting test/test_gui.py _______________________\nImportError while importing test module '/tmp/study/repo/test/test_gui.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py:126: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest/test_gui.py:10: in <module>\n    from PySide6.QtTest import QTest\nE   ImportError: libEGL.so.1: cannot open shared object file: No such file or directory\n=========================== short test summary info ============================\nERROR test/test_gui.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 error in 0.53s"
+ }
+}

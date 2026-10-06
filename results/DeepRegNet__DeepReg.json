@@ -1,0 +1,10 @@
+{
+ "id": "DeepRegNet__DeepReg",
+ "repo": "DeepRegNet/DeepReg",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 629,
+ "sha": "650a2f1a88ad3c6932be305d6a98a36e26feedc6",
+ "old": "",
+ "status": "not_on_old_version"
+}

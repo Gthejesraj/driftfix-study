@@ -1,0 +1,35 @@
+{
+ "id": "spozdn__pet",
+ "repo": "spozdn/pet",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 37,
+ "sha": "ff66e8f3d33184bdf193855828921b003f8f6cdb",
+ "old": "1.26.4",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 2,
+   "skipped": 2
+  },
+  "failing": [],
+  "tail": ".s.s                                                                     [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/torch/jit/_script.py:1491\n  /tmp/study/venv/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\n    warnings.warn(\n\nsrc/__init__.py:9\n  /tmp/study/repo/src/__init__.py:9: DeprecationWarning: pathlib.Path.__enter__() is deprecated and scheduled for removal in Python 3.13; Path objects as a context manager is a no-op\n    with pkg_resources.files(__name__).joinpath('neighbors_convert.so') as lib_path:\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n2 passed, 2 skipped, 75 deselected, 2 warnings in 3.40s",
+  "preexisting_failures": 75
+ },
+ "new": "2.4.6",
+ "after": {
+  "code": 2,
+  "counts": {
+   "errors": 5
+  },
+  "failing": [
+   "tests/test_cpp_extension.py",
+   "tests/test_logger_with_shift_agnostic_loss.py",
+   "tests/test_pet_runs_without_errors.py",
+   "tests/test_shift_agnostic_loss.py",
+   "tests/test_torch_script.py"
+  ],
+  "tail": "    self._obj = obj = self._getobj()\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/python.py\", line 561, in _getobj\n    return importtestmodule(self.path, self.config)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/python.py\", line 508, in importtestmodule\n    mod = import_path(\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/pathlib.py\", line 596, in import_path\n    importlib.import_module(module_name)\n  File \"/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py\", line 126, in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/assertion/rewrite.py\", line 188, in exec_module\n    exec(co, module.__dict__)\n  File \"/tmp/study/repo/tests/test_torch_script.py\", line 4, in <module>\n    from pet.pet import PET\n  File \"/tmp/study/repo/src/__init__.py\", line 1, in <module>\n    from .single_struct_calculator import SingleStructCalculator\n  File \"/tmp/study/repo/src/single_struct_calculator.py\", line 5, in <module>\n    from .data_preparation import get_compositional_features\n  File \"/tmp/study/repo/src/data_preparation.py\", line 4, in <module>\n    from .molecule import Molecule\n  File \"/tmp/study/repo/src/molecule.py\", line 6, in <module>\n    from matscipy.neighbours import neighbour_list as neighbor_list\n  File \"/tmp/study/venv/lib/python3.11/site-packages/matscipy/neighbours.py\", line 38, in <module>\n    from . import ffi\n  File \"/tmp/study/venv/lib/python3.11/site-packages/matscipy/ffi.py\", line 36, in <module>\n    from ._matscipy import *  # noqa\nAttributeError: _ARRAY_API not found\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/torch/jit/_script.py:1491\n  /tmp/study/venv/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\n    warnings.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/test_cpp_extension.py\nERROR tests/test_logger_with_shift_agnostic_loss.py\nERROR tests/test_pet_runs_without_errors.py\nERROR tests/test_shift_agnostic_loss.py\nERROR tests/test_torch_script.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!!\n1 warning, 5 errors in 3.81s"
+ },
+ "status": "broken"
+}

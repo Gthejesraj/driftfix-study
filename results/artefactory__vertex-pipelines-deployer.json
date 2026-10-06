@@ -1,0 +1,28 @@
+{
+ "id": "artefactory__vertex-pipelines-deployer",
+ "repo": "artefactory/vertex-pipelines-deployer",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 14,
+ "sha": "c3c459d856a37169ab72c0b2ecc3d0b46c496b27",
+ "old": "1.5.3",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 52
+  },
+  "failing": [],
+  "tail": "....................................................                     [100%]\n52 passed in 1.92s",
+  "preexisting_failures": 0
+ },
+ "new": "2.3.3",
+ "after": {
+  "code": 0,
+  "counts": {
+   "passed": 52
+  },
+  "failing": [],
+  "tail": "....................................................                     [100%]\n52 passed in 2.08s"
+ },
+ "status": "not_broken"
+}

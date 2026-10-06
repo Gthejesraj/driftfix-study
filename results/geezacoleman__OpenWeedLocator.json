@@ -1,0 +1,16 @@
+{
+ "id": "geezacoleman__OpenWeedLocator",
+ "repo": "geezacoleman/OpenWeedLocator",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 501,
+ "sha": "46296531dba1474887b1238c73f9cf83ac41c47e",
+ "old": "1.5.1",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 3,
+  "counts": {},
+  "failing": [],
+  "tail": "INTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/runner.py\", line 361, in from_call\nINTERNALERROR>     result: TResult | None = func()\nINTERNALERROR>                              ^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/runner.py\", line 406, in collect\nINTERNALERROR>     return list(collector.collect())\nINTERNALERROR>                 ^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/python.py\", line 564, in collect\nINTERNALERROR>     self._register_setup_module_fixture()\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/python.py\", line 577, in _register_setup_module_fixture\nINTERNALERROR>     self.obj, (\"setUpModule\", \"setup_module\")\nINTERNALERROR>     ^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/python.py\", line 290, in obj\nINTERNALERROR>     self._obj = obj = self._getobj()\nINTERNALERROR>                       ^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/python.py\", line 561, in _getobj\nINTERNALERROR>     return importtestmodule(self.path, self.config)\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/python.py\", line 508, in importtestmodule\nINTERNALERROR>     mod = import_path(\nINTERNALERROR>           ^^^^^^^^^^^^\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/pathlib.py\", line 596, in import_path\nINTERNALERROR>     importlib.import_module(module_name)\nINTERNALERROR>   File \"/home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/importlib/__init__.py\", line 126, in import_module\nINTERNALERROR>     return _bootstrap._gcd_import(name[level:], package, level)\nINTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1204, in _gcd_import\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1176, in _find_and_load\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1147, in _find_and_load_unlocked\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 690, in _load_unlocked\nINTERNALERROR>   File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/assertion/rewrite.py\", line 188, in exec_module\nINTERNALERROR>     exec(co, module.__dict__)\nINTERNALERROR>   File \"/tmp/study/repo/tests/test_dash_mqtt_subscriber.py\", line 12, in <module>\nINTERNALERROR>     from utils.mqtt_manager import DashMQTTSubscriber\nINTERNALERROR>   File \"/tmp/study/repo/tests/../utils/mqtt_manager.py\", line 25, in <module>\nINTERNALERROR>     exit(1)\nINTERNALERROR>   File \"<frozen _sitebuiltins>\", line 26, in __call__\nINTERNALERROR> SystemExit: 1\n\n1 error in 0.44s\nmainloop: caught unexpected SystemExit!"
+ }
+}

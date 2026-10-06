@@ -54,4 +54,4 @@ jobs:
       - run: |
           git add results
           git -c user.name=study-bot -c user.email=study@users.noreply.github.com commit -qm "fix results" || exit 0
-          git pull -q --rebase && git push
+          for i in 1 2 3 4 5; do git pull -q --rebase && git push && break; sleep $((i * 5)); done

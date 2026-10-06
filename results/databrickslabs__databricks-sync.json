@@ -1,0 +1,10 @@
+{
+ "id": "databrickslabs__databricks-sync",
+ "repo": "databrickslabs/databricks-sync",
+ "package": "pandas",
+ "upgrade": "pandas>=2,<3",
+ "stars": 50,
+ "sha": "25405c7b771987d2a67527086d75108f71cf0a06",
+ "old": "",
+ "status": "not_on_old_version"
+}

@@ -1,0 +1,26 @@
+{
+ "id": "limx0__prefect-lakefs",
+ "repo": "limx0/prefect-lakefs",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 12,
+ "sha": "99d7baaab16d0b185ed6438d6e4d46c28838deec",
+ "old": "1.10.26",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 36
+  },
+  "failing": [],
+  "tail": "....................................                                     [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.11/site-packages/prefect/_vendor/starlette/formparsers.py:10\n  /tmp/study/venv/lib/python3.11/site-packages/prefect/_vendor/starlette/formparsers.py:10: PendingDeprecationWarning: Please use `import python_multipart` instead.\n    import multipart\n\ntests/test_storage.py::test_storage_init\n  /home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/contextlib.py:144: SAWarning: Skipped unsupported reflection of expression-based index ix_flow_run__coalesce_start_time_expected_start_time_desc\n    next(self.gen)\n\ntests/test_storage.py::test_storage_init\n  /home/runner/.local/share/uv/python/cpython-3.11.17-linux-x86_64-gnu/lib/python3.11/contextlib.py:144: SAWarning: Skipped unsupported reflection of expression-based index ix_flow_run__coalesce_start_time_expected_start_time_asc\n    next(self.gen)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n36 passed, 3 warnings in 6.09s",
+  "preexisting_failures": 0
+ },
+ "new": "2.13.5",
+ "after": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:8: in <module>\n    from prefect_lakefs import LakeFSCredentials\nprefect_lakefs/__init__.py:2: in <module>\n    from prefect_lakefs.credentials import LakeFSCredentials  # noqa F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nprefect_lakefs/credentials.py:21: in <module>\n    class LakeFSCredentials(Block):\n../venv/lib/python3.11/site-packages/pydantic/v1/main.py:214: in __new__\n    fields[ann_name] = ModelField.infer(\n../venv/lib/python3.11/site-packages/pydantic/v1/fields.py:504: in infer\n    return cls(\n../venv/lib/python3.11/site-packages/pydantic/v1/fields.py:434: in __init__\n    self.prepare()\n../venv/lib/python3.11/site-packages/pydantic/v1/fields.py:555: in prepare\n    self.populate_validators()\n../venv/lib/python3.11/site-packages/pydantic/v1/fields.py:829: in populate_validators\n    *(get_validators() if get_validators else list(find_validators(self.type_, self.model_config))),\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.11/site-packages/pydantic/v1/validators.py:768: in find_validators\n    raise RuntimeError(f'no validator found for {type_}, see `arbitrary_types_allowed` in Config')\nE   RuntimeError: no validator found for <class 'pydantic.types.SecretStr'>, see `arbitrary_types_allowed` in Config"
+ },
+ "status": "broken"
+}
