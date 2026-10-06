@@ -1,0 +1,16 @@
+{
+ "id": "gt__acoustid__acoustid-server__ef4859e",
+ "repo": "acoustid/acoustid-server",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 91,
+ "sha": "7419fc6d3a2f6ee39815fbd229744e7bdc356551",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/__init__.py:14: in <module>\n    from acoustid import tables\nacoustid/tables.py:29: in <module>\n    import mbdata.config  # noqa: E402\n    ^^^^^^^^^^^^^^^^^^^^\nE   ModuleNotFoundError: No module named 'mbdata'"
+ }
+}

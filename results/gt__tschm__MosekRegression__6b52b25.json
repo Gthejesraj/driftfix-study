@@ -1,0 +1,21 @@
+{
+ "id": "gt__tschm__MosekRegression__6b52b25",
+ "repo": "tschm/MosekRegression",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 11,
+ "sha": "f1d9028889404a4d0821e7e922576eaceec1422d",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "tests/test_regression/test_lsq.py",
+   "tests/test_regression/test_tools.py"
+  ],
+  "tail": "\n==================================== ERRORS ====================================\n______________ ERROR collecting tests/test_regression/test_lsq.py ______________\nImportError while importing test module '/tmp/study/repo/tests/test_regression/test_lsq.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_regression/test_lsq.py:6: in <module>\n    import pandas as pd\nE   ModuleNotFoundError: No module named 'pandas'\n_____________ ERROR collecting tests/test_regression/test_tools.py _____________\nImportError while importing test module '/tmp/study/repo/tests/test_regression/test_tools.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_regression/test_tools.py:7: in <module>\n    import pandas as pd\nE   ModuleNotFoundError: No module named 'pandas'\n=========================== short test summary info ============================\nERROR tests/test_regression/test_lsq.py\nERROR tests/test_regression/test_tools.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.10s"
+ }
+}

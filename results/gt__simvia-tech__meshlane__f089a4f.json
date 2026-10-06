@@ -1,0 +1,57 @@
+{
+ "id": "gt__simvia-tech__meshlane__f089a4f",
+ "repo": "simvia-tech/meshlane",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 34,
+ "sha": "16a09c6a5a96fbe21c6b647eb7e181f2f954f6fd",
+ "old": "1.26.4",
+ "baseline": {
+  "code": 0,
+  "counts": {
+   "passed": 766,
+   "skipped": 9
+  },
+  "failing": [],
+  "tail": "........................................................................ [  9%]\n........................................................................ [ 18%]\n........................................................................ [ 27%]\n.........................s..s.s............................s............ [ 37%]\n................................................s....................... [ 46%]\n........................................................................ [ 55%]\n........................................................................ [ 65%]\n........................................................................ [ 74%]\n........................................................................ [ 83%]\n........................................................................ [ 93%]\n.................................................s..                     [100%]\n766 passed, 9 skipped, 101 deselected in 2.19s",
+  "preexisting_failures": 101
+ },
+ "new": "2.5.3",
+ "after": {
+  "code": 1,
+  "counts": {
+   "failed": 25,
+   "passed": 741,
+   "skipped": 9
+  },
+  "failing": [
+   "tests/test_dolfin.py::test_dolfin[mesh3]",
+   "tests/test_gmsh.py::test_gmsh22[False-mesh9]",
+   "tests/test_gmsh.py::test_gmsh22[False-mesh10]",
+   "tests/test_gmsh.py::test_gmsh22[False-mesh11]",
+   "tests/test_gmsh.py::test_gmsh22[False-mesh12]",
+   "tests/test_gmsh.py::test_gmsh22[False-mesh13]",
+   "tests/test_gmsh.py::test_gmsh22[False-mesh14]",
+   "tests/test_gmsh.py::test_gmsh40[False-mesh8]",
+   "tests/test_gmsh.py::test_gmsh40[False-mesh9]",
+   "tests/test_gmsh.py::test_gmsh40[False-mesh10]",
+   "tests/test_gmsh.py::test_gmsh40[False-mesh11]",
+   "tests/test_gmsh.py::test_gmsh40[False-mesh12]",
+   "tests/test_gmsh.py::test_gmsh40[False-mesh13]",
+   "tests/test_gmsh.py::test_gmsh41[False-mesh8]",
+   "tests/test_gmsh.py::test_gmsh41[False-mesh9]",
+   "tests/test_gmsh.py::test_gmsh41[False-mesh10]",
+   "tests/test_gmsh.py::test_gmsh41[False-mesh11]",
+   "tests/test_gmsh.py::test_gmsh41[False-mesh12]",
+   "tests/test_gmsh.py::test_gmsh41[False-mesh13]",
+   "tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh0]",
+   "tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh1]",
+   "tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh2]",
+   "tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh3]",
+   "tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh4]",
+   "tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh5]"
+  ],
+  "tail": "\nsrc/meshlane/ugrid/_ugrid.py:59: ValueError\n----------------------------- Captured stdout call -----------------------------\n<meshlane mesh object>\n  Number of points: 8\n  Number of cells:\n    hexahedron: 1\n=============================== warnings summary ===============================\ntests/test_stl.py::test_stl[False-1e-15-mesh1]\n  /tmp/study/repo/src/meshlane/stl/_stl.py:40: RuntimeWarning: overflow encountered in scalar multiply\n    if 84 + num_triangles * 50 == filesize_bytes:\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_dolfin.py::test_dolfin[mesh3] - ValueError: could not convert string to float: 'np.float64(63.69616873214543)'\nFAILED tests/test_gmsh.py::test_gmsh22[False-mesh9] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh22[False-mesh10] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh22[False-mesh11] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh22[False-mesh12] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh22[False-mesh13] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh22[False-mesh14] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh40[False-mesh8] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh40[False-mesh9] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh40[False-mesh10] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh40[False-mesh11] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh40[False-mesh12] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh40[False-mesh13] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh41[False-mesh8] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh41[False-mesh9] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh41[False-mesh10] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh41[False-mesh11] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh41[False-mesh12] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_gmsh.py::test_gmsh41[False-mesh13] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh0] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh1] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh2] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh3] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh4] - ValueError: string or file could not be read to its end due to unmatched data\nFAILED tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh5] - ValueError: string or file could not be read to its end due to unmatched data\n25 failed, 741 passed, 9 skipped, 101 deselected, 1 warning in 3.08s"
+ },
+ "status": "broken"
+}

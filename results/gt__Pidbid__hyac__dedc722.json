@@ -1,0 +1,41 @@
+{
+ "id": "gt__Pidbid__hyac__dedc722",
+ "repo": "Pidbid/hyac",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 21,
+ "sha": "48efb3352df81deeb0baa32541a0ed59a7183d88",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 22
+  },
+  "failing": [
+   "app/tests/test_function_execution_limits.py",
+   "app/tests/test_router_authorization.py",
+   "server/tests/test_ai_request_isolation.py",
+   "server/tests/test_app_storage_deletion.py",
+   "server/tests/test_application_lifecycle_fences.py",
+   "server/tests/test_application_transaction_retries.py",
+   "server/tests/test_beanie_compat.py",
+   "server/tests/test_docker_container_inventory.py",
+   "server/tests/test_docker_reconcile_observation.py",
+   "server/tests/test_environment_contract.py",
+   "server/tests/test_initialization_membership.py",
+   "server/tests/test_password_contract.py",
+   "server/tests/test_production_config.py",
+   "server/tests/test_runtime_cleanup_retry.py",
+   "server/tests/test_runtime_status_manager.py",
+   "server/tests/test_settings_and_migrations.py",
+   "server/tests/test_task_worker_recovery.py",
+   "server/tests/test_user_identity_migration.py",
+   "server/tests/test_user_session_cas.py",
+   "test/test_deployment_review_contracts.py",
+   "test/test_password_hashing.py",
+   "test/test_reliability_security_contracts.py"
+  ],
+  "tail": "E   ModuleNotFoundError: No module named 'yaml'\n=============================== warnings summary ===============================\napp/tests/test_environment_contract.py:6\n  /tmp/study/repo/app/tests/test_environment_contract.py:6: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.asyncio\n\napp/tests/test_environment_contract.py:26\n  /tmp/study/repo/app/tests/test_environment_contract.py:26: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.asyncio\n\napp/tests/test_runtime_client.py:29\n  /tmp/study/repo/app/tests/test_runtime_client.py:29: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.asyncio\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR app/tests/test_function_execution_limits.py\nERROR app/tests/test_router_authorization.py\nERROR server/tests/test_ai_request_isolation.py\nERROR server/tests/test_app_storage_deletion.py\nERROR server/tests/test_application_lifecycle_fences.py\nERROR server/tests/test_application_transaction_retries.py\nERROR server/tests/test_beanie_compat.py\nERROR server/tests/test_docker_container_inventory.py\nERROR server/tests/test_docker_reconcile_observation.py\nERROR server/tests/test_environment_contract.py\nERROR server/tests/test_initialization_membership.py\nERROR server/tests/test_password_contract.py\nERROR server/tests/test_production_config.py\nERROR server/tests/test_runtime_cleanup_retry.py\nERROR server/tests/test_runtime_status_manager.py\nERROR server/tests/test_settings_and_migrations.py\nERROR server/tests/test_task_worker_recovery.py\nERROR server/tests/test_user_identity_migration.py\nERROR server/tests/test_user_session_cas.py\nERROR test/test_deployment_review_contracts.py\nERROR test/test_password_hashing.py\nERROR test/test_reliability_security_contracts.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 22 errors during collection !!!!!!!!!!!!!!!!!!!\n3 warnings, 22 errors in 0.84s"
+ }
+}

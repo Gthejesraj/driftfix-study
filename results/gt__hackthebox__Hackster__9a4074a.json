@@ -1,0 +1,16 @@
+{
+ "id": "gt__hackthebox__Hackster__9a4074a",
+ "repo": "hackthebox/Hackster",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 65,
+ "sha": "76b2f2558fb88762be1076761a108153f2d4da8e",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:4: in <module>\n    from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker\nE   ModuleNotFoundError: No module named 'sqlalchemy'"
+ }
+}

@@ -1,0 +1,38 @@
+{
+ "id": "gt__prebid__salesagent__efbf3bb",
+ "repo": "prebid/salesagent",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 38,
+ "sha": "913c8752d785548340c93f054d07be725d8ef0d8",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 19
+  },
+  "failing": [
+   "tests/integration",
+   "tests/manual/test_gam_automation_real.py",
+   "tests/manual/test_gam_supported_only.py",
+   "tests/unit/adapters/test_base.py",
+   "tests/unit/test_adcp_contract.py",
+   "tests/unit/test_ai_provider_bug.py",
+   "tests/unit/test_auth_removal_simple.py",
+   "tests/unit/test_comprehensive_product_validation.py",
+   "tests/unit/test_context_management.py",
+   "tests/unit/test_context_persistence.py",
+   "tests/unit/test_dashboard_service.py",
+   "tests/unit/test_direct_get_products.py",
+   "tests/unit/test_product_provider_direct.py",
+   "tests/unit/test_property_verification_service.py",
+   "tests/unit/test_session_json_validation.py",
+   "tests/unit/test_signals_discovery_provider.py",
+   "tests/unit/test_targeting_translation.py",
+   "tests/unit/test_virtual_host_config_loader.py",
+   "tests/unit/test_virtual_host_edge_cases.py"
+  ],
+  "tail": "\nsrc/core/schemas.py:67\n  /tmp/study/repo/src/core/schemas.py:67: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'minimum'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    quantity: int = Field(1, minimum=1, description=\"Number of assets of this type required\")\n\nsrc/core/schemas.py:1298\n  /tmp/study/repo/src/core/schemas.py:1298: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    template_variables: dict[str, Any] | None = Field(\n\nsrc/core/schemas.py:1314\n  /tmp/study/repo/src/core/schemas.py:1314: PydanticDeprecatedSince20: Using extra keyword arguments on `Field` is deprecated and will be removed. Use `json_schema_extra` instead. (Extra keys: 'example'). Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    delivery_settings: dict[str, Any] | None = Field(\n\nsrc/core/testing_hooks.py:50\n  /tmp/study/repo/src/core/testing_hooks.py:50: PytestCollectionWarning: cannot collect test class 'TestingContext' because it has a __init__ constructor (from: tests/unit/test_mock_server_response_headers.py)\n    class TestingContext(BaseModel):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/integration - ImportError: cannot import name 'DeclarativeBase' from 'sqlalchemy.orm' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/orm/__init__.py)\nERROR tests/manual/test_gam_automation_real.py\nERROR tests/manual/test_gam_supported_only.py\nERROR tests/unit/adapters/test_base.py\nERROR tests/unit/test_adcp_contract.py\nERROR tests/unit/test_ai_provider_bug.py\nERROR tests/unit/test_auth_removal_simple.py\nERROR tests/unit/test_comprehensive_product_validation.py\nERROR tests/unit/test_context_management.py\nERROR tests/unit/test_context_persistence.py\nERROR tests/unit/test_dashboard_service.py\nERROR tests/unit/test_direct_get_products.py\nERROR tests/unit/test_product_provider_direct.py\nERROR tests/unit/test_property_verification_service.py\nERROR tests/unit/test_session_json_validation.py\nERROR tests/unit/test_signals_discovery_provider.py\nERROR tests/unit/test_targeting_translation.py\nERROR tests/unit/test_virtual_host_config_loader.py\nERROR tests/unit/test_virtual_host_edge_cases.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 19 errors during collection !!!!!!!!!!!!!!!!!!!\n6 warnings, 19 errors in 7.34s"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "id": "gt__microsoft__planetary-computer-tasks__3bfa565",
+ "repo": "microsoft/planetary-computer-tasks",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 43,
+ "sha": "a27f47c9413faea76117b205d6da8a86a0bb8d9b",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/conftest.py'.\nconftest.py:5: in <module>\n    from pctasks.dev.cosmosdb import temp_cosmosdb_if_emulator\nE   ModuleNotFoundError: No module named 'pctasks.dev.cosmosdb'"
+ }
+}

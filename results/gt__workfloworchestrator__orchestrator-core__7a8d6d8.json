@@ -1,0 +1,16 @@
+{
+ "id": "gt__workfloworchestrator__orchestrator-core__7a8d6d8",
+ "repo": "workfloworchestrator/orchestrator-core",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 72,
+ "sha": "41edeaf891cbd627454858f9117b73740020ab8b",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/test/unit_tests/conftest.py'.\ntest/unit_tests/conftest.py:28: in <module>\n    from urllib3_mock import Responses\nE   ModuleNotFoundError: No module named 'urllib3_mock'"
+ }
+}

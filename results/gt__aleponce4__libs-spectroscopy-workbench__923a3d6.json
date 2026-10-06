@@ -1,0 +1,22 @@
+{
+ "id": "gt__aleponce4__libs-spectroscopy-workbench__923a3d6",
+ "repo": "aleponce4/libs-spectroscopy-workbench",
+ "package": "numpy",
+ "upgrade": "numpy>=2,<3",
+ "stars": 13,
+ "sha": "7f6cab9d03307999687293fabfc30d1e35f3910a",
+ "old": "1.26.4",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 3
+  },
+  "failing": [
+   "tests/integration/test_smoke.py",
+   "tests/unit/test_mapping_analysis.py",
+   "tests/unit/test_preprocessing.py"
+  ],
+  "tail": "    from prolibspector.app.bootstrap import smoke_check\nsrc/prolibspector/app/__init__.py:3: in <module>\n    from prolibspector.app.bootstrap import main, smoke_check\nsrc/prolibspector/app/bootstrap.py:14: in <module>\n    from prolibspector.core.ui_scale import apply_text_scale\nsrc/prolibspector/core/ui_scale.py:5: in <module>\n    import tkinter as tk\nE   ModuleNotFoundError: No module named 'tkinter'\n_____________ ERROR collecting tests/unit/test_mapping_analysis.py _____________\nImportError while importing test module '/tmp/study/repo/tests/unit/test_mapping_analysis.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/unit/test_mapping_analysis.py:9: in <module>\n    from prolibspector.analysis.mapping_analysis import (\nsrc/prolibspector/analysis/mapping_analysis.py:19: in <module>\n    from prolibspector.analysis.adjust_plot import normalize_min_max, normalize_total_intensity\nsrc/prolibspector/analysis/adjust_plot.py:3: in <module>\n    import tkinter as tk\nE   ModuleNotFoundError: No module named 'tkinter'\n______________ ERROR collecting tests/unit/test_preprocessing.py _______________\nImportError while importing test module '/tmp/study/repo/tests/unit/test_preprocessing.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/unit/test_preprocessing.py:5: in <module>\n    from prolibspector.analysis.adjust_spectrum import (\nsrc/prolibspector/analysis/adjust_spectrum.py:4: in <module>\n    import tkinter as tk\nE   ModuleNotFoundError: No module named 'tkinter'\n=========================== short test summary info ============================\nERROR tests/integration/test_smoke.py\nERROR tests/unit/test_mapping_analysis.py\nERROR tests/unit/test_preprocessing.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!\n3 errors in 1.24s"
+ }
+}

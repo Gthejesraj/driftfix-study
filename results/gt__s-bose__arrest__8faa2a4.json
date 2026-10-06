@@ -1,0 +1,16 @@
+{
+ "id": "gt__s-bose__arrest__8faa2a4",
+ "repo": "s-bose/arrest",
+ "package": "pydantic",
+ "upgrade": "pydantic>=2,<3",
+ "stars": 174,
+ "sha": "4d097f00546364f9e2652c7b510fd1b0a298570e",
+ "old": "1.10.26",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 4,
+  "counts": {},
+  "failing": [],
+  "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/conftest.py:2: in <module>\n    import respx\nE   ModuleNotFoundError: No module named 'respx'"
+ }
+}

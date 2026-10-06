@@ -1,0 +1,21 @@
+{
+ "id": "gt__tjcsl__cslbot__30ffa61",
+ "repo": "tjcsl/cslbot",
+ "package": "sqlalchemy",
+ "upgrade": "sqlalchemy>=2,<3",
+ "stars": 15,
+ "sha": "d352badced1a07e2ecb9208411286af5ef172faa",
+ "old": "1.4.54",
+ "status": "no_passing_tests",
+ "baseline": {
+  "code": 2,
+  "counts": {
+   "errors": 2
+  },
+  "failing": [
+   "test/bot_test.py",
+   "test/cslbot_test.py"
+  ],
+  "tail": "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest/cslbot_test.py:33: in <module>\n    from test.bot_test import BotTest  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest/bot_test.py:29: in <module>\n    from cslbot.helpers import core, handler, workers\ncslbot/helpers/core.py:36: in <module>\n    from . import backtrace, config, handler, misc, orm, reloader, server  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ncslbot/helpers/backtrace.py:24: in <module>\n    from . import misc\ncslbot/helpers/misc.py:30: in <module>\n    from . import orm\ncslbot/helpers/orm.py:21: in <module>\n    from alembic import command, config\n../venv/lib/python3.12/site-packages/alembic/__init__.py:1: in <module>\n    from . import context\n../venv/lib/python3.12/site-packages/alembic/context.py:1: in <module>\n    from .runtime.environment import EnvironmentContext\n../venv/lib/python3.12/site-packages/alembic/runtime/environment.py:20: in <module>\n    from .migration import _ProxyTransaction\n../venv/lib/python3.12/site-packages/alembic/runtime/migration.py:26: in <module>\n    from .. import ddl\n../venv/lib/python3.12/site-packages/alembic/ddl/__init__.py:1: in <module>\n    from . import mssql\n../venv/lib/python3.12/site-packages/alembic/ddl/mssql.py:16: in <module>\n    from .base import AddColumn\n../venv/lib/python3.12/site-packages/alembic/ddl/base.py:23: in <module>\n    from ..util.sqla_compat import _columns_for_constraint  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/alembic/util/__init__.py:33: in <module>\n    from .sqla_compat import sqla_2_1 as sqla_2_1\n../venv/lib/python3.12/site-packages/alembic/util/sqla_compat.py:30: in <module>\n    from sqlalchemy.sql.base import _NoneName\nE   ImportError: cannot import name '_NoneName' from 'sqlalchemy.sql.base' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/sql/base.py)\n=========================== short test summary info ============================\nERROR test/bot_test.py\nERROR test/cslbot_test.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.62s"
+ }
+}
