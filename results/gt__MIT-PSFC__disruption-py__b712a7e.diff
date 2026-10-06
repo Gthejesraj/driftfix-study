@@ -1,0 +1,39 @@
+diff --git a/disruption_py/machine/cmod/thomson.py b/disruption_py/machine/cmod/thomson.py
+index cf39904..e75f0aa 100644
+--- a/disruption_py/machine/cmod/thomson.py
++++ b/disruption_py/machine/cmod/thomson.py
+@@ -157,7 +157,7 @@ class CmodThomsonDensityMeasure:
+                 y = n_e[i, ind]
+                 _, ind_uniq = np.unique(x, return_index=True)
+                 y = y[ind_uniq]
+-                nlts[i] = np.trapz(y, x)
++                nlts[i] = np.trapezoid(y, x)
+         return nlts, nlts_t
+ 
+     @staticmethod
+diff --git a/disruption_py/settings/time_setting.py b/disruption_py/settings/time_setting.py
+index 53cc060..1af4e23 100644
+--- a/disruption_py/settings/time_setting.py
++++ b/disruption_py/settings/time_setting.py
+@@ -504,7 +504,7 @@ class DisruptionTimeSetting(TimeSetting):
+             duration = 0
+             return duration, signal_max
+         polarity = np.sign(
+-            np.trapz(signal[finite_indices], signal_time[finite_indices])
++            np.trapezoid(signal[finite_indices], signal_time[finite_indices])
+         )
+         polarized_signal = polarity * signal
+         (valid_indices,) = np.where(
+diff --git a/pyproject.toml b/pyproject.toml
+index fd44fda..bcd117f 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -50,7 +50,7 @@ dependencies = [
+   "fsspec[s3]>=2025.9.0",
+   "loguru>=0.7.0",
+   "netcdf4>=1.7.0",
+-  "numpy>=1.26.0,<2.0.0",
++  "numpy>=2.0.0",
+   "pandas[parquet]>=2.2.0",
+   "pyodbc>=5.2.0",
+   "scipy>=1.15.0",

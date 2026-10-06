@@ -1,0 +1,89 @@
+diff --git a/src/marqo/client.py b/src/marqo/client.py
+index c8e2dc2..2afd8c6 100644
+--- a/src/marqo/client.py
++++ b/src/marqo/client.py
+@@ -1,7 +1,7 @@
+ import base64
+ from typing import Any, Dict, List, Optional, Union
+ 
+-from pydantic import error_wrappers
++from pydantic import ValidationError
+ 
+ from marqo.index import Index
+ from marqo.config import Config
+@@ -149,13 +149,13 @@ class Client:
+     def bulk_search(self, queries: List[Dict[str, Any]], device: Optional[str] = None) -> Dict[str, Any]:
+         try:
+             parsed_queries = [BulkSearchBody(**q) for q in queries]
+-        except error_wrappers.ValidationError as e:
++        except ValidationError as e:
+             raise errors.InvalidArgError(f"some parameters in search query(s) are invalid. Errors are: {e.errors()}")
+ 
+         translated_device_param = f"{f'?&device={utils.translate_device_string_for_url(device)}' if device is not None else ''}"
+         return self.http.post(
+             f"indexes/bulk/search{translated_device_param}",
+-            body=BulkSearchQuery(queries=parsed_queries).json()
++            body=BulkSearchQuery(queries=parsed_queries).model_dump_json()
+         )
+ 
+     @staticmethod
+diff --git a/src/marqo/models.py b/src/marqo/models.py
+index 019ccfa..70793ca 100644
+--- a/src/marqo/models.py
++++ b/src/marqo/models.py
+@@ -1,11 +1,9 @@
+ from typing import Dict, List, Optional, Union
+-from pydantic import BaseModel
++from pydantic import BaseModel, ConfigDict
+ 
+ 
+ class BaseMarqoModel(BaseModel):
+-    class Config:
+-        extra: str = "forbid"
+-    pass
++    model_config = ConfigDict(extra="forbid")
+ 
+ 
+ class SearchBody(BaseMarqoModel):
+@@ -15,8 +13,8 @@ class SearchBody(BaseMarqoModel):
+     limit: int = 10
+     offset: int = 0
+     showHighlights: bool = True
+-    reRanker: str = None
+-    filter: str = None
++    reRanker: Optional[str] = None
++    filter: Optional[str] = None
+     attributesToRetrieve: Union[None, List[str]] = None
+     boost: Optional[Dict] = None
+     image_download_headers: Optional[Dict] = None
+diff --git a/tests/marqo_test.py b/tests/marqo_test.py
+index 7461aa1..517f764 100644
+--- a/tests/marqo_test.py
++++ b/tests/marqo_test.py
+@@ -8,7 +8,7 @@ from collections import defaultdict
+ from functools import wraps
+ import json
+ import os
+-from pydantic import BaseModel
++from pydantic import BaseModel, ConfigDict
+ from typing import Any, Callable, Dict, List, Optional, Union
+ from unittest import mock, TestCase
+ 
+@@ -28,14 +28,13 @@ class MockHTTPTraffic(BaseModel):
+     content_type: Optional[str] = None
+ 
+     # Verification parameters
+-    response: Optional[Union[Any, InternalError]]
++    response: Optional[Union[Any, InternalError]] = None
+     expected_calls: Optional[int] = None
+ 
+-    class Config:
+-        arbitrary_types_allowed: bool = True
++    model_config = ConfigDict(arbitrary_types_allowed=True)
+ 
+     def __str__(self):
+-        return f"MockHTTPTraffic({json.dumps(self.dict(), indent=2)})"
++        return f"MockHTTPTraffic({json.dumps(self.model_dump(), indent=2, default=str)})"
+ 
+ def raise_(ex):
+     raise ex

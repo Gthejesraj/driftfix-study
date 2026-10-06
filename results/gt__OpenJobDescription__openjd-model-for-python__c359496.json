@@ -12,7 +12,7 @@
    "passed": 2025
   },
   "failing": [],
-  "tail": "........................................................................ [  3%]\n........................................................................ [  7%]\n........................................................................ [ 10%]\n........................................................................ [ 14%]\n........................................................................ [ 17%]\n........................................................................ [ 21%]\n........................................................................ [ 24%]\n........................................................................ [ 28%]\n........................................................................ [ 32%]\n........................................................................ [ 35%]\n........................................................................ [ 39%]\n........................................................................ [ 42%]\n........................................................................ [ 46%]\n........................................................................ [ 49%]\n........................................................................ [ 53%]\n........................................................................ [ 56%]\n........................................................................ [ 60%]\n........................................................................ [ 64%]\n........................................................................ [ 67%]\n........................................................................ [ 71%]\n........................................................................ [ 74%]\n........................................................................ [ 78%]\n........................................................................ [ 81%]\n........................................................................ [ 85%]\n........................................................................ [ 88%]\n........................................................................ [ 92%]\n........................................................................ [ 96%]\n........................................................................ [ 99%]\n.........                                                                [100%]\n2025 passed, 1 deselected in 1.10s",
+  "tail": "........................................................................ [  3%]\n........................................................................ [  7%]\n........................................................................ [ 10%]\n........................................................................ [ 14%]\n........................................................................ [ 17%]\n........................................................................ [ 21%]\n........................................................................ [ 24%]\n........................................................................ [ 28%]\n........................................................................ [ 32%]\n........................................................................ [ 35%]\n........................................................................ [ 39%]\n........................................................................ [ 42%]\n........................................................................ [ 46%]\n........................................................................ [ 49%]\n........................................................................ [ 53%]\n........................................................................ [ 56%]\n........................................................................ [ 60%]\n........................................................................ [ 64%]\n........................................................................ [ 67%]\n........................................................................ [ 71%]\n........................................................................ [ 74%]\n........................................................................ [ 78%]\n........................................................................ [ 81%]\n........................................................................ [ 85%]\n........................................................................ [ 88%]\n........................................................................ [ 92%]\n........................................................................ [ 96%]\n........................................................................ [ 99%]\n.........                                                                [100%]\n2025 passed, 1 deselected in 1.13s",
   "preexisting_failures": 1
  },
  "new": "2.13.5",
@@ -60,7 +60,71 @@
    "test/openjd/model/v2023_09/test_strings.py",
    "test/openjd/model/v2023_09/test_template_variables.py"
   ],
-  "tail": "=========================== short test summary info ============================\nERROR test/openjd/model/_internal/test_combination_expr.py\nERROR test/openjd/model/_internal/test_create_job.py\nERROR test/openjd/model/_internal/test_param_space_dim_validation.py\nERROR test/openjd/model/_internal/test_range_expr.py\nERROR test/openjd/model/_internal/test_variable_reference_validation.py\nERROR test/openjd/model/format_strings/test_dyn_constrained_str.py\nERROR test/openjd/model/format_strings/test_edit_distance.py\nERROR test/openjd/model/format_strings/test_expression.py\nERROR test/openjd/model/format_strings/test_format_string.py\nERROR test/openjd/model/format_strings/test_node.py\nERROR test/openjd/model/format_strings/test_parser.py\nERROR test/openjd/model/test_capabilities.py\nERROR test/openjd/model/test_convert_pydantic_error.py\nERROR test/openjd/model/test_create_job.py\nERROR test/openjd/model/test_errors.py\nERROR test/openjd/model/test_lexer.py\nERROR test/openjd/model/test_merge_job_parameters.py\nERROR test/openjd/model/test_parse.py\nERROR test/openjd/model/test_step_dependency_graph.py\nERROR test/openjd/model/test_step_param_space_iter.py\nERROR test/openjd/model/test_symbol_table.py\nERROR test/openjd/model/test_tokenstream.py\nERROR test/openjd/model/test_version_enums.py\nERROR test/openjd/model/v2023_09/test_action.py\nERROR test/openjd/model/v2023_09/test_create.py\nERROR test/openjd/model/v2023_09/test_definitions.py\nERROR test/openjd/model/v2023_09/test_embedded.py\nERROR test/openjd/model/v2023_09/test_environment_template.py\nERROR test/openjd/model/v2023_09/test_environments.py\nERROR test/openjd/model/v2023_09/test_job_parameters.py\nERROR test/openjd/model/v2023_09/test_job_template.py\nERROR test/openjd/model/v2023_09/test_parameter_space.py\nERROR test/openjd/model/v2023_09/test_scripts.py\nERROR test/openjd/model/v2023_09/test_step_host_requirements.py\nERROR test/openjd/model/v2023_09/test_step_template.py\nERROR test/openjd/model/v2023_09/test_strings.py\nERROR test/openjd/model/v2023_09/test_template_variables.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 37 errors during collection !!!!!!!!!!!!!!!!!!!\n1 deselected, 37 errors in 0.46s"
+  "tail": "=========================== short test summary info ============================\nERROR test/openjd/model/_internal/test_combination_expr.py\nERROR test/openjd/model/_internal/test_create_job.py\nERROR test/openjd/model/_internal/test_param_space_dim_validation.py\nERROR test/openjd/model/_internal/test_range_expr.py\nERROR test/openjd/model/_internal/test_variable_reference_validation.py\nERROR test/openjd/model/format_strings/test_dyn_constrained_str.py\nERROR test/openjd/model/format_strings/test_edit_distance.py\nERROR test/openjd/model/format_strings/test_expression.py\nERROR test/openjd/model/format_strings/test_format_string.py\nERROR test/openjd/model/format_strings/test_node.py\nERROR test/openjd/model/format_strings/test_parser.py\nERROR test/openjd/model/test_capabilities.py\nERROR test/openjd/model/test_convert_pydantic_error.py\nERROR test/openjd/model/test_create_job.py\nERROR test/openjd/model/test_errors.py\nERROR test/openjd/model/test_lexer.py\nERROR test/openjd/model/test_merge_job_parameters.py\nERROR test/openjd/model/test_parse.py\nERROR test/openjd/model/test_step_dependency_graph.py\nERROR test/openjd/model/test_step_param_space_iter.py\nERROR test/openjd/model/test_symbol_table.py\nERROR test/openjd/model/test_tokenstream.py\nERROR test/openjd/model/test_version_enums.py\nERROR test/openjd/model/v2023_09/test_action.py\nERROR test/openjd/model/v2023_09/test_create.py\nERROR test/openjd/model/v2023_09/test_definitions.py\nERROR test/openjd/model/v2023_09/test_embedded.py\nERROR test/openjd/model/v2023_09/test_environment_template.py\nERROR test/openjd/model/v2023_09/test_environments.py\nERROR test/openjd/model/v2023_09/test_job_parameters.py\nERROR test/openjd/model/v2023_09/test_job_template.py\nERROR test/openjd/model/v2023_09/test_parameter_space.py\nERROR test/openjd/model/v2023_09/test_scripts.py\nERROR test/openjd/model/v2023_09/test_step_host_requirements.py\nERROR test/openjd/model/v2023_09/test_step_template.py\nERROR test/openjd/model/v2023_09/test_strings.py\nERROR test/openjd/model/v2023_09/test_template_variables.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 37 errors during collection !!!!!!!!!!!!!!!!!!!\n1 deselected, 37 errors in 0.49s"
  },
- "status": "broken"
+ "status": "broken",
+ "driftfix": {
+  "exit": 1,
+  "fixed": false,
+  "cost": 3.06,
+  "model": "claude-opus-5",
+  "diffstat": "3 files changed, 17 insertions(+), 3 deletions(-)"
+ },
+ "human": {
+  "files_ours": [
+   "src/openjd/model/_internal/_create_job.py",
+   "src/openjd/model/_internal/_variable_reference_validation.py",
+   "src/openjd/model/v2023_09/_model.py"
+  ],
+  "files_theirs": [
+   "src/openjd/model/_convert_pydantic_error.py",
+   "src/openjd/model/_create_job.py",
+   "src/openjd/model/_format_strings/_dyn_constrained_str.py",
+   "src/openjd/model/_format_strings/_format_string.py",
+   "src/openjd/model/_internal/_create_job.py",
+   "src/openjd/model/_internal/_variable_reference_validation.py",
+   "src/openjd/model/_parse.py",
+   "src/openjd/model/_types.py",
+   "src/openjd/model/v2023_09/_model.py",
+   "test/openjd/model/_internal/test_create_job.py",
+   "test/openjd/model/_internal/test_variable_reference_validation.py",
+   "test/openjd/model/format_strings/test_dyn_constrained_str.py",
+   "test/openjd/model/test_convert_pydantic_error.py",
+   "test/openjd/model/v2023_09/test_action.py",
+   "test/openjd/model/v2023_09/test_definitions.py",
+   "test/openjd/model/v2023_09/test_embedded.py",
+   "test/openjd/model/v2023_09/test_environment_template.py",
+   "test/openjd/model/v2023_09/test_environments.py",
+   "test/openjd/model/v2023_09/test_job_parameters.py",
+   "test/openjd/model/v2023_09/test_job_template.py",
+   "test/openjd/model/v2023_09/test_parameter_space.py",
+   "test/openjd/model/v2023_09/test_scripts.py",
+   "test/openjd/model/v2023_09/test_step_host_requirements.py",
+   "test/openjd/model/v2023_09/test_step_template.py",
+   "test/openjd/model/v2023_09/test_strings.py",
+   "test/openjd/model/v2023_09/test_template_variables.py"
+  ],
+  "overlap": 3,
+  "human_tests_applied": [
+   "test/openjd/model/_internal/test_create_job.py",
+   "test/openjd/model/_internal/test_variable_reference_validation.py",
+   "test/openjd/model/format_strings/test_dyn_constrained_str.py",
+   "test/openjd/model/test_convert_pydantic_error.py",
+   "test/openjd/model/v2023_09/test_action.py",
+   "test/openjd/model/v2023_09/test_definitions.py",
+   "test/openjd/model/v2023_09/test_embedded.py",
+   "test/openjd/model/v2023_09/test_environment_template.py",
+   "test/openjd/model/v2023_09/test_environments.py",
+   "test/openjd/model/v2023_09/test_job_parameters.py",
+   "test/openjd/model/v2023_09/test_job_template.py",
+   "test/openjd/model/v2023_09/test_parameter_space.py",
+   "test/openjd/model/v2023_09/test_scripts.py",
+   "test/openjd/model/v2023_09/test_step_host_requirements.py",
+   "test/openjd/model/v2023_09/test_step_template.py",
+   "test/openjd/model/v2023_09/test_strings.py",
+   "test/openjd/model/v2023_09/test_template_variables.py"
+  ],
+  "passes_human_tests": false,
+  "human_tests_tail": "\n==================================== ERRORS ====================================\n______ ERROR collecting test/openjd/model/test_convert_pydantic_error.py _______\nImportError while importing test module '/tmp/study/repo/test/openjd/model/test_convert_pydantic_error.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest/openjd/model/test_convert_pydantic_error.py:6: in <module>\n    from openjd.model._convert_pydantic_error import (\nE   ImportError: cannot import name 'ErrorDict' from 'openjd.model._convert_pydantic_error' (/tmp/study/repo/src/openjd/model/_convert_pydantic_error.py)\n=========================== short test summary info ============================\nERROR test/openjd/model/test_convert_pydantic_error.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n1 deselected, 1 error in 0.38s"
+ }
 }

@@ -1,0 +1,54 @@
+diff --git a/src/openjd/model/_internal/_create_job.py b/src/openjd/model/_internal/_create_job.py
+index 3f1f5ac..3cb07f0 100644
+--- a/src/openjd/model/_internal/_create_job.py
++++ b/src/openjd/model/_internal/_create_job.py
+@@ -40,7 +40,7 @@ def instantiate_model(  # noqa: C901
+     errors = list[InitErrorDetails]()
+     instantiated_fields = dict[str, Any]()
+ 
+-    for field_name in model.model_fields.keys():
++    for field_name in type(model).model_fields.keys():
+         target_field_name = field_name
+         if field_name in model._job_creation_metadata.rename_fields:
+             target_field_name = model._job_creation_metadata.rename_fields[field_name]
+diff --git a/src/openjd/model/_internal/_variable_reference_validation.py b/src/openjd/model/_internal/_variable_reference_validation.py
+index 7b23a81..e67083d 100644
+--- a/src/openjd/model/_internal/_variable_reference_validation.py
++++ b/src/openjd/model/_internal/_variable_reference_validation.py
+@@ -9,8 +9,16 @@ from pydantic import Discriminator
+ from pydantic_core import InitErrorDetails
+ from pydantic.fields import FieldInfo, ModelPrivateAttr
+ 
++
+ # Workaround for Python 3.9 where issubclass raises an error "TypeError: issubclass() arg 1 must be a class"
+-from pydantic.v1.utils import lenient_issubclass
++def lenient_issubclass(cls: Any, class_or_tuple: Any) -> bool:
++    try:
++        return isinstance(cls, type) and issubclass(cls, class_or_tuple)
++    except TypeError:
++        # e.g. cls is a parameterized generic alias such as list[int]
++        if isinstance(cls, typing.GenericAlias):  # type: ignore[attr-defined]
++            return False
++        raise
+ 
+ from .._types import OpenJDModel, ResolutionScope
+ from .._format_strings import FormatString, FormatStringError
+diff --git a/src/openjd/model/v2023_09/_model.py b/src/openjd/model/v2023_09/_model.py
+index 7dac58d..6ff1824 100644
+--- a/src/openjd/model/v2023_09/_model.py
++++ b/src/openjd/model/v2023_09/_model.py
+@@ -484,7 +484,13 @@ class RangeListTaskParameterDefinition(OpenJDModel_v2023_09):
+     @field_validator("range", mode="before")
+     @classmethod
+     def _coerce_to_string(cls, value: Any) -> Any:
+-        # Coerce any int, float, or Decimal values into str
++        # Pydantic v1 coerced numeric values in this range into strings, but v2 does not.
++        # Preserve the v1 behavior by coercing int, float, and Decimal values into str.
++        # Note: non-list input is passed through untouched so that pydantic reports it as
++        # the usual "input should be a valid list" validation error.
++        if not isinstance(value, (list, tuple)):
++            return value
++
+         def coerce(v: Any) -> Any:
+             if isinstance(v, (int, float, Decimal)):
+                 return str(v)

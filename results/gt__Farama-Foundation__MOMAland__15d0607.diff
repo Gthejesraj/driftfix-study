@@ -1,0 +1,9 @@
+diff --git a/momaland/envs/item_gathering/assets/colored/agent0.png b/momaland/envs/item_gathering/assets/colored/agent0.png
+index e29e33f..4b2f91b 100644
+Binary files a/momaland/envs/item_gathering/assets/colored/agent0.png and b/momaland/envs/item_gathering/assets/colored/agent0.png differ
+diff --git a/momaland/envs/item_gathering/assets/colored/item0.png b/momaland/envs/item_gathering/assets/colored/item0.png
+index a6539b2..a8591bb 100644
+Binary files a/momaland/envs/item_gathering/assets/colored/item0.png and b/momaland/envs/item_gathering/assets/colored/item0.png differ
+diff --git a/momaland/envs/item_gathering/assets/colored/item1.png b/momaland/envs/item_gathering/assets/colored/item1.png
+index d77b69e..cbf6f5e 100644
+Binary files a/momaland/envs/item_gathering/assets/colored/item1.png and b/momaland/envs/item_gathering/assets/colored/item1.png differ

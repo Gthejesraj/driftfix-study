@@ -12,7 +12,7 @@
    "passed": 248
   },
   "failing": [],
-  "tail": "........................................................................ [ 29%]\n........................................................................ [ 58%]\n........................................................................ [ 87%]\n................................                                         [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854\n  /tmp/study/venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854: DeprecationWarning: 'crypt' is deprecated and slated for removal in Python 3.13\n    from crypt import crypt as _crypt\n\ntests/test_unique_validator.py:12\n  /tmp/study/repo/tests/test_unique_validator.py:12: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to \"sqlalchemy<2.0\". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)\n    base = declarative_base()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n248 passed, 2 warnings in 0.87s",
+  "tail": "........................................................................ [ 29%]\n........................................................................ [ 58%]\n........................................................................ [ 87%]\n................................                                         [100%]\n=============================== warnings summary ===============================\n../venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854\n  /tmp/study/venv/lib/python3.12/site-packages/passlib/utils/__init__.py:854: DeprecationWarning: 'crypt' is deprecated and slated for removal in Python 3.13\n    from crypt import crypt as _crypt\n\ntests/test_unique_validator.py:12\n  /tmp/study/repo/tests/test_unique_validator.py:12: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to \"sqlalchemy<2.0\". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)\n    base = declarative_base()\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n248 passed, 2 warnings in 0.77s",
   "preexisting_failures": 0
  },
  "new": "2.1.3",
@@ -22,5 +22,44 @@
   "failing": [],
   "tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/__init__.py:6: in <module>\n    from sqlalchemy_utils import force_auto_coercion\n../venv/lib/python3.12/site-packages/sqlalchemy_utils/__init__.py:46: in <module>\n    from .generic import generic_relationship  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/sqlalchemy_utils/generic.py:15: in <module>\n    class GenericAttributeImpl(attributes.ScalarAttributeImpl):\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'sqlalchemy.orm.attributes' has no attribute 'ScalarAttributeImpl'. Did you mean: '_ScalarAttributeImpl'?"
  },
- "status": "broken"
+ "status": "broken",
+ "driftfix": {
+  "exit": 0,
+  "fixed": true,
+  "cost": 2.6,
+  "model": "claude-opus-5",
+  "diffstat": "10 files changed, 85 insertions(+), 21 deletions(-)"
+ },
+ "human": {
+  "files_ours": [
+   "tests/__init__.py",
+   "tests/test_i18n_extension.py",
+   "tests/test_phone_number.py",
+   "tests/test_query_select_field.py",
+   "tests/test_unique_validator.py",
+   "tests/test_utils.py",
+   "wtforms_alchemy/__init__.py",
+   "wtforms_alchemy/sa_compat.py",
+   "wtforms_alchemy/utils.py"
+  ],
+  "files_theirs": [
+   "tests/__init__.py",
+   "tests/test_i18n_extension.py",
+   "tests/test_phone_number.py",
+   "tests/test_query_select_field.py",
+   "tests/test_unique_validator.py",
+   "tests/test_utils.py"
+  ],
+  "overlap": 6,
+  "human_tests_applied": [
+   "tests/__init__.py",
+   "tests/test_i18n_extension.py",
+   "tests/test_phone_number.py",
+   "tests/test_query_select_field.py",
+   "tests/test_unique_validator.py",
+   "tests/test_utils.py"
+  ],
+  "passes_human_tests": false,
+  "human_tests_tail": "ImportError while loading conftest '/tmp/study/repo/tests/conftest.py'.\ntests/__init__.py:5: in <module>\n    from sqlalchemy_utils import force_auto_coercion\n../venv/lib/python3.12/site-packages/sqlalchemy_utils/__init__.py:46: in <module>\n    from .generic import generic_relationship  # noqa\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/sqlalchemy_utils/generic.py:15: in <module>\n    class GenericAttributeImpl(attributes.ScalarAttributeImpl):\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'sqlalchemy.orm.attributes' has no attribute 'ScalarAttributeImpl'. Did you mean: '_ScalarAttributeImpl'?"
+ }
 }

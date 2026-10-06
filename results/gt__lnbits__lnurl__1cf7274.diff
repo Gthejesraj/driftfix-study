@@ -1,0 +1,723 @@
+diff --git a/README.md b/README.md
+index 7ecb08f..31c24c9 100755
+--- a/README.md
++++ b/README.md
+@@ -125,10 +125,10 @@ For LNURL services, the `lnurl` package can be used to build **valid** responses
+ 
+ ```python
+ from lnurl import CallbackUrl, LnurlWithdrawResponse, MilliSatoshi
+-from pydantic import parse_obj_as, ValidationError
++from pydantic import TypeAdapter, ValidationError
+ try:
+     res = LnurlWithdrawResponse(
+-        callback=parse_obj_as(CallbackUrl, "https://lnurl.bigsun.xyz/lnurl-withdraw/callback/9702808"),
++        callback=TypeAdapter(CallbackUrl).validate_python("https://lnurl.bigsun.xyz/lnurl-withdraw/callback/9702808"),
+         k1="38d304051c1b76dcd8c5ee17ee15ff0ebc02090c0afbc6c98100adfa3f920874",
+         minWithdrawable=MilliSatoshi(1000),
+         maxWithdrawable=MilliSatoshi(1000000),
+diff --git a/lnurl/core.py b/lnurl/core.py
+index 815e4f3..0cf4e59 100644
+--- a/lnurl/core.py
++++ b/lnurl/core.py
+@@ -4,7 +4,7 @@ from typing import Any, Optional
+ import httpx
+ from bolt11 import Bolt11Exception, MilliSatoshi
+ from bolt11 import decode as bolt11_decode
+-from pydantic import ValidationError, parse_obj_as
++from pydantic import ValidationError
+ 
+ from .exceptions import InvalidLnurl, InvalidUrl, LnurlResponseException
+ from .helpers import (
+@@ -86,7 +86,7 @@ async def handle(
+         raise InvalidLnurl
+ 
+     if lnurl.is_login:
+-        callback_url = parse_obj_as(CallbackUrl, lnurl.url)
++        callback_url = CallbackUrl(lnurl.url)
+         return LnurlAuthResponse(callback=callback_url, k1=lnurl.url.query_params["k1"])
+ 
+     return await get(lnurl.url, response_class=response_class, user_agent=user_agent, timeout=timeout)
+diff --git a/lnurl/models.py b/lnurl/models.py
+index 6e009ec..a6e14e0 100644
+--- a/lnurl/models.py
++++ b/lnurl/models.py
+@@ -1,11 +1,11 @@
+ from __future__ import annotations
+ 
++import json
+ import math
+ from abc import ABC
+-from typing import Optional, Union
++from typing import Any, Optional, Union
+ 
+-from bolt11 import MilliSatoshi
+-from pydantic import BaseModel, Field, ValidationError, validator
++from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+ 
+ from .exceptions import LnurlResponseException
+ from .types import (
+@@ -20,6 +20,7 @@ from .types import (
+     LnurlResponseTag,
+     LnurlStatus,
+     Max144Str,
++    MilliSatoshiAmount,
+     Url,
+ )
+ 
+@@ -54,17 +55,25 @@ class AesAction(LnurlPaySuccessAction):
+ 
+ class LnurlResponseModel(BaseModel):
+ 
+-    class Config:
+-        use_enum_values = True
+-        extra = "forbid"
++    # `validate_default` makes sure the `tag` and `status` defaults are turned
++    # into their plain values by `use_enum_values`, like in pydantic v1.
++    model_config = ConfigDict(use_enum_values=True, extra="forbid", validate_default=True)
+ 
+-    def dict(self, **kwargs):
++    def model_dump(self, **kwargs) -> dict[str, Any]:
+         kwargs["exclude_none"] = True
+-        return super().dict(**kwargs)
++        return super().model_dump(**kwargs)
+ 
+-    def json(self, **kwargs):
++    def model_dump_json(self, **kwargs) -> str:
+         kwargs["exclude_none"] = True
+-        return super().json(**kwargs)
++        return super().model_dump_json(**kwargs)
++
++    # `dict()` and `json()` are kept as aliases of the pydantic v2 methods, they
++    # are part of this library's public API (see README).
++    def dict(self, **kwargs) -> dict[str, Any]:
++        return self.model_dump(**kwargs)
++
++    def json(self, **kwargs) -> str:
++        return json.dumps(self.model_dump(mode="json", **kwargs))
+ 
+     @property
+     def ok(self) -> bool:
+@@ -159,8 +168,8 @@ class LnurlPayerData(BaseModel):
+ class LnurlPayResponse(LnurlResponseModel):
+     tag: LnurlResponseTag = LnurlResponseTag.payRequest
+     callback: CallbackUrl
+-    minSendable: MilliSatoshi = Field(gt=0)
+-    maxSendable: MilliSatoshi = Field(gt=0)
++    minSendable: MilliSatoshiAmount = Field(gt=0)
++    maxSendable: MilliSatoshiAmount = Field(gt=0)
+     metadata: LnurlPayMetadata
+     # LUD-18: Payer identity in payRequest protocol.
+     payerData: Optional[LnurlPayResponsePayerData] = None
+@@ -172,9 +181,9 @@ class LnurlPayResponse(LnurlResponseModel):
+     allowsNostr: Optional[bool] = None
+     nostrPubkey: Optional[str] = None
+ 
+-    @validator("maxSendable")
+-    def max_less_than_min(cls, value, values):  # noqa
+-        if "minSendable" in values and value < values["minSendable"]:
++    @field_validator("maxSendable")
++    def max_less_than_min(cls, value, info):  # noqa
++        if "minSendable" in info.data and value < info.data["minSendable"]:
+             raise ValueError("`maxSendable` cannot be less than `minSendable`.")
+         return value
+ 
+@@ -207,16 +216,16 @@ class LnurlWithdrawResponse(LnurlResponseModel):
+     tag: LnurlResponseTag = LnurlResponseTag.withdrawRequest
+     callback: CallbackUrl
+     k1: str
+-    minWithdrawable: MilliSatoshi = Field(ge=0)
+-    maxWithdrawable: MilliSatoshi = Field(ge=0)
++    minWithdrawable: MilliSatoshiAmount = Field(ge=0)
++    maxWithdrawable: MilliSatoshiAmount = Field(ge=0)
+     defaultDescription: str = ""
+     # LUD-14: balanceCheck: reusable withdrawRequests
+     balanceCheck: Optional[CallbackUrl] = None
+-    currentBalance: Optional[MilliSatoshi] = None
++    currentBalance: Optional[MilliSatoshiAmount] = None
+     # LUD-19: Pay link discoverable from withdraw link.
+     payLink: Optional[str] = None
+ 
+-    @validator("payLink", pre=True)
++    @field_validator("payLink", mode="before")
+     def paylink_must_be_lud17(cls, value: Optional[str] = None) -> str | None:
+         if not value:
+             return None
+@@ -225,9 +234,9 @@ class LnurlWithdrawResponse(LnurlResponseModel):
+             return value
+         raise ValueError("`payLink` must be a valid LUD17 URL (lnurlp://).")
+ 
+-    @validator("maxWithdrawable")
+-    def max_less_than_min(cls, value, values):
+-        if "minWithdrawable" in values and value < values["minWithdrawable"]:
++    @field_validator("maxWithdrawable")
++    def max_less_than_min(cls, value, info):
++        if "minWithdrawable" in info.data and value < info.data["minWithdrawable"]:
+             raise ValueError("`maxWithdrawable` cannot be less than `minWithdrawable`.")
+         return value
+ 
+diff --git a/lnurl/types.py b/lnurl/types.py
+index cfe56e8..3bd6d26 100644
+--- a/lnurl/types.py
++++ b/lnurl/types.py
+@@ -5,18 +5,19 @@ import os
+ import re
+ from enum import Enum
+ from hashlib import sha256
+-from typing import Generator, Optional
++from typing import Annotated, Any, Optional
+ from urllib.parse import parse_qs
+ 
++from bolt11 import MilliSatoshi
+ from pydantic import (
+-    AnyUrl,
+-    ConstrainedStr,
++    AfterValidator,
++    GetCoreSchemaHandler,
+     Json,
++    StringConstraints,
++    TypeAdapter,
+     ValidationError,
+-    parse_obj_as,
+-    validator,
+ )
+-from pydantic.validators import str_validator
++from pydantic_core import CoreSchema, core_schema
+ 
+ from .exceptions import InvalidLnurlPayMetadata, InvalidUrl, LnAddressError
+ from .helpers import _bech32_decode, _lnurl_clean, url_decode, url_encode
+@@ -35,7 +36,23 @@ class ReprMixin:
+         return f"{self.__class__.__name__}({super().__repr__()}{extra})"
+ 
+ 
+-class Bech32(ReprMixin, str):
++class StrType:
++    """Makes a `str` subclass usable as a `pydantic` field type.
++
++    Replaces pydantic v1's `__get_validators__` hook: the input is first validated
++    as a string and then handed over to the `validate()` of the subclass.
++    """
++
++    @classmethod
++    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> CoreSchema:
++        return core_schema.no_info_after_validator_function(cls.validate, core_schema.str_schema())
++
++    @classmethod
++    def validate(cls, value: str, /) -> Any:
++        raise NotImplementedError
++
++
++class Bech32(StrType, ReprMixin, str):
+     """Bech32 string."""
+ 
+     __slots__ = ("hrp", "data")
+@@ -52,12 +69,7 @@ class Bech32(ReprMixin, str):
+         return _bech32_decode(bech32)
+ 
+     @classmethod
+-    def __get_validators__(cls):
+-        yield str_validator
+-        yield cls.validate
+-
+-    @classmethod
+-    def validate(cls, value: str) -> "Bech32":
++    def validate(cls, value: str, /) -> "Bech32":
+         hrp, data = cls.__get_data__(value)
+         return cls(value, hrp=hrp, data=data)
+ 
+@@ -77,35 +89,78 @@ def strict_rfc3986_validator(value: str) -> str:
+     return value
+ 
+ 
+-def valid_lnurl_host(url: str) -> AnyUrl:
++def valid_lnurl_host(url: "Url") -> "Url":
+     """Validates the host part of a URL."""
+-    _url = parse_obj_as(AnyUrl, url)
+-    if not _url.host:
++    if not url.host:
+         raise InvalidUrl("URL host is required.")
+-    if _url.scheme == "http":
+-        if _url.host not in INSECURE_HOSTS and not _url.host.endswith(".onion"):
++    if url.scheme == "http":
++        if url.host not in INSECURE_HOSTS and not url.host.endswith(".onion"):
+             raise InvalidUrl("HTTP scheme is only allowed for localhost or onion addresses.")
+-    return _url
++    return url
++
++
++# URLs are kept exactly as they are given, only their parts are extracted. The
++# pattern is modelled after the one pydantic v1 used, it is more permissive than
++# `urllib.parse` and the (normalizing) `pydantic.AnyUrl` of pydantic v2.
++URL_REGEX = re.compile(
++    r"(?P<scheme>[a-z][a-z0-9+\-.]*)://"  # scheme
++    r"(?:(?P<user>[^\s:/@]*)(?::(?P<password>[^\s/@]*))?@)?"  # user info
++    r"(?P<host>\[[A-F0-9:.]+\]|[^\s/:?#@]+)"  # ipv6 (between brackets) or host name
++    r"(?::(?P<port>\d+))?"  # port
++    r"(?P<path>/[^\s?#]*)?"  # path
++    r"(?:\?(?P<query>[^\s#]*))?"  # query
++    r"(?:#(?P<fragment>\S*))?",  # fragment
++    re.IGNORECASE,
++)
++
++
++class Url(StrType, ReprMixin, str):
++    """URL string, kept as given, with its parts available as attributes."""
+ 
++    __slots__ = ("scheme", "host", "port", "path", "query", "fragment")
+ 
+-class Url(AnyUrl):
+     max_length = 2047  # https://stackoverflow.com/questions/417142/
+ 
+     # LUD-17: Protocol schemes and raw (non bech32-encoded) URLs.
+     allowed_schemes = {"https", "http", "lnurlc", "lnurlw", "lnurlp", "keyauth"}
+ 
++    def __new__(cls, url: str, **_) -> "Url":
++        return str.__new__(cls, url)
++
++    def __init__(self, url: str):
++        str.__init__(url)
++        if len(url) > self.max_length:
++            raise InvalidUrl(f"URL is longer than {self.max_length} characters.")
++        ctrl_characters_validator(url)
++        strict_rfc3986_validator(url)
++
++        match = URL_REGEX.fullmatch(url)
++        if not match:
++            raise InvalidUrl("URL is not properly formed.")
++        parts = match.groupdict()
++
++        self.scheme: str = parts["scheme"].lower()
++        self.host: Optional[str] = parts["host"].lower() if parts["host"] else None
++        self.port: Optional[int] = int(parts["port"]) if parts["port"] else None
++        self.path: str = parts["path"] or ""
++        self.query: str = parts["query"] or ""
++        self.fragment: str = parts["fragment"] or ""
++
++        if self.scheme not in self.allowed_schemes:
++            allowed = ", ".join(sorted(self.allowed_schemes))
++            raise InvalidUrl(f"URL scheme `{self.scheme}` is not allowed, must be one of: {allowed}.")
++
++        valid_lnurl_host(self)
++
++    @classmethod
++    def validate(cls, value: str, /) -> "Url":
++        return cls(value)
++
+     @property
+     def is_lud17(self) -> bool:
+         uris = ["lnurlc", "lnurlw", "lnurlp", "keyauth"]
+         return any(self.scheme == uri for uri in uris)
+ 
+-    @classmethod
+-    def __get_validators__(cls) -> Generator:
+-        yield ctrl_characters_validator
+-        yield strict_rfc3986_validator
+-        yield valid_lnurl_host
+-        yield cls.validate
+-
+     @property
+     def query_params(self) -> dict:
+         return {k: v[0] for k, v in parse_qs(self.query).items()}
+@@ -127,7 +182,7 @@ class LightningInvoice(Bech32):
+     """Bech32 Lightning invoice."""
+ 
+ 
+-class LightningNodeUri(ReprMixin, str):
++class LightningNodeUri(StrType, ReprMixin, str):
+     """Remote node address of form `node_key@ip_address:port_number`."""
+ 
+     __slots__ = ("key", "ip", "port")
+@@ -142,12 +197,7 @@ class LightningNodeUri(ReprMixin, str):
+         self.port = port
+ 
+     @classmethod
+-    def __get_validators__(cls):
+-        yield str_validator
+-        yield cls.validate
+-
+-    @classmethod
+-    def validate(cls, value: str) -> "LightningNodeUri":
++    def validate(cls, value: str, /) -> "LightningNodeUri":
+         try:
+             key, netloc = value.split("@")
+             ip, port = netloc.split(":")
+@@ -157,7 +207,7 @@ class LightningNodeUri(ReprMixin, str):
+         return cls(value, key=key, ip=ip, port=port)
+ 
+ 
+-class Lnurl(ReprMixin, str):
++class Lnurl(StrType, ReprMixin, str):
+     url: Url
+     lud17_prefix: Optional[str] = None
+ 
+@@ -173,33 +223,28 @@ class Lnurl(ReprMixin, str):
+             self.lud17_prefix = None
+             return str.__init__(url)
+         self.lud17_prefix = url.scheme
+-        _url = parse_obj_as(Url, url.replace(url.scheme, "http" if url.insecure else "https", 1))
++        _url = Url(url.replace(url.scheme, "http" if url.insecure else "https", 1))
+         self.url = _url
+         return str.__init__(_url)
+ 
+-    @classmethod
+-    def __get_validators__(cls):
+-        yield str_validator
+-        yield cls.validate
+-
+     @classmethod
+     def clean(cls, lightning: str) -> Url:
+         lightning = _lnurl_clean(lightning)
+         if lightning.lower().startswith("lnurl1"):
+-            url = parse_obj_as(Url, url_decode(lightning))
++            url = Url(url_decode(lightning))
+             return url
+-        url = parse_obj_as(Url, lightning)
++        url = Url(lightning)
+         return url
+ 
+     @classmethod
+-    def validate(cls, lightning: str) -> Lnurl:
+-        _ = cls.clean(lightning)
+-        return cls(lightning)
++    def validate(cls, value: str, /) -> Lnurl:
++        _ = cls.clean(value)
++        return cls(value)
+ 
+     @property
+     def bech32(self) -> Bech32:
+         """Returns Bech32 representation of the Lnurl if it is a Bech32 encoded URL."""
+-        return parse_obj_as(Bech32, url_encode(self.url))
++        return Bech32(url_encode(self.url))
+ 
+     # LUD-04: auth base spec.
+     @property
+@@ -253,7 +298,7 @@ class LnAddress(ReprMixin, str):
+             self.address = address
+ 
+     # LUD-16: Paying to static internet identifiers.
+-    @validator("address")
++    @classmethod
+     def is_valid_lnaddress(cls, address: str) -> bool:
+         # A user can then type these on a WALLET. The <username> is limited
+         # to a-z-1-9-_.. Please note that this is way more strict than common
+@@ -265,10 +310,13 @@ class LnAddress(ReprMixin, str):
+     def __get_url__(cls, address: str) -> CallbackUrl:
+         name, domain = address.split("@")
+         url = ("http://" if domain.endswith(".onion") else "https://") + domain + "/.well-known/lnurlp/" + name
+-        return parse_obj_as(CallbackUrl, url)
++        return CallbackUrl(url)
++
+ 
++_metadata_adapter: TypeAdapter = TypeAdapter(Json[list[tuple[str, str]]])
+ 
+-class LnurlPayMetadata(ReprMixin, str):
++
++class LnurlPayMetadata(StrType, ReprMixin, str):
+     # LUD-16: Paying to static internet identifiers. "text/identifier", "text/email", "text/tag"
+     # LUD-20: Long payment description for pay protocol. "text/long-desc"
+     valid_metadata_mime_types = {
+@@ -293,7 +341,7 @@ class LnurlPayMetadata(ReprMixin, str):
+     @classmethod
+     def __validate_metadata__(cls, json_str: str) -> list[tuple[str, str]]:
+         try:
+-            parse_obj_as(Json[list[tuple[str, str]]], json_str)
++            _metadata_adapter.validate_python(json_str)
+             data = [(str(item[0]), str(item[1])) for item in json.loads(json_str)]
+         except ValidationError:
+             raise InvalidLnurlPayMetadata
+@@ -312,12 +360,7 @@ class LnurlPayMetadata(ReprMixin, str):
+         return clean_data
+ 
+     @classmethod
+-    def __get_validators__(cls):
+-        yield str_validator
+-        yield cls.validate
+-
+-    @classmethod
+-    def validate(cls, value: str) -> LnurlPayMetadata:
++    def validate(cls, value: str, /) -> LnurlPayMetadata:
+         return cls(value, json_obj=cls.__validate_metadata__(value))
+ 
+     @property
+@@ -343,18 +386,15 @@ class LnurlPayMetadata(ReprMixin, str):
+         return self._list
+ 
+ 
+-class InitializationVectorBase64(ConstrainedStr):
+-    min_length = 24
+-    max_length = 24
+-
++# `bolt11.MilliSatoshi` is a plain `int` subclass, pydantic v2 can not build a
++# schema for it on its own: validate an `int` and convert it afterwards.
++MilliSatoshiAmount = Annotated[int, AfterValidator(MilliSatoshi)]
+ 
+-class CiphertextBase64(ConstrainedStr):
+-    min_length = 24
+-    max_length = 4096
++InitializationVectorBase64 = Annotated[str, StringConstraints(min_length=24, max_length=24)]
+ 
++CiphertextBase64 = Annotated[str, StringConstraints(min_length=24, max_length=4096)]
+ 
+-class Max144Str(ConstrainedStr):
+-    max_length = 144
++Max144Str = Annotated[str, StringConstraints(max_length=144)]
+ 
+ 
+ # LUD-04: auth base spec.
+diff --git a/pyproject.toml b/pyproject.toml
+index 44966d9..02d997b 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -8,7 +8,7 @@ urls = { Repository = "https://github.com/lnbits/lnurl" }
+ readme = "README.md"
+ license = "MIT"
+ dependencies = [
+-  "pydantic>=1.10.0,<2.0.0",
++  "pydantic>=2.0.0",
+   "pycryptodomex>=3.21.0",
+   "bip32>=5.0.0",
+   "bech32",
+diff --git a/tests/test_fast_withdraw.py b/tests/test_fast_withdraw.py
+index afcca4c..3671f39 100644
+--- a/tests/test_fast_withdraw.py
++++ b/tests/test_fast_withdraw.py
+@@ -1,5 +1,5 @@
+ import pytest
+-from pydantic import parse_obj_as
++from pydantic import TypeAdapter
+ 
+ from lnurl import encode
+ from lnurl.models import LnurlWithdrawResponse
+@@ -27,8 +27,7 @@ class TestFastWithdraw:
+         assert lnurl.is_fast_withdraw == expected
+ 
+     def test_set_lnurl_fast_withdraw(self):
+-        response = parse_obj_as(
+-            LnurlWithdrawResponse,
++        response = TypeAdapter(LnurlWithdrawResponse).validate_python(
+             {
+                 "tag": "withdrawRequest",
+                 "k1": "0" * 16,
+diff --git a/tests/test_models.py b/tests/test_models.py
+index 0d434e4..3507ea8 100644
+--- a/tests/test_models.py
++++ b/tests/test_models.py
+@@ -1,7 +1,7 @@
+ import json
+ 
+ import pytest
+-from pydantic import ValidationError, parse_obj_as
++from pydantic import TypeAdapter, ValidationError
+ 
+ from lnurl import CallbackUrl, Lnurl, LnurlPayMetadata, MilliSatoshi, encode
+ from lnurl.models import (
+@@ -84,8 +84,8 @@ class TestLnurlPayResponse:
+         ],
+     )
+     def test_success_response(self, callback: str, min_sendable: int, max_sendable: int, metadata: str):
+-        callback_url = parse_obj_as(CallbackUrl, callback)
+-        data = parse_obj_as(LnurlPayMetadata, metadata)
++        callback_url = TypeAdapter(CallbackUrl).validate_python(callback)
++        data = TypeAdapter(LnurlPayMetadata).validate_python(metadata)
+         res = LnurlPayResponse(
+             callback=callback_url,
+             minSendable=MilliSatoshi(min_sendable),
+@@ -141,10 +141,10 @@ class TestLnurlPayResponseComment:
+         self, callback: str, min_sendable: int, max_sendable: int, metadata: str, comment_allowed: int
+     ):
+         res = LnurlPayResponse(
+-            callback=parse_obj_as(CallbackUrl, callback),
++            callback=TypeAdapter(CallbackUrl).validate_python(callback),
+             minSendable=MilliSatoshi(min_sendable),
+             maxSendable=MilliSatoshi(max_sendable),
+-            metadata=parse_obj_as(LnurlPayMetadata, metadata),
++            metadata=TypeAdapter(LnurlPayMetadata).validate_python(metadata),
+             commentAllowed=comment_allowed,
+         )
+         assert res.ok
+@@ -202,7 +202,7 @@ class TestLnurlWithdrawResponse:
+     )
+     def test_success_response(self, callback: str, k1: str, min_withdrawable: int, max_withdrawable: int):
+         res = LnurlWithdrawResponse(
+-            callback=parse_obj_as(CallbackUrl, callback),
++            callback=TypeAdapter(CallbackUrl).validate_python(callback),
+             k1=k1,
+             minWithdrawable=MilliSatoshi(min_withdrawable),
+             maxWithdrawable=MilliSatoshi(max_withdrawable),
+@@ -256,7 +256,7 @@ class TestLnurlWithdrawResponse:
+     def test_invalid_pay_link(self, payLink: str):
+         with pytest.raises(ValidationError):
+             _ = LnurlWithdrawResponse(
+-                callback=parse_obj_as(CallbackUrl, "https://service.io/withdraw/cb"),
++                callback=TypeAdapter(CallbackUrl).validate_python("https://service.io/withdraw/cb"),
+                 k1="c3RyaW5n",
+                 minWithdrawable=MilliSatoshi(100),
+                 maxWithdrawable=MilliSatoshi(200),
+@@ -264,11 +264,11 @@ class TestLnurlWithdrawResponse:
+             )
+ 
+     def test_valid_pay_link(self):
+-        payLink = parse_obj_as(Lnurl, "lnurlp://service.io/pay")
++        payLink = TypeAdapter(Lnurl).validate_python("lnurlp://service.io/pay")
+         assert payLink.is_lud17
+         assert payLink.lud17_prefix == "lnurlp"
+         _ = LnurlWithdrawResponse(
+-            callback=parse_obj_as(CallbackUrl, "https://service.io/withdraw/cb"),
++            callback=TypeAdapter(CallbackUrl).validate_python("https://service.io/withdraw/cb"),
+             k1="c3RyaW5n",
+             minWithdrawable=MilliSatoshi(100),
+             maxWithdrawable=MilliSatoshi(200),
+diff --git a/tests/test_types.py b/tests/test_types.py
+index 46a955d..a8e9237 100644
+--- a/tests/test_types.py
++++ b/tests/test_types.py
+@@ -1,5 +1,5 @@
+ import pytest
+-from pydantic import ValidationError, parse_obj_as
++from pydantic import TypeAdapter, ValidationError
+ 
+ from lnurl import (
+     CallbackUrl,
+@@ -26,7 +26,7 @@ class TestUrl:
+         ["service.io:443", "service.io:9000"],
+     )
+     def test_parameters(self, hostport):
+-        url = parse_obj_as(CallbackUrl, f"https://{hostport}/?q=3fc3645b439ce8e7&test=ok")
++        url = TypeAdapter(CallbackUrl).validate_python(f"https://{hostport}/?q=3fc3645b439ce8e7&test=ok")
+         assert url.host == "service.io"
+         assert url == f"https://{hostport}/?q=3fc3645b439ce8e7&test=ok"
+         assert url.query_params == {"q": "3fc3645b439ce8e7", "test": "ok"}
+@@ -46,7 +46,7 @@ class TestUrl:
+         ],
+     )
+     def test_valid_callback(self, url):
+-        url = parse_obj_as(CallbackUrl, url)
++        url = TypeAdapter(CallbackUrl).validate_python(url)
+         assert isinstance(url, CallbackUrl)
+ 
+     @pytest.mark.parametrize(
+@@ -63,7 +63,7 @@ class TestUrl:
+     )
+     def test_invalid_data_callback(self, url):
+         with pytest.raises(ValidationError):
+-            parse_obj_as(CallbackUrl, url)
++            TypeAdapter(CallbackUrl).validate_python(url)
+ 
+     @pytest.mark.parametrize(
+         "url",
+@@ -75,7 +75,7 @@ class TestUrl:
+     def test_strict_rfc3986(self, monkeypatch, url):
+         monkeypatch.setenv("LNURL_STRICT_RFC3986", "1")
+         with pytest.raises(ValidationError):
+-            parse_obj_as(CallbackUrl, url)
++            TypeAdapter(CallbackUrl).validate_python(url)
+ 
+ 
+ class TestLightningInvoice:
+@@ -97,7 +97,7 @@ class TestLightningInvoice:
+     )
+     def test_valid_invoice(self, bech32, hrp, prefix, amount, h):
+         invoice = LightningInvoice(bech32)
+-        assert invoice == parse_obj_as(LightningInvoice, bech32)
++        assert invoice == TypeAdapter(LightningInvoice).validate_python(bech32)
+         assert invoice.hrp == hrp
+         # TODO: implement these properties
+         # assert invoice.prefix == prefix
+@@ -106,7 +106,7 @@ class TestLightningInvoice:
+ 
+ class TestLightningNode:
+     def test_valid_node(self):
+-        node = parse_obj_as(LightningNodeUri, "node_key@ip_address:port_number")
++        node = TypeAdapter(LightningNodeUri).validate_python("node_key@ip_address:port_number")
+         assert node.key == "node_key"
+         assert node.ip == "ip_address"
+         assert node.port == "port_number"
+@@ -114,7 +114,7 @@ class TestLightningNode:
+     @pytest.mark.parametrize("uri", ["https://service.io/node", "node_key@ip_address", "ip_address:port_number"])
+     def test_invalid_node(self, uri):
+         with pytest.raises(ValidationError):
+-            parse_obj_as(LightningNodeUri, uri)
++            TypeAdapter(LightningNodeUri).validate_python(uri)
+ 
+ 
+ class TestLnurl:
+@@ -136,7 +136,7 @@ class TestLnurl:
+     )
+     def test_valid_lnurl_and_bech32(self, lightning):
+         lnurl = Lnurl(lightning)
+-        assert lnurl == parse_obj_as(Lnurl, lightning)
++        assert lnurl == TypeAdapter(Lnurl).validate_python(lightning)
+         if lnurl.is_lud17:
+             assert lnurl.lud17 == lightning
+             assert lnurl.lud17_prefix == lightning.split("://")[0]
+@@ -163,7 +163,7 @@ class TestLnurl:
+         ],
+     )
+     def test_valid_lnurl_lud17(self, url: str):
+-        _lnurl = parse_obj_as(Lnurl, url)
++        _lnurl = TypeAdapter(Lnurl).validate_python(url)
+ 
+         _prefix = url.split("://")[0]
+         assert _lnurl.lud17 == url
+@@ -185,7 +185,7 @@ class TestLnurl:
+     )
+     def test_invalid_lnurl(self, url: str):
+         with pytest.raises(ValidationError):
+-            parse_obj_as(Lnurl, url)
++            TypeAdapter(Lnurl).validate_python(url)
+ 
+     @pytest.mark.parametrize(
+         "bech32",
+@@ -197,7 +197,7 @@ class TestLnurl:
+     )
+     def test_decode_nolnurl(self, bech32):
+         with pytest.raises(ValidationError):
+-            parse_obj_as(Lnurl, bech32)
++            TypeAdapter(Lnurl).validate_python(bech32)
+ 
+     @pytest.mark.parametrize(
+         "url",
+@@ -207,7 +207,7 @@ class TestLnurl:
+         ],
+     )
+     def test_insecure_lnurl(self, url: str):
+-        lnurl = parse_obj_as(Lnurl, url)
++        lnurl = TypeAdapter(Lnurl).validate_python(url)
+         assert lnurl.url.insecure is True
+         assert lnurl.url.host == "localhost"
+         assert lnurl.url.startswith("http://")
+@@ -224,7 +224,7 @@ class TestLnurlPayMetadata:
+         ],
+     )
+     def test_valid(self, metadata, image_type):
+-        m = parse_obj_as(LnurlPayMetadata, metadata)
++        m = TypeAdapter(LnurlPayMetadata).validate_python(metadata)
+         assert m.text == "main text"
+ 
+         if m.images:
+@@ -244,7 +244,7 @@ class TestLnurlPayMetadata:
+     )
+     def test_invalid_data(self, metadata):
+         with pytest.raises(ValidationError):
+-            parse_obj_as(LnurlPayMetadata, metadata)
++            TypeAdapter(LnurlPayMetadata).validate_python(metadata)
+ 
+     @pytest.mark.parametrize(
+         "lnaddress",
+@@ -295,7 +295,7 @@ class TestPayerData:
+                 },
+             ],
+         }
+-        payer_data = parse_obj_as(LnurlPayResponsePayerData, data)
++        payer_data = TypeAdapter(LnurlPayResponsePayerData).validate_python(data)
+         assert payer_data.name is not None
+         assert payer_data.name.mandatory is True
+         assert payer_data.pubkey is not None
+@@ -350,7 +350,7 @@ class TestPayerData:
+                 "sig": "0" * 64,
+             },
+         }
+-        payer_data = parse_obj_as(LnurlPayerData, data)
++        payer_data = TypeAdapter(LnurlPayerData).validate_python(data)
+         assert payer_data.name == "John Doe"
+         assert payer_data.pubkey == "03a3xxxxxxxxxxxx"
+         assert payer_data.auth is not None

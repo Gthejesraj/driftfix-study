@@ -12,7 +12,7 @@
    "passed": 127
   },
   "failing": [],
-  "tail": "......x..xxx............................................................ [ 54%]\n...........................................................              [100%]\n127 passed, 4 xfailed in 1.50s",
+  "tail": "......x..xxx............................................................ [ 54%]\n...........................................................              [100%]\n127 passed, 4 xfailed in 1.84s",
   "preexisting_failures": 0
  },
  "new": "2.13.5",
@@ -29,7 +29,45 @@
    "tests/test_models_from_dict.py",
    "tests/test_types.py"
   ],
-  "tail": "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic:ConstrainedStr` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n_____________________ ERROR collecting tests/test_types.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_types.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_types.py:4: in <module>\n    from lnurl import (\nlnurl/__init__.py:4: in <module>\n    from .core import decode, encode, execute, execute_login, execute_pay_request, execute_withdraw, get, handle\nlnurl/core.py:16: in <module>\n    from .models import (\nlnurl/models.py:11: in <module>\n    from .types import (\nlnurl/types.py:11: in <module>\n    from pydantic import (\n../venv/lib/python3.12/site-packages/pydantic/__init__.py:437: in __getattr__\n    return _getattr_migration(attr_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic:ConstrainedStr` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n=========================== short test summary info ============================\nERROR tests/test_core.py\nERROR tests/test_fast_withdraw.py\nERROR tests/test_helpers_lnurlauth.py\nERROR tests/test_models.py\nERROR tests/test_models_from_dict.py\nERROR tests/test_types.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!\n6 errors in 0.58s"
+  "tail": "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic:ConstrainedStr` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n_____________________ ERROR collecting tests/test_types.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_types.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_types.py:4: in <module>\n    from lnurl import (\nlnurl/__init__.py:4: in <module>\n    from .core import decode, encode, execute, execute_login, execute_pay_request, execute_withdraw, get, handle\nlnurl/core.py:16: in <module>\n    from .models import (\nlnurl/models.py:11: in <module>\n    from .types import (\nlnurl/types.py:11: in <module>\n    from pydantic import (\n../venv/lib/python3.12/site-packages/pydantic/__init__.py:437: in __getattr__\n    return _getattr_migration(attr_name)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic:ConstrainedStr` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n=========================== short test summary info ============================\nERROR tests/test_core.py\nERROR tests/test_fast_withdraw.py\nERROR tests/test_helpers_lnurlauth.py\nERROR tests/test_models.py\nERROR tests/test_models_from_dict.py\nERROR tests/test_types.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!\n6 errors in 0.36s"
  },
- "status": "broken"
+ "status": "broken",
+ "driftfix": {
+  "exit": 0,
+  "fixed": true,
+  "cost": 2.56,
+  "model": "claude-opus-5",
+  "diffstat": "8 files changed, 170 insertions(+), 122 deletions(-)"
+ },
+ "human": {
+  "files_ours": [
+   "lnurl/core.py",
+   "lnurl/models.py",
+   "lnurl/types.py",
+   "tests/test_fast_withdraw.py",
+   "tests/test_models.py",
+   "tests/test_types.py"
+  ],
+  "files_theirs": [
+   "lnurl/__init__.py",
+   "lnurl/core.py",
+   "lnurl/models.py",
+   "lnurl/types.py",
+   "tests/test_core.py",
+   "tests/test_fast_withdraw.py",
+   "tests/test_models.py",
+   "tests/test_models_from_dict.py",
+   "tests/test_types.py"
+  ],
+  "overlap": 6,
+  "human_tests_applied": [
+   "tests/test_core.py",
+   "tests/test_fast_withdraw.py",
+   "tests/test_models.py",
+   "tests/test_models_from_dict.py",
+   "tests/test_types.py"
+  ],
+  "passes_human_tests": false,
+  "human_tests_tail": "https://service.io/\nFAILED tests/test_types.py::TestLnurl::test_valid_lnurl_lud17[lnurlw://service.io/] - AssertionError: assert 'https://service.io/' == 'lnurlw://service.io/'\n  \n  - lnurlw://service.io/\n  + https://service.io/\nFAILED tests/test_types.py::TestLnurl::test_valid_lnurl_lud17[keyauth://service.io/] - AssertionError: assert 'https://service.io/' == 'keyauth://service.io/'\n  \n  - keyauth://service.io/\n  ? ^^^^^ ^\n  + https://service.io/\n  ? ^ ^^^\nFAILED tests/test_types.py::TestLnurlPayMetadata::test_valid_lnaddress[donate@legend.lnbits.com] - assert False\n +  where False = isinstance(CallbackUrl('https://legend.lnbits.com/.well-known/lnurlp/donate', scheme='https', host='legend.lnbits.com', path='/.well-known/lnurlp/donate'), HttpUrl)\n +    where CallbackUrl('https://legend.lnbits.com/.well-known/lnurlp/donate', scheme='https', host='legend.lnbits.com', path='/.well-known/lnurlp/donate') = <[AttributeError(\"'LnAddress' object has no attribute '__slots__'\") raised in repr()] LnAddress object at 0x7f2a3acd39b0>.url\nFAILED tests/test_types.py::TestLnurlPayMetadata::test_valid_lnaddress_with_tag[donate+lud16tag@legend.lnbits.com] - assert False\n +  where False = isinstance(CallbackUrl('https://legend.lnbits.com/.well-known/lnurlp/donate+lud16tag', scheme='https', host='legend.lnbits.com', path='/.well-known/lnurlp/donate+lud16tag'), HttpUrl)\n +    where CallbackUrl('https://legend.lnbits.com/.well-known/lnurlp/donate+lud16tag', scheme='https', host='legend.lnbits.com', path='/.well-known/lnurlp/donate+lud16tag') = <[AttributeError(\"'LnAddress' object has no attribute '__slots__'\") raised in repr()] LnAddress object at 0x7f2a3acd3a10>.url\nFAILED tests/test_types.py::TestLnurlErrorResponse::test_error_res_details - assert '{\"status\": \"...n\": \"detail\"}' == '{\"status\":\"E...on\":\"detail\"}'\n  \n  - {\"status\":\"ERROR\",\"reason\":\"detail\"}\n  + {\"status\": \"ERROR\", \"reason\": \"detail\"}\n  ?           +        +         +\n27 failed, 101 passed, 4 xfailed, 2 warnings in 1.92s"
+ }
 }

@@ -1,0 +1,370 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index d7cbae1..c186534 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -42,7 +42,7 @@ repos:
+       - id: mypy
+         additional_dependencies:
+           - pytest
+-          - "sqlalchemy[mypy] < 2.0"
++          - "sqlalchemy[mypy] >= 2.0"
+ 
+   - repo: https://github.com/pre-commit/pygrep-hooks
+     rev: v1.10.0
+diff --git a/CHANGES.rst b/CHANGES.rst
+index 17d3bbd..27928ee 100644
+--- a/CHANGES.rst
++++ b/CHANGES.rst
+@@ -1,6 +1,15 @@
+ Version history
+ ===============
+ 
++**UNRELEASED**
++
++- Added support for SQLAlchemy 2.x and dropped support for SQLAlchemy 1.4 (minimum
++  required version is now 2.0)
++- Python type annotations for columns whose Python type is not a builtin (e.g. UUID
++  columns) are now rendered using the fully qualified name (e.g. ``uuid.UUID``) in
++  order to avoid clashing with the SQLAlchemy type names imported in the generated
++  module
++
+ **3.0.0rc2**
+ 
+ - Added support for generating SQLModel classes (PR by Andrii Khirilov)
+diff --git a/README.rst b/README.rst
+index 50f0449..7efa948 100644
+--- a/README.rst
++++ b/README.rst
+@@ -18,7 +18,7 @@ latest SQLAlchemy version).
+ Features
+ ========
+ 
+-* Supports SQLAlchemy 1.4.x
++* Supports SQLAlchemy 2.x
+ * Produces declarative code that almost looks like it was hand written
+ * Produces `PEP 8`_ compliant code
+ * Accurately determines relationships, including many-to-many, one-to-one
+diff --git a/pyproject.toml b/pyproject.toml
+index 3e5b169..316f076 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -28,7 +28,7 @@ classifiers = [
+ ]
+ requires-python = ">=3.7"
+ dependencies = [
+-    "SQLAlchemy >= 1.4.36, < 2.0",
++    "SQLAlchemy >= 2.0.0",
+     "inflect >= 4.0.0",
+     "importlib_metadata; python_version < '3.10'",
+ ]
+@@ -44,7 +44,7 @@ test = [
+     "pytest-cov",
+     "psycopg2-binary",
+     "mysql-connector-python",
+-    "sqlmodel",
++    "sqlmodel >= 0.0.13",
+ ]
+ citext = ["sqlalchemy-citext >= 1.7.0"]
+ 
+diff --git a/src/sqlacodegen/generators.py b/src/sqlacodegen/generators.py
+index e3b3c47..edcab88 100644
+--- a/src/sqlacodegen/generators.py
++++ b/src/sqlacodegen/generators.py
+@@ -62,12 +62,6 @@ from .utils import (
+     uses_default_name,
+ )
+ 
+-if sys.version_info < (3, 10):
+-    from importlib_metadata import version
+-else:
+-    from importlib.metadata import version
+-
+-_sqla_version = tuple(int(x) for x in version("sqlalchemy").split(".")[:2])
+ _re_boolean_check_constraint = re.compile(r"(?:.*?\.)?(.*?) IN \(0, 1\)")
+ _re_column_name = re.compile(r'(?:(["`]?).*\1\.)?(["`]?)(.*)\2')
+ _re_enum_check_constraint = re.compile(r"(?:.*?\.)?(.*?) IN \((.+)\)")
+@@ -116,6 +110,7 @@ class TablesGenerator(CodeGenerator):
+         super().__init__(metadata, bind, options)
+         self.indentation: str = indentation
+         self.imports: dict[str, set[str]] = defaultdict(set)
++        self.module_imports: set[str] = set()
+ 
+     def generate(self) -> str:
+         sections: list[str] = []
+@@ -241,13 +236,43 @@ class TablesGenerator(CodeGenerator):
+ 
+             if type_.__name__ in dialect_pkg.__all__:
+                 pkgname = dialect_pkgname
+-        elif type_.__name__ in dir(sqlalchemy):
++        elif pkgname.startswith("sqlalchemy") and type_.__name__ in dir(sqlalchemy):
+             pkgname = "sqlalchemy"
+-        else:
+-            pkgname = type_.__module__
+ 
+         self.add_literal_import(pkgname, type_.__name__)
+ 
++    def add_module_import(self, pkgname: str) -> None:
++        self.module_imports.add(pkgname)
++
++    def render_python_type(self, python_type: type) -> str:
++        """
++        Return the name to use in annotations for the given Python type, adding the
++        necessary import.
++
++        Types outside of ``builtins`` are rendered using their fully qualified name
++        (e.g. ``uuid.UUID``) to avoid clashes with the SQLAlchemy type names imported
++        in the generated module.
++
++        """
++        if python_type.__module__ == "builtins":
++            return python_type.__name__
++
++        self.add_module_import(python_type.__module__)
++        return f"{python_type.__module__}.{python_type.__name__}"
++
++    def collect_import_for_python_type(self, column: Column[Any]) -> None:
++        # The rendered name is discarded here; this only registers the import
++        self.render_column_python_type(column)
++
++    def render_column_python_type(self, column: Column[Any]) -> str:
++        try:
++            python_type = column.type.python_type
++        except NotImplementedError:
++            self.add_literal_import("typing", "Any")
++            return "Any"
++        else:
++            return self.render_python_type(python_type)
++
+     def add_literal_import(self, pkgname: str, name: str) -> None:
+         names = self.imports.setdefault(pkgname, set())
+         names.add(name)
+@@ -261,18 +286,23 @@ class TablesGenerator(CodeGenerator):
+         stdlib_imports: list[str] = []
+         thirdparty_imports: list[str] = []
+ 
+-        for package in sorted(self.imports):
+-            imports = ", ".join(sorted(self.imports[package]))
+-            collection = thirdparty_imports
++        def get_collection(package: str) -> list[str]:
+             if package == "__future__":
+-                collection = future_imports
++                return future_imports
+             elif package in self.builtin_module_names:
+-                collection = stdlib_imports
++                return stdlib_imports
+             elif package in sys.modules:
+                 if "site-packages" not in (sys.modules[package].__file__ or ""):
+-                    collection = stdlib_imports
++                    return stdlib_imports
++
++            return thirdparty_imports
+ 
+-            collection.append(f"from {package} import {imports}")
++        for package in sorted(self.module_imports):
++            get_collection(package).append(f"import {package}")
++
++        for package in sorted(self.imports):
++            imports = ", ".join(sorted(self.imports[package]))
++            get_collection(package).append(f"from {package} import {imports}")
+ 
+         return [
+             group
+@@ -290,6 +320,7 @@ class TablesGenerator(CodeGenerator):
+         global_names = {
+             name for namespace in self.imports.values() for name in namespace
+         }
++        global_names |= {pkgname.split(".")[0] for pkgname in self.module_imports}
+         for model in models:
+             self.generate_model_name(model, global_names)
+             global_names.add(model.name)
+@@ -682,12 +713,7 @@ class DeclarativeGenerator(TablesGenerator):
+         super().collect_imports(models)
+         if any(isinstance(model, ModelClass) for model in models):
+             self.remove_literal_import("sqlalchemy", "MetaData")
+-            if _sqla_version < (1, 4):
+-                self.add_literal_import(
+-                    "sqlalchemy.ext.declarative", "declarative_base"
+-                )
+-            else:
+-                self.add_literal_import("sqlalchemy.orm", "declarative_base")
++            self.add_literal_import("sqlalchemy.orm", "declarative_base")
+ 
+     def collect_imports_for_model(self, model: Model) -> None:
+         super().collect_imports_for_model(model)
+@@ -1262,12 +1288,7 @@ class DataclassGenerator(DeclarativeGenerator):
+ 
+     def collect_imports_for_column(self, column: Column[Any]) -> None:
+         super().collect_imports_for_column(column)
+-        try:
+-            python_type = column.type.python_type
+-        except NotImplementedError:
+-            pass
+-        else:
+-            self.add_import(python_type)
++        self.collect_import_for_python_type(column)
+ 
+     def render_module_variables(self, models: list[Model]) -> str:
+         if not any(isinstance(model, ModelClass) for model in models):
+@@ -1297,12 +1318,7 @@ class DataclassGenerator(DeclarativeGenerator):
+ 
+     def render_column_attribute(self, column_attr: ColumnAttribute) -> str:
+         column = column_attr.column
+-        try:
+-            python_type = column.type.python_type
+-        except NotImplementedError:
+-            python_type_name = "Any"
+-        else:
+-            python_type_name = python_type.__name__
++        python_type_name = self.render_column_python_type(column)
+ 
+         kwargs: dict[str, Any] = {}
+         if column.autoincrement and column.name in column.table.primary_key:
+@@ -1387,12 +1403,7 @@ class SQLModelGenerator(DeclarativeGenerator):
+ 
+     def collect_imports_for_column(self, column: Column[Any]) -> None:
+         super().collect_imports_for_column(column)
+-        try:
+-            python_type = column.type.python_type
+-        except NotImplementedError:
+-            self.add_literal_import("typing", "Any")
+-        else:
+-            self.add_import(python_type)
++        self.collect_import_for_python_type(column)
+ 
+     def render_module_variables(self, models: list[Model]) -> str:
+         declarations: list[str] = []
+@@ -1425,12 +1436,7 @@ class SQLModelGenerator(DeclarativeGenerator):
+ 
+     def render_column_attribute(self, column_attr: ColumnAttribute) -> str:
+         column = column_attr.column
+-        try:
+-            python_type = column.type.python_type
+-        except NotImplementedError:
+-            python_type_name = "Any"
+-        else:
+-            python_type_name = python_type.__name__
++        python_type_name = self.render_column_python_type(column)
+ 
+         kwargs: dict[str, Any] = {}
+         if (
+diff --git a/tests/test_cli.py b/tests/test_cli.py
+index fde265b..83c9e7e 100644
+--- a/tests/test_cli.py
++++ b/tests/test_cli.py
+@@ -7,19 +7,13 @@ from pathlib import Path
+ 
+ import pytest
+ 
+-from sqlacodegen.generators import _sqla_version
+-
+ if sys.version_info < (3, 8):
+     from importlib_metadata import version
+ else:
+     from importlib.metadata import version
+ 
+ future_imports = "from __future__ import annotations\n\n"
+-
+-if _sqla_version < (1, 4):
+-    declarative_package = "sqlalchemy.ext.declarative"
+-else:
+-    declarative_package = "sqlalchemy.orm"
++declarative_package = "sqlalchemy.orm"
+ 
+ 
+ @pytest.fixture
+diff --git a/tests/test_generators.py b/tests/test_generators.py
+index edc78db..44b9ee2 100644
+--- a/tests/test_generators.py
++++ b/tests/test_generators.py
+@@ -1,4 +1,6 @@
++import sys
+ from textwrap import dedent
++from types import ModuleType
+ 
+ import pytest
+ from pytest import FixtureRequest
+@@ -35,10 +37,17 @@ from sqlacodegen.generators import (
+ def validate_code(generated_code: str, expected_code: str) -> None:
+     expected_code = dedent(expected_code)
+     assert generated_code == expected_code
++
++    # SQLAlchemy resolves (possibly stringified) annotations against the module in
++    # which the class was defined, so the generated code has to be executed as a
++    # proper module rather than in a bare dict
++    module = ModuleType("_generated_models")
++    sys.modules[module.__name__] = module
+     try:
+-        exec(generated_code, {})
++        exec(generated_code, module.__dict__)
+         configure_mappers()
+     finally:
++        del sys.modules[module.__name__]
+         clear_mappers()
+ 
+ 
+@@ -46,7 +55,7 @@ def validate_code(generated_code: str, expected_code: str) -> None:
+ def engine(request: FixtureRequest) -> Engine:
+     dialect = getattr(request, "param", None)
+     if dialect == "postgresql":
+-        return create_engine("postgresql:///testdb")
++        return create_engine("postgresql+psycopg2:///testdb")
+     elif dialect == "mysql":
+         return create_engine("mysql+mysqlconnector://testdb")
+     else:
+@@ -136,14 +145,14 @@ class TestTablesGenerator:
+         validate_code(
+             generator.generate(),
+             """\
+-            from sqlalchemy import ARRAY, Column, Float, Integer, MetaData, Table
++            from sqlalchemy import ARRAY, Column, Double, Integer, MetaData, Table
+ 
+             metadata = MetaData()
+ 
+ 
+             t_simple_items = Table(
+                 'simple_items', metadata,
+-                Column('dp_array', ARRAY(Float(precision=53))),
++                Column('dp_array', ARRAY(Double(precision=53))),
+                 Column('int_array', ARRAY(Integer()))
+             )
+             """,
+@@ -228,7 +237,7 @@ class TestTablesGenerator:
+         validate_code(
+             generator.generate(),
+             """\
+-            from sqlalchemy import BigInteger, Column, Float, MetaData, Table
++            from sqlalchemy import BigInteger, Column, Double, MetaData, Table
+ 
+             metadata = MetaData()
+ 
+@@ -236,7 +245,7 @@ class TestTablesGenerator:
+             t_simple_items = Table(
+                 'simple_items', metadata,
+                 Column('id', BigInteger),
+-                Column('length', Float)
++                Column('length', Double)
+             )
+             """,
+         )
+@@ -2616,10 +2625,10 @@ metadata={'sa': relationship('SimpleContainers', back_populates='simple_items')}
+             """\
+             from __future__ import annotations
+ 
++            import uuid
+             from dataclasses import dataclass, field
+ 
+-            from sqlalchemy import Column
+-            from sqlalchemy.dialects.postgresql import UUID
++            from sqlalchemy import Column, UUID
+             from sqlalchemy.orm import registry
+ 
+             mapper_registry = registry()
+@@ -2631,7 +2640,7 @@ metadata={'sa': relationship('SimpleContainers', back_populates='simple_items')}
+                 __tablename__ = 'simple'
+                 __sa_dataclass_metadata_key__ = 'sa'
+ 
+-                id: str = field(init=False, metadata={'sa': \
++                id: uuid.UUID = field(init=False, metadata={'sa': \
+ Column(UUID, primary_key=True)})
+             """,
+         )

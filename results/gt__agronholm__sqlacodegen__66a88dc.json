@@ -12,7 +12,7 @@
    "passed": 90
   },
   "failing": [],
-  "tail": "........................................................................ [ 80%]\n..................                                                       [100%]\n90 passed, 4 deselected in 2.29s",
+  "tail": "........................................................................ [ 80%]\n..................                                                       [100%]\n90 passed, 4 deselected in 2.08s",
   "preexisting_failures": 4
  },
  "new": "2.1.3",
@@ -46,7 +46,49 @@
    "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-test_seq]",
    "tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-\"test_seq\"]"
   ],
-  "tail": "FAILED tests/test_generators.py::TestDataclassGenerator::test_manytomany - sqlalchemy.orm.exc.MappedAnnotationError: Could not interpret annotation List[SimpleItems].  Check that it uses names that are correctly imported at the module level. See chained stack trace for more hints.\nFAILED tests/test_generators.py::TestDataclassGenerator::test_named_foreign_key_constraints - sqlalchemy.orm.exc.MappedAnnotationError: Could not interpret annotation List[SimpleItems].  Check that it uses names that are correctly imported at the module level. See chained stack trace for more hints.\nFAILED tests/test_generators.py::TestDataclassGenerator::test_uuid_type_annotation - AssertionError: assert 'from __futur...key=True)})\\n' == 'from __futur...key=True)})\\n'\n  \n  Skipping 97 identical leading characters in diff, use -v to show\n  - ort Column\n  + ort Column, UUID\n  ?           ++++++\n  - from sqlalchemy.dialects.postgresql import UUID\n    from sqlalchemy.orm import registry\n    \n    mapper_registry = registry()\n    \n    \n    @mapper_registry.mapped\n    @dataclass\n    class Simple:\n        __tablename__ = 'simple'\n        __sa_dataclass_metadata_key__ = 'sa'\n    \n  -     id: str = field(init=False, metadata={'sa': Column(UUID, primary_key=True)})\n  ?         ^^^\n  +     id: UUID = field(init=False, metadata={'sa': Column(UUID, primary_key=True)})\n  ?         ^^^^\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_indexes - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_constraints - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_onetomany - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_onetoone - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nERROR tests/test_generators.py::TestTablesGenerator::test_fancy_coltypes[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_arrays[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_jsonb[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_jsonb_default[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_column_adaptation[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_standard_name[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_nonstandard_name[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-test_seq] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-\"test_seq\"] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-test_seq] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-\"test_seq\"] - ModuleNotFoundError: No module named 'psycopg'\n10 failed, 69 passed, 4 deselected, 11 errors in 4.43s"
+  "tail": "FAILED tests/test_generators.py::TestDataclassGenerator::test_manytomany - sqlalchemy.orm.exc.MappedAnnotationError: Could not interpret annotation List[SimpleItems].  Check that it uses names that are correctly imported at the module level. See chained stack trace for more hints.\nFAILED tests/test_generators.py::TestDataclassGenerator::test_named_foreign_key_constraints - sqlalchemy.orm.exc.MappedAnnotationError: Could not interpret annotation List[SimpleItems].  Check that it uses names that are correctly imported at the module level. See chained stack trace for more hints.\nFAILED tests/test_generators.py::TestDataclassGenerator::test_uuid_type_annotation - AssertionError: assert 'from __futur...key=True)})\\n' == 'from __futur...key=True)})\\n'\n  \n  Skipping 97 identical leading characters in diff, use -v to show\n  - ort Column\n  + ort Column, UUID\n  ?           ++++++\n  - from sqlalchemy.dialects.postgresql import UUID\n    from sqlalchemy.orm import registry\n    \n    mapper_registry = registry()\n    \n    \n    @mapper_registry.mapped\n    @dataclass\n    class Simple:\n        __tablename__ = 'simple'\n        __sa_dataclass_metadata_key__ = 'sa'\n    \n  -     id: str = field(init=False, metadata={'sa': Column(UUID, primary_key=True)})\n  ?         ^^^\n  +     id: UUID = field(init=False, metadata={'sa': Column(UUID, primary_key=True)})\n  ?         ^^^^\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_indexes - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_constraints - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_onetomany - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nFAILED tests/test_generators.py::TestSQLModelGenerator::test_onetoone - ImportError: cannot import name 'ThreadLocalMetaData' from 'sqlalchemy.schema' (/tmp/study/venv/lib/python3.12/site-packages/sqlalchemy/schema.py)\nERROR tests/test_generators.py::TestTablesGenerator::test_fancy_coltypes[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_arrays[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_jsonb[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_jsonb_default[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_column_adaptation[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_standard_name[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_nonstandard_name[postgresql] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-test_seq] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-myschema-\"test_seq\"] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-test_seq] - ModuleNotFoundError: No module named 'psycopg'\nERROR tests/test_generators.py::TestTablesGenerator::test_postgresql_sequence_with_schema[postgresql-\"my.schema\"-\"test_seq\"] - ModuleNotFoundError: No module named 'psycopg'\n10 failed, 69 passed, 4 deselected, 11 errors in 4.02s"
  },
- "status": "broken"
+ "status": "broken",
+ "driftfix": {
+  "exit": 0,
+  "fixed": true,
+  "cost": 2.75,
+  "model": "claude-opus-5",
+  "diffstat": "7 files changed, 84 insertions(+), 66 deletions(-)"
+ },
+ "human": {
+  "files_ours": [
+   "src/sqlacodegen/generators.py",
+   "tests/test_cli.py",
+   "tests/test_generators.py"
+  ],
+  "files_theirs": [
+   "src/sqlacodegen/generators.py",
+   "tests/conftest.py",
+   "tests/test_cli.py",
+   "tests/test_generator_dataclass.py",
+   "tests/test_generator_dataclass2.py",
+   "tests/test_generator_declarative.py",
+   "tests/test_generator_declarative2.py",
+   "tests/test_generator_sqlmodel.py",
+   "tests/test_generator_tables.py",
+   "tests/test_generator_tables2.py",
+   "tests/test_generators.py"
+  ],
+  "overlap": 3,
+  "human_tests_applied": [
+   "tests/conftest.py",
+   "tests/test_cli.py",
+   "tests/test_generator_dataclass.py",
+   "tests/test_generator_dataclass2.py",
+   "tests/test_generator_declarative.py",
+   "tests/test_generator_declarative2.py",
+   "tests/test_generator_sqlmodel.py",
+   "tests/test_generator_tables.py",
+   "tests/test_generator_tables2.py",
+   "tests/test_generators.py"
+  ],
+  "passes_human_tests": true,
+  "human_tests_tail": "........................................................................ [ 80%]\n..................                                                       [100%]\n90 passed, 4 deselected in 2.55s"
+ }
 }

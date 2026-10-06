@@ -1,0 +1,178 @@
+diff --git a/clabe/errors.py b/clabe/errors.py
+index 6ecd610..682b98b 100644
+--- a/clabe/errors.py
++++ b/clabe/errors.py
+@@ -1,11 +1,34 @@
+-from pydantic.errors import PydanticValueError
++from typing import Any, Dict
+ 
+ 
+-class BankCodeValidationError(PydanticValueError):
++class ClabeValidationError(ValueError):
++    """
++    Base class for CLABE validation errors.
++
++    Replaces `pydantic.errors.PydanticValueError`, which was removed in
++    pydantic v2. Raising a plain `ValueError` subclass from within a
++    validator is the way pydantic v2 expects custom errors to be
++    signalled, and it keeps these exceptions usable outside of pydantic.
++    """
++
++    code: str = 'clabe.invalid'
++    msg_template: str = 'clabe no es válida'
++
++    def __init__(self, **ctx: Any) -> None:
++        self.ctx: Dict[str, Any] = ctx
++        super().__init__(self.msg_template.format(**ctx))
++
++
++class NotDigitError(ClabeValidationError):
++    code = 'clabe.not_digit'
++    msg_template = 'el valor no es un string de dígitos'
++
++
++class BankCodeValidationError(ClabeValidationError):
+     code = 'clabe.bank_code'
+     msg_template = 'código de banco no es válido'
+ 
+ 
+-class ClabeControlDigitValidationError(PydanticValueError):
++class ClabeControlDigitValidationError(ClabeValidationError):
+     code = 'clabe.control_digit'
+     msg_template = 'clabe dígito de control no es válido'
+diff --git a/clabe/types.py b/clabe/types.py
+index 08d6052..31d39b9 100644
+--- a/clabe/types.py
++++ b/clabe/types.py
+@@ -1,18 +1,15 @@
+-from typing import TYPE_CHECKING, ClassVar
++from typing import Any, ClassVar
+ 
+-from pydantic.errors import NotDigitError
+-from pydantic.validators import (
+-    constr_length_validator,
+-    constr_strip_whitespace,
+-    str_validator,
+-)
++from pydantic import GetCoreSchemaHandler
++from pydantic_core import CoreSchema, core_schema
+ 
+-from .errors import BankCodeValidationError, ClabeControlDigitValidationError
++from .errors import (
++    BankCodeValidationError,
++    ClabeControlDigitValidationError,
++    NotDigitError,
++)
+ from .validations import BANK_NAMES, BANKS, compute_control_digit
+ 
+-if TYPE_CHECKING:
+-    from pydantic.typing import CallableGenerator
+-
+ 
+ def validate_digits(v: str) -> str:
+     if not v.isdigit():
+@@ -35,14 +32,25 @@ class Clabe(str):
+         self.bank_name = BANK_NAMES[self.bank_code_banxico]
+ 
+     @classmethod
+-    def __get_validators__(cls) -> 'CallableGenerator':
+-        yield str_validator
+-        yield constr_strip_whitespace
+-        yield constr_length_validator
+-        yield validate_digits
+-        yield cls.validate_bank_code_abm
+-        yield cls.validate_control_digit
+-        yield cls
++    def __get_pydantic_core_schema__(
++        cls, source_type: Any, handler: GetCoreSchemaHandler
++    ) -> CoreSchema:
++        return core_schema.no_info_after_validator_function(
++            cls._validate,
++            core_schema.str_schema(
++                strip_whitespace=cls.strip_whitespace,
++                min_length=cls.min_length,
++                max_length=cls.max_length,
++            ),
++            serialization=core_schema.to_string_ser_schema(),
++        )
++
++    @classmethod
++    def _validate(cls, clabe: str) -> 'Clabe':
++        validate_digits(clabe)
++        cls.validate_bank_code_abm(clabe)
++        cls.validate_control_digit(clabe)
++        return cls(clabe)
+ 
+     @classmethod
+     def validate_bank_code_abm(cls, clabe: str) -> str:
+diff --git a/clabe/validations.py b/clabe/validations.py
+index d4488c4..7155ff4 100644
+--- a/clabe/validations.py
++++ b/clabe/validations.py
+@@ -1,7 +1,8 @@
+ import random
+ from typing import List, Union
+ 
+-from pydantic import BaseModel, Field
++from pydantic import BaseModel, Field, StringConstraints
++from typing_extensions import Annotated
+ 
+ from .banks import BANK_NAMES, BANKS
+ 
+@@ -74,14 +75,13 @@ class BankConfigRequest(BaseModel):
+     - Banxico codes are exactly 5 digits
+     """
+ 
+-    bank_name: str = Field(
+-        min_length=1,
+-        strip_whitespace=True,
+-        description="Bank name must have at least 1 character.",
+-    )
++    bank_name: Annotated[
++        str, StringConstraints(strip_whitespace=True, min_length=1)
++    ] = Field(description="Bank name must have at least 1 character.")
+ 
+     bank_code_banxico: str = Field(
+-        regex=r"^\d{5}$", description="Banxico code must be a 5-digit string."
++        pattern=r"^\d{5}$",
++        description="Banxico code must be a 5-digit string.",
+     )
+ 
+     @property
+diff --git a/requirements.txt b/requirements.txt
+index 62c77cd..3381d93 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1 +1 @@
+-pydantic==1.9.0
++pydantic>=2.0
+diff --git a/setup.py b/setup.py
+index 80d79db..18253a0 100644
+--- a/setup.py
++++ b/setup.py
+@@ -21,7 +21,7 @@ setuptools.setup(
+     packages=setuptools.find_packages(),
+     include_package_data=True,
+     package_data=dict(clabe=['py.typed']),
+-    install_requires=['pydantic>=1.4,<2.0'],
++    install_requires=['pydantic>=2.0'],
+     classifiers=[
+         'Programming Language :: Python :: 3',
+         'License :: OSI Approved :: MIT License',
+diff --git a/tests/test_types.py b/tests/test_types.py
+index 543ea23..2101aad 100644
+--- a/tests/test_types.py
++++ b/tests/test_types.py
+@@ -1,11 +1,11 @@
+ import pytest
+ from pydantic import BaseModel
+-from pydantic.errors import NotDigitError
+ 
+ from clabe import BANK_NAMES, BANKS, compute_control_digit
+ from clabe.errors import (
+     BankCodeValidationError,
+     ClabeControlDigitValidationError,
++    NotDigitError,
+ )
+ from clabe.types import Clabe, validate_digits
+ 

@@ -1,0 +1,69 @@
+diff --git a/kinto/core/storage/postgresql/client.py b/kinto/core/storage/postgresql/client.py
+index fed75284..fcab6084 100644
+--- a/kinto/core/storage/postgresql/client.py
++++ b/kinto/core/storage/postgresql/client.py
+@@ -21,6 +21,23 @@ BLACKLISTED_SETTINGS = [
+     "hosts",
+ ]
+ 
++# SQLAlchemy 2.1 changed the DBAPI used for driver-less ``postgresql://`` URLs
++# from ``psycopg2`` to ``psycopg`` (Psycopg 3). Kinto ships and supports
++# ``psycopg2``, and its documented settings use driver-less URLs, so keep
++# resolving them to ``psycopg2`` instead of following SQLAlchemy's new default.
++DEFAULT_DRIVERS = {
++    "postgresql": "postgresql+psycopg2",
++}
++
++
++def pin_default_driver(url: str) -> Any:
++    """Return ``url`` with an explicit DBAPI driver when it does not specify one."""
++    parsed = sqlalchemy.engine.make_url(url)  # ty: ignore[possibly-missing-submodule]
++    drivername = DEFAULT_DRIVERS.get(parsed.drivername)
++    if drivername is None:
++        return parsed
++    return parsed.set(drivername=drivername)
++
+ 
+ class PostgreSQLClient:
+     def __init__(
+@@ -114,7 +131,9 @@ def create_from_config(
+         poolclass_key, ("kinto.core.storage.postgresql.pool.QueuePoolWithMaxBacklog")
+     )
+     filtered_settings[poolclass_key] = config.maybe_dotted(filtered_settings[poolclass_key])
+-    engine = sqlalchemy.engine_from_config(filtered_settings, prefix=prefix, url=url)
++    engine = sqlalchemy.engine_from_config(
++        filtered_settings, prefix=prefix, url=pin_default_driver(url)
++    )
+ 
+     # Initialize thread-safe session factory.
+     session_factory = scoped_session(sessionmaker(bind=engine))
+diff --git a/tests/core/test_storage.py b/tests/core/test_storage.py
+index b30d8cb7..a9e94ca7 100644
+--- a/tests/core/test_storage.py
++++ b/tests/core/test_storage.py
+@@ -552,3 +552,25 @@ class FormatSortingNormalizationTest(unittest.TestCase):
+         # The format should be the same: data->:<placeholder>
+         self.assertIn("data->:", cond_sql)
+         self.assertIn("data->:", sort_sql)
++
++
++class PostgreSQLDefaultDriverTest(unittest.TestCase):
++    """Driver-less ``postgresql://`` URLs must keep resolving to psycopg2.
++
++    SQLAlchemy 2.1 changed the default DBAPI for the ``postgresql`` dialect from
++    ``psycopg2`` to ``psycopg`` (Psycopg 3), which Kinto does not depend on.
++    """
++
++    def test_driverless_url_is_pinned_to_psycopg2(self):
++        url = postgresql.client.pin_default_driver("postgresql://user:pass@localhost/db")
++        self.assertEqual(url.drivername, "postgresql+psycopg2")
++        self.assertEqual(url.host, "localhost")
++        self.assertEqual(url.database, "db")
++
++    def test_explicit_driver_is_left_untouched(self):
++        url = postgresql.client.pin_default_driver("postgresql+psycopg://user:pass@localhost/db")
++        self.assertEqual(url.drivername, "postgresql+psycopg")
++
++    def test_other_dialects_are_left_untouched(self):
++        url = postgresql.client.pin_default_driver("sqlite:///:memory:")
++        self.assertEqual(url.drivername, "sqlite")

@@ -12,7 +12,7 @@
    "passed": 9
   },
   "failing": [],
-  "tail": ".........                                                                [100%]\n9 passed, 115 deselected in 0.22s",
+  "tail": ".........                                                                [100%]\n9 passed, 115 deselected in 0.21s",
   "preexisting_failures": 115
  },
  "new": "2.13.5",
@@ -24,7 +24,28 @@
   "failing": [
    "tests/v0_tests/test_bulk_search.py"
   ],
-  "tail": "\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/v0_tests/test_bulk_search.py ______________\ntests/v0_tests/test_bulk_search.py:14: in <module>\n    class TestBulkSearch(MarqoTestCase):\ntests/v0_tests/test_bulk_search.py:41: in TestBulkSearch\n    MockHTTPTraffic(\nE   pydantic_core._pydantic_core.ValidationError: 1 validation error for MockHTTPTraffic\nE   response\nE     Field required [type=missing, input_value={'http_operation': 'post'...': 'my-test-index-1'}]}}, input_type=dict]\nE       For further information visit https://errors.pydantic.dev/2.13/v/missing\n=============================== warnings summary ===============================\nsrc/marqo/models.py:5\n  /tmp/study/repo/src/marqo/models.py:5: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class BaseMarqoModel(BaseModel):\n\ntests/marqo_test.py:23\n  /tmp/study/repo/tests/marqo_test.py:23: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class MockHTTPTraffic(BaseModel):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/v0_tests/test_bulk_search.py - pydantic_core._pydantic_core.ValidationError: 1 validation error for MockHTTPTraffic\nresponse\n  Field required [type=missing, input_value={'http_operation': 'post'...': 'my-test-index-1'}]}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n100 deselected, 2 warnings, 1 error in 0.48s"
+  "tail": "\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/v0_tests/test_bulk_search.py ______________\ntests/v0_tests/test_bulk_search.py:14: in <module>\n    class TestBulkSearch(MarqoTestCase):\ntests/v0_tests/test_bulk_search.py:41: in TestBulkSearch\n    MockHTTPTraffic(\nE   pydantic_core._pydantic_core.ValidationError: 1 validation error for MockHTTPTraffic\nE   response\nE     Field required [type=missing, input_value={'http_operation': 'post'...': 'my-test-index-1'}]}}, input_type=dict]\nE       For further information visit https://errors.pydantic.dev/2.13/v/missing\n=============================== warnings summary ===============================\nsrc/marqo/models.py:5\n  /tmp/study/repo/src/marqo/models.py:5: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class BaseMarqoModel(BaseModel):\n\ntests/marqo_test.py:23\n  /tmp/study/repo/tests/marqo_test.py:23: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/\n    class MockHTTPTraffic(BaseModel):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/v0_tests/test_bulk_search.py - pydantic_core._pydantic_core.ValidationError: 1 validation error for MockHTTPTraffic\nresponse\n  Field required [type=missing, input_value={'http_operation': 'post'...': 'my-test-index-1'}]}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n100 deselected, 2 warnings, 1 error in 0.47s"
  },
- "status": "broken"
+ "status": "broken",
+ "driftfix": {
+  "exit": 0,
+  "fixed": true,
+  "cost": 0.57,
+  "model": "claude-opus-5",
+  "diffstat": "3 files changed, 11 insertions(+), 14 deletions(-)"
+ },
+ "human": {
+  "files_ours": [
+   "src/marqo/client.py",
+   "src/marqo/models.py",
+   "tests/marqo_test.py"
+  ],
+  "files_theirs": [
+   "setup.py"
+  ],
+  "overlap": 0,
+  "human_tests_applied": [],
+  "passes_human_tests": true,
+  "human_tests_tail": ".........                                                                [100%]\n9 passed, 115 deselected in 0.25s"
+ }
 }

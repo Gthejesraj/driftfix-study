@@ -1,0 +1,518 @@
+diff --git a/CHANGES.txt b/CHANGES.txt
+index f4d7c3f..412bc0b 100644
+--- a/CHANGES.txt
++++ b/CHANGES.txt
+@@ -1,3 +1,9 @@
++Unreleased
++^^^^^^^^^^
++
++* Add support for SQLAlchemy 2.x and drop the ``<1.5`` upper bound
++
++
+ 1.4.0 (2022-10-26)
+ ^^^^^^^^^^^^^^^^^^
+ 
+diff --git a/aiopg/sa/connection.py b/aiopg/sa/connection.py
+index 8280dba..5015ca8 100644
+--- a/aiopg/sa/connection.py
++++ b/aiopg/sa/connection.py
+@@ -31,7 +31,10 @@ async def _close_result_proxy(c: "ResultProxy") -> None:
+ 
+ 
+ class SAConnection:
+-    _QUERY_COMPILE_KWARGS = (("render_postcompile", True),)
++    # "post compile" parameters (eg. expanding ``IN`` clauses) are rendered
++    # by ``SQLCompiler.construct_expanded_state()`` at execution time, so no
++    # extra compilation keyword is required here.
++    _QUERY_COMPILE_KWARGS = ()
+ 
+     __slots__ = (
+         "_connection",
+@@ -134,22 +137,23 @@ class SAConnection:
+                             "parameters"
+                         )
+ 
+-                compiled_parameters = [compiled.construct_params(dp)]
+-                processed_parameters = []
+-                processors = compiled._bind_processors
+-                for compiled_params in compiled_parameters:
+-                    params = {
+-                        key: (
+-                            processors[key](compiled_params[key])
+-                            if key in processors
+-                            else compiled_params[key]
+-                        )
+-                        for key in compiled_params
+-                    }
+-                    processed_parameters.append(params)
+-                post_processed_params = self._dialect.execute_sequence_format(
+-                    processed_parameters
++                # ``construct_expanded_state()`` builds the bound parameters
++                # and renders the "post compile" ones (expanding ``IN``
++                # clauses, literal execute values, ...) into the statement,
++                # just like SQLAlchemy's own execution context does.
++                expanded_state = compiled.construct_expanded_state(
++                    dp or None, escape_names=False
+                 )
++                processors = dict(compiled._bind_processors)
++                processors.update(expanded_state.processors)
++                escaped_names = compiled.escaped_bind_names
++                statement = expanded_state.statement
++                post_processed_params = {
++                    escaped_names.get(key, key): (
++                        processors[key](value) if key in processors else value
++                    )
++                    for key, value in expanded_state.parameters.items()
++                }
+ 
+                 # _result_columns is a private API of Compiled,
+                 # but I couldn't find any public API exposing this data.
+@@ -162,10 +166,11 @@ class SAConnection:
+                         "Don't mix sqlalchemy DDL clause "
+                         "and execution with parameters"
+                     )
+-                post_processed_params = [compiled.construct_params()]
++                statement = str(compiled)
++                post_processed_params = compiled.construct_params()
+                 result_map = None
+ 
+-            await cursor.execute(str(compiled), post_processed_params[0])
++            await cursor.execute(statement, post_processed_params)
+         else:
+             raise exc.ArgumentError(
+                 "sql statement should be str or "
+diff --git a/aiopg/sa/engine.py b/aiopg/sa/engine.py
+index 5048722..7cfe93a 100644
+--- a/aiopg/sa/engine.py
++++ b/aiopg/sa/engine.py
+@@ -8,15 +8,15 @@ from ..utils import _ContextManager, get_running_loop
+ from .connection import SAConnection
+ 
+ try:
+-    from sqlalchemy.dialects.postgresql.psycopg2 import (
+-        PGCompiler_psycopg2,
+-        PGDialect_psycopg2,
+-    )
++    from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2
+ except ImportError:  # pragma: no cover
+     raise ImportError("aiopg.sa requires sqlalchemy")
+ 
+ 
+-class APGCompiler_psycopg2(PGCompiler_psycopg2):
++# SQLAlchemy 2.0 dropped the psycopg2 specific statement compiler
++# (``PGCompiler_psycopg2``) in favour of the generic PostgreSQL one.
++# Deriving from whatever the dialect declares keeps us compatible.
++class APGCompiler_psycopg2(PGDialect_psycopg2.statement_compiler):
+     def construct_params(self, *args, **kwargs):
+         pd = super().construct_params(*args, **kwargs)
+ 
+@@ -38,7 +38,8 @@ def get_dialect(json_serializer=json.dumps, json_deserializer=lambda x: x):
+     )
+ 
+     dialect.statement_compiler = APGCompiler_psycopg2
+-    dialect.implicit_returning = True
++    # ``implicit_returning`` is not configurable anymore since
++    # SQLAlchemy 2.0, RETURNING is always used when it is supported.
+     dialect.supports_native_enum = True
+     dialect.supports_smallserial = True  # 9.2+
+     dialect._backslash_escapes = False
+diff --git a/aiopg/sa/result.py b/aiopg/sa/result.py
+index b3966e9..775269f 100644
+--- a/aiopg/sa/result.py
++++ b/aiopg/sa/result.py
+@@ -2,16 +2,9 @@ import weakref
+ from collections.abc import Mapping, Sequence
+ 
+ from sqlalchemy.sql import expression, sqltypes
++from sqlalchemy.util import string_or_unprintable
+ 
+ from . import exc
+-from .utils import SQLALCHEMY_VERSION
+-
+-if SQLALCHEMY_VERSION >= ["1", "4"]:
+-    from sqlalchemy.util import string_or_unprintable
+-else:
+-    from sqlalchemy.sql.expression import (
+-        _string_or_unprintable as string_or_unprintable,
+-    )
+ 
+ 
+ class RowProxy(Mapping):
+@@ -108,17 +101,13 @@ class ResultMetaData:
+         # older versions of SQLAlchemy.
+         typemap = getattr(dialect, "dbapi_type_map", {})
+ 
+-        assert (
+-            dialect.case_sensitive
+-        ), "Doesn't support case insensitive database connection"
++        # ``dialect.case_sensitive`` and ``dialect.description_encoding``
++        # were dropped in SQLAlchemy 2.0: result keys are always matched
++        # case sensitively and cursor descriptions are always text.
+ 
+         # high precedence key values.
+         primary_keymap = {}
+ 
+-        assert (
+-            not dialect.description_encoding
+-        ), "psycopg in py3k should not use this"
+-
+         for i, rec in enumerate(cursor_description):
+             colname = rec[0]
+             coltype = rec[1]
+diff --git a/examples/sa.py b/examples/sa.py
+index 175cb9c..1a77036 100644
+--- a/examples/sa.py
++++ b/examples/sa.py
+@@ -105,7 +105,7 @@ async def count(conn):
+     print("Population consists of", c1, "people with", c2, "emails in total")
+     join = sa.join(emails, users, users.c.id == emails.c.user_id)
+     query = (
+-        sa.select([users.c.name])
++        sa.select(users.c.name)
+         .select_from(join)
+         .where(emails.c.private == False)  # noqa
+         .group_by(users.c.name)
+@@ -123,7 +123,8 @@ async def show_julia(conn):
+     print("Lookup for Julia:")
+     join = sa.join(emails, users, users.c.id == emails.c.user_id)
+     query = (
+-        sa.select([users, emails], use_labels=True)
++        sa.select(users, emails)
++        .set_label_style(sa.LABEL_STYLE_TABLENAME_PLUS_COL)
+         .select_from(join)
+         .where(users.c.name == "Julia")
+     )
+diff --git a/requirements.txt b/requirements.txt
+index 7b2ee33..567bb76 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -10,7 +10,7 @@ pytest-sugar==0.9.4
+ pytest-timeout==1.4.2
+ sphinxcontrib-asyncio==0.3.0
+ psycopg2-binary==2.9.5
+-sqlalchemy[postgresql_psycopg2binary]==1.4.38
++sqlalchemy[postgresql_psycopg2binary]>=2.0
+ async-timeout==4.0.0
+ mypy==0.910
+ black==22.3.0
+diff --git a/setup.py b/setup.py
+index 9eb02aa..e99110c 100644
+--- a/setup.py
++++ b/setup.py
+@@ -4,7 +4,7 @@ from pathlib import Path
+ from setuptools import setup, find_packages
+ 
+ install_requires = ["psycopg2-binary>=2.9.5", "async_timeout>=3.0,<5.0"]
+-extras_require = {"sa": ["sqlalchemy[postgresql_psycopg2binary]>=1.3,<1.5"]}
++extras_require = {"sa": ["sqlalchemy[postgresql_psycopg2binary]>=2.0"]}
+ 
+ 
+ def read(*parts):
+diff --git a/tests/test_sa_connection.py b/tests/test_sa_connection.py
+index ba49884..7141815 100644
+--- a/tests/test_sa_connection.py
++++ b/tests/test_sa_connection.py
+@@ -133,7 +133,7 @@ async def test_execute_sa_insert_positional_params(connect):
+ 
+ async def test_scalar(connect):
+     conn = await connect()
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 1, res
+ 
+ 
+diff --git a/tests/test_sa_priority_name.py b/tests/test_sa_priority_name.py
+index 5f3209c..ff0956a 100644
+--- a/tests/test_sa_priority_name.py
++++ b/tests/test_sa_priority_name.py
+@@ -1,5 +1,6 @@
+ import pytest
+ import sqlalchemy as sa
++from sqlalchemy.sql.selectable import LABEL_STYLE_TABLENAME_PLUS_COL
+ 
+ meta = sa.MetaData()
+ tbl = sa.Table(
+@@ -36,7 +37,7 @@ async def test_priority_name(connect):
+ 
+ async def test_priority_name_label(connect):
+     await connect.execute(tbl.insert().values(id="test_id", name="test_name"))
+-    query = sa.select([tbl.c.name.label("test_label_name"), tbl.c.id])
++    query = sa.select(tbl.c.name.label("test_label_name"), tbl.c.id)
+     query = query.select_from(tbl)
+     row = await (await connect.execute(query)).first()
+     assert row.test_label_name == "test_name"
+@@ -46,7 +47,7 @@ async def test_priority_name_label(connect):
+ async def test_priority_name_and_label(connect):
+     await connect.execute(tbl.insert().values(id="test_id", name="test_name"))
+     query = sa.select(
+-        [tbl.c.name.label("test_label_name"), tbl.c.name, tbl.c.id]
++        tbl.c.name.label("test_label_name"), tbl.c.name, tbl.c.id
+     )
+     query = query.select_from(tbl)
+     row = await (await connect.execute(query)).first()
+@@ -57,7 +58,7 @@ async def test_priority_name_and_label(connect):
+ 
+ async def test_priority_name_all_get(connect):
+     await connect.execute(tbl.insert().values(id="test_id", name="test_name"))
+-    query = sa.select([tbl.c.name])
++    query = sa.select(tbl.c.name)
+     query = query.select_from(tbl)
+     row = await (await connect.execute(query)).first()
+     assert row.name == "test_name"
+@@ -69,7 +70,7 @@ async def test_priority_name_all_get(connect):
+ async def test_use_labels(connect):
+     """key property is ignored"""
+     await connect.execute(tbl.insert().values(id="test_id", name="test_name"))
+-    query = tbl.select(use_labels=True)
++    query = tbl.select().set_label_style(LABEL_STYLE_TABLENAME_PLUS_COL)
+     row = await (await connect.execute(query)).first()
+     assert row.sa_tbl5_Name == "test_name"
+     assert row.sa_tbl5_ID == "test_id"
+diff --git a/tests/test_sa_transaction.py b/tests/test_sa_transaction.py
+index 0fb73a0..24e62ea 100644
+--- a/tests/test_sa_transaction.py
++++ b/tests/test_sa_transaction.py
+@@ -53,12 +53,12 @@ def xa_connect(connect):
+ async def test_without_transactions(connect):
+     conn1 = await connect()
+     conn2 = await connect()
+-    res1 = await conn1.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn1.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res1
+ 
+     await conn2.execute(tbl.delete())
+ 
+-    res2 = await conn1.scalar(select([func.count()]).select_from(tbl))
++    res2 = await conn1.scalar(select(func.count()).select_from(tbl))
+     assert 0 == res2
+ 
+ 
+@@ -76,14 +76,14 @@ async def test_root_transaction(connect):
+     assert tr.is_active
+     await conn1.execute(tbl.delete())
+ 
+-    res1 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res1
+ 
+     await tr.commit()
+ 
+     assert not tr.is_active
+     assert not conn1.in_transaction
+-    res2 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res2 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 0 == res2
+ 
+ 
+@@ -95,13 +95,13 @@ async def test_root_transaction_rollback(connect):
+     assert tr.is_active
+     await conn1.execute(tbl.delete())
+ 
+-    res1 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res1
+ 
+     await tr.rollback()
+ 
+     assert not tr.is_active
+-    res2 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res2 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res2
+ 
+ 
+@@ -113,13 +113,13 @@ async def test_root_transaction_close(connect):
+     assert tr.is_active
+     await conn1.execute(tbl.delete())
+ 
+-    res1 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res1
+ 
+     await tr.close()
+ 
+     assert not tr.is_active
+-    res2 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res2 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res2
+ 
+ 
+@@ -175,12 +175,12 @@ async def test_rollback_on_connection_close(connect):
+     tr = await conn1.begin()
+     await conn1.execute(tbl.delete())
+ 
+-    res1 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res1
+ 
+     await conn1.close()
+ 
+-    res2 = await conn2.scalar(select([func.count()]).select_from(tbl))
++    res2 = await conn2.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res2
+     del tr
+ 
+@@ -196,7 +196,7 @@ async def test_inner_transaction_rollback(connect):
+     assert not tr2.is_active
+     assert not tr1.is_active
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res
+ 
+ 
+@@ -212,7 +212,7 @@ async def test_inner_transaction_close(connect):
+     assert tr1.is_active
+     await tr1.commit()
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res
+ 
+ 
+@@ -228,14 +228,14 @@ async def test_nested_transaction_commit(connect):
+     assert not tr2.is_active
+     assert tr1.is_active
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res
+ 
+     await tr1.commit()
+     assert not tr2.is_active
+     assert not tr1.is_active
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res
+ 
+ 
+@@ -253,7 +253,7 @@ async def test_nested_transaction_commit_twice(connect):
+     assert not tr2.is_active
+     assert tr1.is_active
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res
+ 
+     await tr1.close()
+@@ -271,14 +271,14 @@ async def test_nested_transaction_rollback(connect):
+     assert not tr2.is_active
+     assert tr1.is_active
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res
+ 
+     await tr1.commit()
+     assert not tr2.is_active
+     assert not tr1.is_active
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res
+ 
+ 
+@@ -297,7 +297,7 @@ async def test_nested_transaction_rollback_twice(connect):
+     assert tr1.is_active
+ 
+     await tr1.commit()
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res
+ 
+ 
+@@ -312,7 +312,7 @@ async def test_twophase_transaction_commit(xa_connect):
+     await tr.commit()
+     assert not tr.is_active
+ 
+-    res = await conn.scalar(select([func.count()]).select_from(tbl))
++    res = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res
+ 
+ 
+@@ -337,7 +337,7 @@ async def test_transactions_sequence(xa_connect):
+     tr1 = await conn.begin()
+     assert tr1 is conn._transaction
+     await conn.execute(tbl.insert().values(name="a"))
+-    res1 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res1
+ 
+     await tr1.commit()
+@@ -346,7 +346,7 @@ async def test_transactions_sequence(xa_connect):
+     tr2 = await conn.begin()
+     assert tr2 is conn._transaction
+     await conn.execute(tbl.insert().values(name="b"))
+-    res2 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res2 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res2
+ 
+     await tr2.rollback()
+@@ -355,7 +355,7 @@ async def test_transactions_sequence(xa_connect):
+     tr3 = await conn.begin()
+     assert tr3 is conn._transaction
+     await conn.execute(tbl.insert().values(name="b"))
+-    res3 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res3 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res3
+ 
+     await tr3.commit()
+@@ -369,42 +369,42 @@ async def test_transaction_mode(connect):
+ 
+     tr1 = await conn.begin(isolation_level="SERIALIZABLE")
+     await conn.execute(tbl.insert().values(name="a"))
+-    res1 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 1 == res1
+     await tr1.commit()
+ 
+     tr2 = await conn.begin(isolation_level="REPEATABLE READ")
+     await conn.execute(tbl.insert().values(name="b"))
+-    res2 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res2 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 2 == res2
+     await tr2.commit()
+ 
+     tr3 = await conn.begin(isolation_level="READ UNCOMMITTED")
+     await conn.execute(tbl.insert().values(name="c"))
+-    res3 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res3 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 3 == res3
+     await tr3.commit()
+ 
+     tr4 = await conn.begin(readonly=True)
+     assert tr4 is conn._transaction
+-    res1 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 3 == res1
+     await tr4.commit()
+ 
+     tr5 = await conn.begin(isolation_level="READ UNCOMMITTED", readonly=True)
+-    res1 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 3 == res1
+     await tr5.commit()
+ 
+     tr6 = await conn.begin(deferrable=True)
+     await conn.execute(tbl.insert().values(name="f"))
+-    res1 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 4 == res1
+     await tr6.commit()
+ 
+     tr7 = await conn.begin(isolation_level="REPEATABLE READ", deferrable=True)
+     await conn.execute(tbl.insert().values(name="g"))
+-    res1 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 5 == res1
+     await tr7.commit()
+ 
+@@ -412,7 +412,7 @@ async def test_transaction_mode(connect):
+         isolation_level="SERIALIZABLE", readonly=True, deferrable=True
+     )
+     assert tr8 is conn._transaction
+-    res1 = await conn.scalar(select([func.count()]).select_from(tbl))
++    res1 = await conn.scalar(select(func.count()).select_from(tbl))
+     assert 5 == res1
+     await tr8.commit()
+ 
