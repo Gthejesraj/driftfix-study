@@ -1,0 +1,228 @@
+diff --git a/requirements.txt b/requirements.txt
+index 725eeee..d827324 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,9 +1,9 @@
+-numpy<2
++numpy
+ scipy
+-ase<3.23.0
++ase>=3.27.0
+ pathos
+ jupyter
+ scikit-learn
+ torch
+ torch_geometric
+-matscipy
++matscipy>=1.2.0
+diff --git a/src/ase_compat.py b/src/ase_compat.py
+new file mode 100644
+index 0000000..09f9139
+--- /dev/null
++++ b/src/ase_compat.py
+@@ -0,0 +1,49 @@
++"""Compatibility helpers for reading reference data from ASE structures.
++
++Up to ASE 3.22, ``ase.io.read`` stored every field of an extended xyz file in
++``atoms.info`` (per structure) and ``atoms.arrays`` (per atom).  Since ASE 3.23
++the fields that correspond to standard calculator properties (``energy``,
++``forces``, ``stress``, ...) are instead attached to the structure as the
++results of a ``SinglePointCalculator``, and they are no longer present in
++``atoms.info`` / ``atoms.arrays``.
++
++The helpers below look in both places, so that PET works with old and new
++versions of ASE regardless of where the reference values end up.
++"""
++
++
++def _calculator_results(atoms):
++    calculator = getattr(atoms, "calc", None)
++    if calculator is None:
++        return {}
++    return getattr(calculator, "results", None) or {}
++
++
++def has_structural_property(atoms, key):
++    """Whether a per-structure property is available under the given key."""
++    return key in atoms.info or key in _calculator_results(atoms)
++
++
++def get_structural_property(atoms, key):
++    """Per-structure property, from ``atoms.info`` or from the calculator."""
++    if key in atoms.info:
++        return atoms.info[key]
++    results = _calculator_results(atoms)
++    if key in results:
++        return results[key]
++    raise KeyError(key)
++
++
++def has_atomic_property(atoms, key):
++    """Whether a per-atom property is available under the given key."""
++    return key in atoms.arrays or key in _calculator_results(atoms)
++
++
++def get_atomic_property(atoms, key):
++    """Per-atom property, from ``atoms.arrays`` or from the calculator."""
++    if key in atoms.arrays:
++        return atoms.arrays[key]
++    results = _calculator_results(atoms)
++    if key in results:
++        return results[key]
++    raise KeyError(key)
+diff --git a/src/data_preparation.py b/src/data_preparation.py
+index bfc141c..ce2ef6e 100644
+--- a/src/data_preparation.py
++++ b/src/data_preparation.py
+@@ -2,6 +2,7 @@ import numpy as np
+ from sklearn.linear_model import Ridge
+ from tqdm import tqdm
+ from .molecule import Molecule
++from .ase_compat import get_atomic_property, get_structural_property
+ import torch
+ 
+ 
+@@ -18,7 +19,10 @@ def get_forces(structures, FORCES_KEY):
+     forces = []
+     for structure in structures:
+         forces.append(
+-            torch.tensor(structure.arrays[FORCES_KEY], dtype=torch.get_default_dtype())
++            torch.tensor(
++                get_atomic_property(structure, FORCES_KEY),
++                dtype=torch.get_default_dtype(),
++            )
+         )
+     return forces
+ 
+@@ -80,7 +84,9 @@ def get_targets(structures, GENERAL_TARGET_SETTINGS):
+ 
+     for structure in structures:
+         if GENERAL_TARGET_SETTINGS.TARGET_TYPE == "structural":
+-            target_now = structure.info[GENERAL_TARGET_SETTINGS.TARGET_KEY]
++            target_now = get_structural_property(
++                structure, GENERAL_TARGET_SETTINGS.TARGET_KEY
++            )
+             if not isinstance(target_now, np.ndarray):
+                 raise ValueError("target must be numpy array")
+             if len(target_now.shape) != 1:
+@@ -89,7 +95,9 @@ def get_targets(structures, GENERAL_TARGET_SETTINGS):
+             target_now = target_now[np.newaxis]
+ 
+         elif GENERAL_TARGET_SETTINGS.TARGET_TYPE == "atomic":
+-            target_now = structure.arrays[GENERAL_TARGET_SETTINGS.TARGET_KEY]
++            target_now = get_atomic_property(
++                structure, GENERAL_TARGET_SETTINGS.TARGET_KEY
++            )
+             if not isinstance(target_now, np.ndarray):
+                 raise ValueError("target must be numpy array")
+             if len(target_now.shape) != 2:
+@@ -101,7 +109,10 @@ def get_targets(structures, GENERAL_TARGET_SETTINGS):
+ 
+ def get_self_contributions(energy_key, train_structures, all_species):
+     train_energies = np.array(
+-        [structure.info[energy_key] for structure in train_structures]
++        [
++            get_structural_property(structure, energy_key)
++            for structure in train_structures
++        ]
+     )
+     train_c_feat = get_compositional_features(train_structures, all_species)
+     rgr = Ridge(alpha=1e-10, fit_intercept=False)
+@@ -110,7 +121,9 @@ def get_self_contributions(energy_key, train_structures, all_species):
+ 
+ 
+ def get_corrected_energies(energy_key, structures, all_species, self_contributions):
+-    energies = np.array([structure.info[energy_key] for structure in structures])
++    energies = np.array(
++        [get_structural_property(structure, energy_key) for structure in structures]
++    )
+ 
+     compositional_features = get_compositional_features(structures, all_species)
+     self_contributions_energies = []
+diff --git a/src/estimate_error.py b/src/estimate_error.py
+index 195cdb0..a98455b 100644
+--- a/src/estimate_error.py
++++ b/src/estimate_error.py
+@@ -16,6 +16,12 @@ from .utilities import (
+     Accumulator,
+     report_accuracy,
+ )
++from .ase_compat import (
++    get_atomic_property,
++    get_structural_property,
++    has_atomic_property,
++    has_structural_property,
++)
+ from .data_preparation import get_pyg_graphs, get_compositional_features
+ from .data_preparation import get_targets
+ from .utilities import dtype2string, string2dtype
+@@ -187,9 +193,12 @@ def main():
+         MLIP_SETTINGS = hypers.MLIP_SETTINGS
+         if MLIP_SETTINGS.USE_ENERGIES:
+             self_contributions = np.load(SELF_CONTRIBUTIONS_PATH)
+-            if MLIP_SETTINGS.ENERGY_KEY in structures[0].info.keys():
++            if has_structural_property(structures[0], MLIP_SETTINGS.ENERGY_KEY):
+                 energies_ground_truth = np.array(
+-                    [struc.info[MLIP_SETTINGS.ENERGY_KEY] for struc in structures]
++                    [
++                        get_structural_property(struc, MLIP_SETTINGS.ENERGY_KEY)
++                        for struc in structures
++                    ]
+                 )
+             else:
+                 energies_ground_truth = None
+@@ -218,9 +227,10 @@ def main():
+             )
+ 
+         if MLIP_SETTINGS.USE_FORCES:
+-            if MLIP_SETTINGS.FORCES_KEY in structures[0].arrays.keys():
++            if has_atomic_property(structures[0], MLIP_SETTINGS.FORCES_KEY):
+                 forces_ground_truth = [
+-                    struc.arrays[MLIP_SETTINGS.FORCES_KEY] for struc in structures
++                    get_atomic_property(struc, MLIP_SETTINGS.FORCES_KEY)
++                    for struc in structures
+                 ]
+                 forces_ground_truth = np.concatenate(forces_ground_truth, axis=0)
+             else:
+diff --git a/src/estimate_error_sp.py b/src/estimate_error_sp.py
+index c441456..d2c5d6d 100644
+--- a/src/estimate_error_sp.py
++++ b/src/estimate_error_sp.py
+@@ -8,6 +8,7 @@ from torch_geometric.loader import DataLoader
+ import sys
+ from torch_geometric.nn import DataParallel
+ 
++from .ase_compat import get_atomic_property, get_structural_property
+ from .molecule import Molecule
+ from .hypers import Hypers
+ from .pet import PET, PETUtilityWrapper
+@@ -193,12 +194,16 @@ def main():
+ 
+     if USE_ENERGIES:
+         energies_ground_truth = np.array(
+-            [struc.info[hypers_main.ENERGY_KEY] for struc in structures]
++            [
++                get_structural_property(struc, hypers_main.ENERGY_KEY)
++                for struc in structures
++            ]
+         )
+ 
+     if USE_FORCES:
+         forces_ground_truth = [
+-            struc.arrays[hypers_main.FORCES_KEY] for struc in structures
++            get_atomic_property(struc, hypers_main.FORCES_KEY)
++            for struc in structures
+         ]
+         forces_ground_truth = np.concatenate(forces_ground_truth, axis=0)
+ 
+diff --git a/src/molecule.py b/src/molecule.py
+index 9c8156e..a69010e 100644
+--- a/src/molecule.py
++++ b/src/molecule.py
+@@ -1,5 +1,6 @@
+ import torch
+ import ase.io
++import ase.neighborlist
+ import numpy as np
+ from torch_geometric.data import Data
+ from .long_range import get_reciprocal, get_all_k, get_volume

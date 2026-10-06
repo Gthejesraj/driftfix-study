@@ -1,0 +1,391 @@
+diff --git a/home_assistant_streamdeck_yaml.py b/home_assistant_streamdeck_yaml.py
+index 2de96e5..87f1835 100755
+--- a/home_assistant_streamdeck_yaml.py
++++ b/home_assistant_streamdeck_yaml.py
+@@ -36,8 +36,8 @@ import websockets
+ import yaml
+ from lxml import etree
+ from PIL import Image, ImageColor, ImageDraw, ImageFont, ImageOps
+-from pydantic import BaseModel, Field, PrivateAttr, validator
+-from pydantic.fields import Undefined
++from pydantic import BaseModel, Field, PrivateAttr, field_validator
++from pydantic_core import PydanticUndefined
+ from rich.console import Console
+ from rich.table import Table
+ from StreamDeck.DeviceManager import DeviceManager
+@@ -49,6 +49,8 @@ if TYPE_CHECKING:
+     from types import FrameType
+ 
+     import pandas as pd
++    from pydantic import ValidationInfo
++    from pydantic.fields import FieldInfo
+     from StreamDeck.Devices import StreamDeck
+ 
+ 
+@@ -84,40 +86,56 @@ console = Console()
+ StateDict: TypeAlias = dict[str, dict[str, Any]]
+ 
+ 
++def _field_extra(field: FieldInfo) -> dict[str, Any]:
++    """Return the ``json_schema_extra`` dict of a pydantic field."""
++    extra = field.json_schema_extra
++    return extra if isinstance(extra, dict) else {}
++
++
++def _type_display(field: FieldInfo) -> str:
++    """Return a human readable representation of a field's type annotation."""
++    annotation = field.annotation
++    if annotation is None:
++        return "None"
++    if isinstance(annotation, type) and annotation.__module__ == "builtins":
++        return annotation.__name__
++    return str(annotation).replace("typing.", "").replace(f"{__name__}.", "")
++
++
+ class _ButtonDialBase(BaseModel, extra="forbid"):  # type: ignore[call-arg]
+     """Parent of Button and Dial."""
+ 
+     entity_id: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The `entity_id` that this button controls."
+         " This entity will be passed to the `service` when the button is pressed."
+         " The button is re-rendered whenever the state of this entity changes.",
+     )
+     linked_entity: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="A secondary entity_id that is used for updating images and states",
+     )
+     service: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The `service` that will be called when the button is pressed.",
+     )
+     service_data: dict[str, Any] | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The `service_data` that will be passed to the `service` when the button is pressed."
+         " If empty, the `entity_id` will be passed.",
+     )
+     target: dict[str, Any] | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The `target` that will be passed to the `service` when the button is pressed.",
+     )
+     text: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The text to display on the button."
+         " If empty, no text is displayed."
+         r" You might want to add `\n` characters to spread the text over several"
+@@ -125,26 +143,26 @@ class _ButtonDialBase(BaseModel, extra="forbid"):  # type: ignore[call-arg]
+     )
+     text_color: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="Color of the text."
+         " If empty, the color is `white`, unless an `entity_id` is specified, in"
+         " which case the color is `amber` when the state is `on`, and `white` when it is `off`.",
+     )
+     text_size: int = Field(
+         default=12,
+-        allow_template=False,
++        json_schema_extra={"allow_template": False},
+         description="Integer size of the text.",
+     )
+     text_offset: int = Field(
+         default=0,
+-        allow_template=False,
++        json_schema_extra={"allow_template": False},
+         description="The text's position can be moved up or down from the center of"
+         " the button, and this movement is measured in pixels. The value can be"
+         " positive (for upward movement) or negative (for downward movement).",
+     )
+     icon: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The icon filename to display on the button."
+         " Make the path absolute (e.g., `/config/streamdeck/my_icon.png`) or relative to the"
+         " `assets` directory (e.g., `my_icon.png`)."
+@@ -158,7 +176,7 @@ class _ButtonDialBase(BaseModel, extra="forbid"):  # type: ignore[call-arg]
+     )
+     icon_mdi: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The Material Design Icon to display on the button."
+         " If empty, no icon is displayed."
+         " See https://mdi.bessarabov.com/ for a list of icons."
+@@ -166,23 +184,26 @@ class _ButtonDialBase(BaseModel, extra="forbid"):  # type: ignore[call-arg]
+     )
+     icon_background_color: str = Field(
+         default="#000000",
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="A color (in hex format, e.g., '#FF0000') for the background of the icon (if no `icon` is specified).",
+     )
+     icon_mdi_color: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The color of the Material Design Icon (in hex format, e.g., '#FF0000')."
+         " If empty, the color is derived from `text_color` but is less saturated (gray is mixed in).",
+     )
+     icon_gray_when_off: bool = Field(
+         default=False,
+-        allow_template=False,
++        json_schema_extra={"allow_template": False},
+         description="When specifying `icon` and `entity_id`, if the state is `off`, the icon will be converted to grayscale.",
+     )
+     delay: float | str = Field(
+         default=0.0,
+-        allow_template=True,
++        # Match pydantic v1 behavior: try `float` first so that rendered
++        # templates such as "30" become `30.0` instead of staying a `str`.
++        union_mode="left_to_right",
++        json_schema_extra={"allow_template": True},
+         description="The delay (in seconds) before the `service` is called."
+         " This is useful if you want to wait before calling the `service`."
+         " Counts down from the time the button is pressed."
+@@ -195,9 +216,7 @@ class _ButtonDialBase(BaseModel, extra="forbid"):  # type: ignore[call-arg]
+     @classmethod
+     def templatable(cls: type[Button]) -> set[str]:
+         """Return if an attribute is templatable, which is if the type-annotation is str."""
+-        schema = cls.schema()
+-        properties = schema["properties"]
+-        return {k for k, v in properties.items() if v["allow_template"]}
++        return {k for k, v in cls.model_fields.items() if _field_extra(v)["allow_template"]}
+ 
+     @classmethod
+     def to_pandas_table(cls: type[Button]) -> pd.DataFrame:
+@@ -205,8 +224,7 @@ class _ButtonDialBase(BaseModel, extra="forbid"):  # type: ignore[call-arg]
+         import pandas as pd
+ 
+         rows = []
+-        for k, field in cls.__fields__.items():
+-            info = field.field_info
++        for k, info in cls.model_fields.items():
+             if info.description is None:
+                 continue
+ 
+@@ -215,10 +233,10 @@ class _ButtonDialBase(BaseModel, extra="forbid"):  # type: ignore[call-arg]
+ 
+             row = {
+                 "Variable name": code(k),
+-                "Allow template": "✅" if info.extra["allow_template"] else "❌",
++                "Allow template": "✅" if _field_extra(info)["allow_template"] else "❌",
+                 "Description": info.description,
+                 "Default": code(info.default) if info.default else "",
+-                "Type": code(field._type_display()),
++                "Type": code(_type_display(info)),
+             }
+             rows.append(row)
+         return pd.DataFrame(rows)
+@@ -246,7 +264,7 @@ class Button(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+ 
+     special_type: SpecialType | None = Field(
+         default=None,
+-        allow_template=False,
++        json_schema_extra={"allow_template": False},
+         description="Special type of button."
+         " If no specified, the button is a normal button."
+         " If `next-page`, the button will go to the next page."
+@@ -262,7 +280,7 @@ class Button(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+     )
+     special_type_data: Any | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="Data for the special type of button."
+         " If `go-to-page`, the data should be an `int` or `str` (name of the page)."
+         " If `light-control`, the data should optionally be a dictionary."
+@@ -276,7 +294,7 @@ class Button(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+     )
+     long_press: dict[str, Any] | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="Configuration for long press actions. Can include:"
+         " `service`: The service to call on long press (e.g., 'light.turn_off')."
+         " `service_data`: Data to pass to the service (e.g., {'brightness_pct': 10})."
+@@ -316,7 +334,7 @@ class Button(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+                 return {k: render_value(v) for k, v in val.items()}
+             return _render_jinja(val, complete_state)
+ 
+-        dct = self.dict(exclude_unset=True)
++        dct = self.model_dump(exclude_unset=True)
+         for key in self.templatable():
+             if key not in dct:
+                 continue
+@@ -505,23 +523,25 @@ class Button(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+ 
+         return v
+ 
+-    @validator("special_type_data")
++    @field_validator("special_type_data")
++    @classmethod
+     def _validate_special_type(
+         cls: type[Button],
+         v: Any,
+-        values: dict[str, Any],
++        info: ValidationInfo,
+     ) -> Any:
+         """Validate the special_type_data."""
+-        special_type = values["special_type"]
++        special_type = info.data.get("special_type")
+         return cls._validate_special_type_data(special_type, v)
+ 
+-    @validator("long_press", pre=True)
++    @field_validator("long_press", mode="before")
++    @classmethod
+     def _validate_long_press(cls, v: Any) -> Any:
+         if v is None:
+             return None
+         if not isinstance(v, dict):
+             msg = "long_press must be a dictionary"
+-            raise TypeError(msg)
++            raise AssertionError(msg)  # noqa: TRY004
+         allowed_keys = {
+             "service",
+             "service_data",
+@@ -562,9 +582,7 @@ class Button(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+     @classmethod
+     def templatable(cls: type[Button]) -> set[str]:
+         """Return if an attribute is templatable, which is if the type-annotation is str."""
+-        schema = cls.schema()
+-        properties = schema["properties"]
+-        allowed_keys = {k for k, v in properties.items() if v["allow_template"]}
++        allowed_keys = {k for k, v in cls.model_fields.items() if _field_extra(v)["allow_template"]}
+         return allowed_keys | {"long_press"}
+ 
+     def maybe_start_or_cancel_timer(
+@@ -612,21 +630,21 @@ class Dial(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+ 
+     dial_event_type: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The event type of the dial that will trigger the service."
+         " Either `DialEventType.TURN` or `DialEventType.PUSH`.",
+     )
+ 
+     state_attribute: str | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="The attribute of the entity which gets used for the dial state.",
+         # TODO: use this?
+         # An attribute of an HA entity that the dial should control e.g., brightness for a light.
+     )
+     attributes: dict[str, float] | None = Field(
+         default=None,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="Sets the attributes of the dial."
+         " `min`: The minimal value of the dial."
+         " `max`: The maximal value of the dial."
+@@ -634,7 +652,7 @@ class Dial(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+     )
+     allow_touchscreen_events: bool = Field(
+         default=False,
+-        allow_template=True,
++        json_schema_extra={"allow_template": True},
+         description="Whether events from the touchscreen are allowed, for example set the minimal value on `SHORT` and set maximal value on `LONG`.",
+     )
+ 
+@@ -687,7 +705,7 @@ class Dial(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+         complete_state: StateDict,
+     ) -> Dial:
+         """Return a dial with the rendered text."""
+-        dct = self.dict(exclude_unset=True)
++        dct = self.model_dump(exclude_unset=True)
+         for key in self.templatable():
+             if key not in dct:
+                 continue
+@@ -792,14 +810,16 @@ class Dial(_ButtonDialBase, extra="forbid"):  # type: ignore[call-arg]
+ 
+ 
+ def _update_dial_descriptions() -> None:
+-    for _k, _v in Dial.__fields__.items():
+-        _v.field_info.description = (
+-            _v.field_info.description.replace("on the button", "above the dial")
++    for _k, _v in Dial.model_fields.items():
++        if _v.description is None:
++            continue
++        _v.description = (
++            _v.description.replace("on the button", "above the dial")
+             .replace("button", "dial")
+             .replace("pressed", "rotated")
+         )
+         if _k == "delay":
+-            _v.field_info.description = (
++            _v.description = (
+                 "The delay (in seconds) before the `service` is called."
+                 " This counts down from the specified time and collects the called turn events and"
+                 " sends the bundled value to Home Assistant after the dial hasn't been turned for the specified time in delay."
+@@ -820,8 +840,7 @@ def to_pandas_table(cls: type[BaseModel]) -> pd.DataFrame:
+     import pandas as pd
+ 
+     rows = []
+-    for k, field in cls.__fields__.items():
+-        info = field.field_info
++    for k, info in cls.model_fields.items():
+         if info.description is None:
+             continue
+ 
+@@ -831,8 +850,8 @@ def to_pandas_table(cls: type[BaseModel]) -> pd.DataFrame:
+         row = {
+             "Variable name": code(k),
+             "Description": info.description,
+-            "Default": code(info.default) if info.default is not Undefined else "",
+-            "Type": code(field._type_display()),
++            "Default": code(info.default) if info.default is not PydanticUndefined else "",
++            "Type": code(_type_display(info)),
+         }
+         rows.append(row)
+     return pd.DataFrame(rows)
+diff --git a/pyproject.toml b/pyproject.toml
+index 6f9d189..edbcb05 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -32,7 +32,7 @@ dependencies = [
+     "jinja2",
+     "lxml",
+     "pillow",
+-    "pydantic<2",
++    "pydantic>=2",
+     "python-dotenv",
+     "pyyaml",
+     "requests",
+@@ -108,6 +108,6 @@ python_version = "3.10"
+ 
+ [tool.ruff.lint.pep8-naming]
+ # Allow Pydantic's `@validator` decorator to trigger class method treatment.
+-classmethod-decorators = ["classmethod", "pydantic.validator"]
++classmethod-decorators = ["classmethod", "pydantic.field_validator"]
+ 
+ [tool.setuptools_scm]
+diff --git a/tests/test_examples.py b/tests/test_examples.py
+index 1abd6e8..3dfb5b2 100644
+--- a/tests/test_examples.py
++++ b/tests/test_examples.py
+@@ -1263,8 +1263,8 @@ def test_button(button_dct: dict[str, Any]) -> None:
+             icon = button.render_icon(state)
+         assert icon is not None
+         button_template = button.rendered_template_button(state)  # type: ignore[arg-type]
+-        actual = button_template.dict()
+-        expected = result.dict()
++        actual = button_template.model_dump()
++        expected = result.model_dump()
+         for key, expected_value in expected.items():
+             actual_value = actual[key]
+             assert actual_value == expected_value, (

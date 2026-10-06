@@ -1,0 +1,130 @@
+diff --git a/requirements.txt b/requirements.txt
+index 8bcb4c0..3e62ab8 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -2,7 +2,7 @@ ftfy
+ h5py
+ matplotlib
+ numba
+-numpy<2
++numpy>=1.25
+ open_clip_torch==3.*
+ pandas
+ regex
+@@ -10,10 +10,10 @@ safetensors<0.6
+ scikit-image
+ scikit-learn
+ scipy
+-tensorflow<2.16
++tensorflow>=2.20
+ timm
+-torch>=2.0.0
+-torchvision==0.15.2
++torch>=2.4.0
++torchvision>=0.19.0
+ torchtyping
+ tqdm
+ accelerate<1.10.0
+diff --git a/setup.py b/setup.py
+index a4ee525..0291471 100644
+--- a/setup.py
++++ b/setup.py
+@@ -11,7 +11,7 @@ requirements = [
+     "h5py",
+     "matplotlib",
+     "numba",
+-    "numpy<2",
++    "numpy>=1.25",
+     "open_clip_torch==3.*",
+     "pandas",
+     "regex",
+@@ -19,10 +19,10 @@ requirements = [
+     "scikit-image",
+     "scikit-learn",
+     "scipy",
+-    "tensorflow<2.16",
++    "tensorflow>=2.20",
+     "timm",
+-    "torch>=2.0.0",
+-    "torchvision==0.15.2",
++    "torch>=2.4.0",
++    "torchvision>=0.19.0",
+     "torchtyping",
+     "tqdm",
+     "accelerate<1.10.0",
+diff --git a/thingsvision/core/extraction/extractors.py b/thingsvision/core/extraction/extractors.py
+index ec6728a..f6ecd14 100644
+--- a/thingsvision/core/extraction/extractors.py
++++ b/thingsvision/core/extraction/extractors.py
+@@ -201,13 +201,13 @@ class KerasExtractor(TensorFlowExtractor):
+                 # get preprocessing function for a specific model
+                 preproc_fun = self.get_preproc_fun(preproc_fun_name)
+                 # different models take differently sized inputs. this has to be accounted for.
+-                resize_dim = self.model.layers[0].input_shape[0][
++                resize_dim = self.model.inputs[0].shape[
+                     -2
+                 ]  # -2 and -3 are the H and W channel dims.
+                 self.preprocess = tf.keras.Sequential(
+                     [
+                         Lambda(preproc_fun),
+-                        tf.keras.layers.experimental.preprocessing.Resizing(
++                        tf.keras.layers.Resizing(
+                             resize_dim, resize_dim
+                         ),
+                     ]
+diff --git a/thingsvision/core/extraction/helpers.py b/thingsvision/core/extraction/helpers.py
+index 161e552..899a792 100644
+--- a/thingsvision/core/extraction/helpers.py
++++ b/thingsvision/core/extraction/helpers.py
+@@ -16,7 +16,7 @@ from .tensorflow import TensorFlowExtractor
+ from .torch import PyTorchExtractor
+ 
+ Array = np.ndarray
+-AxisError = np.AxisError
++AxisError = np.exceptions.AxisError
+ 
+ 
+ def create_custom_extractor(
+diff --git a/thingsvision/core/extraction/tensorflow.py b/thingsvision/core/extraction/tensorflow.py
+index aff3320..0dbff51 100644
+--- a/thingsvision/core/extraction/tensorflow.py
++++ b/thingsvision/core/extraction/tensorflow.py
+@@ -43,7 +43,7 @@ class TensorFlowExtractor(BaseExtractor):
+     ) -> Dict[str, Array]:
+         layer_outputs = [self.model.get_layer(name).output for name in module_names]
+         activation_model = keras.models.Model(
+-            inputs=self.model.input,
++            inputs=self.model.inputs,
+             outputs=layer_outputs,
+         )
+         activations_list = activation_model.predict(batch)
+@@ -93,7 +93,7 @@ class TensorFlowExtractor(BaseExtractor):
+         self.model.trainable = False
+ 
+     def get_module_names(self) -> List[str]:
+-        return [l._name for l in self.model.submodules]
++        return [l.name for l in self.model.layers]
+ 
+     def get_default_transformation(
+         self,
+@@ -105,16 +105,16 @@ class TensorFlowExtractor(BaseExtractor):
+     ) -> Any:
+         resize_dim = crop_dim
+         composes = [
+-            layers.experimental.preprocessing.Resizing(resize_dim, resize_dim),
+-            layers.experimental.preprocessing.Rescaling(1.0 / 255.0),
++            layers.Resizing(resize_dim, resize_dim),
++            layers.Rescaling(1.0 / 255.0),
+         ]
+         if apply_center_crop:
+             pass
+             # TODO: fix center crop problem with Keras
+-            # composes.append(layers.experimental.preprocessing.CenterCrop(crop_dim, crop_dim))
++            # composes.append(layers.CenterCrop(crop_dim, crop_dim))
+ 
+         composes += [
+-            layers.experimental.preprocessing.Normalization(
++            layers.Normalization(
+                 mean=mean, variance=[std_ * std_ for std_ in std]
+             )
+         ]

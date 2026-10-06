@@ -12,7 +12,7 @@
    "passed": 188
   },
   "failing": [],
-  "tail": "........................................................................ [ 38%]\n........................................................................ [ 76%]\n............................................                             [100%]\n188 passed in 4.80s",
+  "tail": "........................................................................ [ 38%]\n........................................................................ [ 76%]\n............................................                             [100%]\n188 passed in 4.60s",
   "preexisting_failures": 0
  },
  "new": "2.1.3",
@@ -22,5 +22,12 @@
   "failing": [],
   "tail": "ERROR: while parsing the following warning configuration:\n\n  ignore::sqlalchemy.exc.RemovedIn20Warning\n\nThis error occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 2170, in parse_warning_filter\n    category: type[Warning] = _resolve_warning_category(category_)\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/study/venv/lib/python3.11/site-packages/_pytest/config/__init__.py\", line 2218, in _resolve_warning_category\n    cat = getattr(m, klass)\n          ^^^^^^^^^^^^^^^^^\nAttributeError: module 'sqlalchemy.exc' has no attribute 'RemovedIn20Warning'\n\n"
  },
- "status": "broken"
+ "status": "broken",
+ "driftfix": {
+  "exit": 0,
+  "fixed": true,
+  "cost": 1.08,
+  "model": "claude-opus-5",
+  "diffstat": "2 files changed, 11 insertions(+), 17 deletions(-)"
+ }
 }

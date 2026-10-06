@@ -1,0 +1,106 @@
+diff --git a/d3rlpy/__init__.py b/d3rlpy/__init__.py
+index 6a73196..51bfc5d 100644
+--- a/d3rlpy/__init__.py
++++ b/d3rlpy/__init__.py
+@@ -21,6 +21,7 @@ from . import (
+     tokenizers,
+     types,
+ )
++from ._gym_compat import patch_gym_numpy_aliases
+ from ._version import __version__
+ from .base import load_learnable
+ from .constants import ActionSpace, LoggingStrategy, PositionEncodingType
+@@ -66,6 +67,9 @@ def seed(n: int) -> None:
+     torch.backends.cudnn.deterministic = True
+ 
+ 
++# make the archived gym package work with NumPy>=2
++patch_gym_numpy_aliases()
++
+ # run healthcheck
+ run_healthcheck()
+ 
+diff --git a/d3rlpy/_gym_compat.py b/d3rlpy/_gym_compat.py
+new file mode 100644
+index 0000000..9bdcf20
+--- /dev/null
++++ b/d3rlpy/_gym_compat.py
+@@ -0,0 +1,31 @@
++"""Compatibility patches for the legacy ``gym`` package.
++
++``gym`` has been archived at v0.26.2 and still refers to aliases that NumPy
++removed in v2.0 (see the NumPy 2.0 migration guide).  Since d3rlpy keeps
++supporting legacy ``gym`` environments alongside Gymnasium ones, the removed
++aliases are restored here so that stepping a ``gym`` environment does not raise
++``AttributeError`` under NumPy>=2.
++
++This is a no-op with NumPy<2 and when ``gym`` is not installed.
++"""
++
++import numpy as np
++
++__all__ = ["patch_gym_numpy_aliases"]
++
++# aliases removed in NumPy 2.0 that are still referenced by gym==0.26.2
++_REMOVED_ALIASES = {
++    "bool8": np.bool_,  # gym.utils.passive_env_checker
++    "float_": np.float64,  # gym.envs.classic_control.acrobot
++}
++
++
++def patch_gym_numpy_aliases() -> None:
++    try:
++        import gym  # noqa: F401
++    except ImportError:
++        return
++
++    for name, alias in _REMOVED_ALIASES.items():
++        if not hasattr(np, name):
++            setattr(np, name, alias)
+diff --git a/dev.requirements.txt b/dev.requirements.txt
+index 8483b7e..f74c205 100644
+--- a/dev.requirements.txt
++++ b/dev.requirements.txt
+@@ -6,7 +6,7 @@ matplotlib
+ tensorboardX
+ wandb
+ mypy
+-numpy<2
++numpy
+ docformatter
+ ruff
+ black
+diff --git a/mypy.ini b/mypy.ini
+index 1d011db..5a34455 100644
+--- a/mypy.ini
++++ b/mypy.ini
+@@ -10,7 +10,6 @@ warn_redundant_casts = True
+ warn_unused_ignores = True
+ warn_return_any = True
+ warn_unused_configs = True
+-plugins = numpy.typing.mypy_plugin
+ 
+ [mypy-torch.*]
+ ignore_missing_imports = True
+diff --git a/tests/dataset/test_trajectory_slicer.py b/tests/dataset/test_trajectory_slicer.py
+index 2f19948..a766143 100644
+--- a/tests/dataset/test_trajectory_slicer.py
++++ b/tests/dataset/test_trajectory_slicer.py
+@@ -32,7 +32,7 @@ def test_basic_trajectory_slicer(
+     R = 0.0
+     ref_returns_to_go_list = []
+     for i in reversed(range(length)):
+-        R += float(episode.rewards[i])
++        R += float(episode.rewards[i][0])
+         ref_returns_to_go_list.append(R)
+     ref_returns_to_go_list.reverse()
+     ref_returns_to_go = np.array(ref_returns_to_go_list).reshape((-1, 1))
+@@ -119,7 +119,7 @@ def test_frame_stack_trajectory_slicer(
+     R = 0.0
+     ref_returns_to_go_list = []
+     for i in reversed(range(length)):
+-        R += float(episode.rewards[i])
++        R += float(episode.rewards[i][0])
+         ref_returns_to_go_list.append(R)
+     ref_returns_to_go_list.reverse()
+     ref_returns_to_go = np.array(ref_returns_to_go_list).reshape((-1, 1))

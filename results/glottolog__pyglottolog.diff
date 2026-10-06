@@ -1,0 +1,109 @@
+diff --git a/setup.cfg b/setup.cfg
+index 9afd371..73f0eec 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -43,7 +43,7 @@ install_requires =
+     csvw>=4.0
+     pycldf>=2.0
+     cldfzenodo>=3.0
+-    sqlalchemy<2
++    sqlalchemy>=2.0
+     tqdm
+     latexcodec
+     unidecode
+@@ -100,8 +100,6 @@ universal = 1
+ [tool:pytest]
+ testpaths =
+   tests
+-filterwarnings =
+-    ignore::sqlalchemy.exc.RemovedIn20Warning
+ addopts =
+   --doctest-modules
+   --cov
+@@ -131,5 +129,3 @@ skip_missing_interpreter = true
+ [testenv]
+ deps = .[test]
+ commands = pytest {posargs}
+-setenv =
+-    SQLALCHEMY_SILENCE_UBER_WARNING=1
+diff --git a/src/pyglottolog/references/bibfiles_db.py b/src/pyglottolog/references/bibfiles_db.py
+index 135d1af..ba4222a 100644
+--- a/src/pyglottolog/references/bibfiles_db.py
++++ b/src/pyglottolog/references/bibfiles_db.py
+@@ -27,7 +27,6 @@ UNION_FIELDS = {'fn', 'asjp_name', 'isbn'}
+ IGNORE_FIELDS = {'crossref', 'numnote', 'glotto_id'}
+ REF_ID_FIELD = 'glottolog_ref_id'
+ ENCODING = 'utf-8'
+-SQLALCHEMY_FUTURE = True
+ PAGE_SIZE = 32_768
+ ENTRYTYPE = 'ENTRYTYPE'
+ 
+@@ -57,11 +56,9 @@ class Connectable:
+     """SQLite database."""
+ 
+     def __init__(self, filepath,
+-                 *, future: bool = SQLALCHEMY_FUTURE,
+-                 paramstyle: Optional[str] = 'qmark'):
++                 *, paramstyle: Optional[str] = 'qmark'):
+         self.filepath = pathlib.Path(filepath)
+         self._engine = sa.create_engine(f'sqlite:///{self.filepath}',
+-                                        future=future,
+                                         paramstyle=paramstyle)
+ 
+     def connect(self, *, pragma_bulk_insert: bool = False, page_size: Optional[int] = None):
+@@ -620,7 +617,8 @@ class Entry:
+     @classmethod
+     def windowed(cls, conn, *, key_column: str, size: int):  # pylint: disable=C0116
+         key_column = cls.__table__.c[key_column]  # pylint: disable=E1101
+-        select_keys = (sa.select(key_column.distinct())
++        select_keys = (sa.select(key_column)
++                       .distinct()
+                        .order_by(key_column))
+ 
+         result = conn.execute(select_keys)
+@@ -685,8 +683,8 @@ def dbapi_insert(conn, model, *, column_keys: list[str],
+                            f' {conn.dialect.paramstyle!r}'
+                            f' (require: {paramstyle!r})')
+ 
+-    insert_model = sa.insert(model, bind=conn)
+-    insert_compiled = insert_model.compile(column_keys=column_keys)
++    insert_model = sa.insert(model)
++    insert_compiled = insert_model.compile(bind=conn, column_keys=column_keys)
+ 
+     dbapi_fairy = conn.connection
+     method = dbapi_fairy.executemany if executemany else dbapi_fairy.execute
+@@ -753,10 +751,10 @@ def generate_hashes(conn):
+                   .order_by('pk'))
+ 
+     assert conn.dialect.paramstyle == 'qmark'
+-    update_entry = (sa.update(Entry, bind=conn)
++    update_entry = (sa.update(Entry)
+                     .values(hash=sa.bindparam('hash'))
+                     .where(Entry.pk == sa.bindparam('entry_pk'))
+-                    .compile().string)
++                    .compile(bind=conn).string)
+     update_entry = functools.partial(conn.connection.executemany, update_entry)
+ 
+     groupby_entry_pk = functools.partial(itertools.groupby, key=operator.attrgetter('pk'))
+@@ -891,7 +889,7 @@ def resolve_merges(conn, *, verbose: bool = False):
+     merge = functools.partial(merge_new_cand_old, conn,
+                               keyfunc=operator.attrgetter('srefid'))
+ 
+-    update_merge = (sa.update(Entry, bind=conn)
++    update_merge = (sa.update(Entry)
+                     .where(Entry.hash == sa.bindparam('eq_hash'))
+                     .where(Entry.srefid != sa.bindparam('ne_srefid'))
+                     .values(id=sa.bindparam('new_id')))
+@@ -960,10 +958,10 @@ def assign_new_and_separated(conn):
+                   .order_by('hash'))
+ 
+     assert conn.dialect.paramstyle == 'qmark'
+-    update_new = (sa.update(Entry, bind=conn)
++    update_new = (sa.update(Entry)
+                   .values(id=sa.bindparam('new_id'))
+                   .where(Entry.hash == sa.bindparam('eq_hash'))
+-                  .compile().string)
++                  .compile(bind=conn).string)
+ 
+     nextid = conn.execute(select_nextid).scalar_one()
+     new_hashes = conn.execute(select_new)

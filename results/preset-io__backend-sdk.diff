@@ -1,0 +1,147 @@
+diff --git a/setup.cfg b/setup.cfg
+index 6b7fc13..bdfd42b 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -69,7 +69,7 @@ install_requires =
+     python-graphql-client>=0.4.3
+     requests>=2.26.0
+     rich>=12.3.0
+-    sqlalchemy>=1.4,<2
++    sqlalchemy>=1.4
+     sqlglot>=26,<30
+     tabulate>=0.8.9
+     typing-extensions>=4.0.1
+diff --git a/src/preset_cli/cli/superset/sync/dbt/lib.py b/src/preset_cli/cli/superset/sync/dbt/lib.py
+index 513314f..644427a 100644
+--- a/src/preset_cli/cli/superset/sync/dbt/lib.py
++++ b/src/preset_cli/cli/superset/sync/dbt/lib.py
+@@ -22,6 +22,13 @@ from preset_cli.exceptions import CLIError
+ _logger = logging.getLogger(__name__)
+ 
+ 
++def render_url(url: URL) -> str:
++    """
++    Render a SQLAlchemy URL as a string, without masking the password.
++    """
++    return url.render_as_string(hide_password=False)
++
++
+ def build_sqlalchemy_params(target: Dict[str, Any]) -> Dict[str, Any]:
+     """
+     Build the SQLAlchemy URI for a given target.
+@@ -60,8 +67,8 @@ def build_postgres_sqlalchemy_params(target: Dict[str, Any]) -> Dict[str, Any]:
+     query = {"sslmode": target["sslmode"]} if "sslmode" in target else None
+ 
+     return {
+-        "sqlalchemy_uri": str(
+-            URL(
++        "sqlalchemy_uri": render_url(
++            URL.create(
+                 drivername="postgresql+psycopg2",
+                 username=username,
+                 password=password,
+@@ -90,8 +97,8 @@ def build_redshift_sqlalchemy_params(target: Dict[str, Any]) -> Dict[str, Any]:
+     query = {"sslmode": target["sslmode"]} if "sslmode" in target else None
+ 
+     return {
+-        "sqlalchemy_uri": str(
+-            URL(
++        "sqlalchemy_uri": render_url(
++            URL.create(
+                 drivername="redshift+psycopg2",
+                 username=username,
+                 password=password,
+@@ -122,8 +129,8 @@ def build_bigquery_sqlalchemy_params(target: Dict[str, Any]) -> Dict[str, Any]:
+     }
+     if "priority" in query:
+         query["priority"] = query["priority"].upper()
+-    parameters["sqlalchemy_uri"] = str(
+-        URL(
++    parameters["sqlalchemy_uri"] = render_url(
++        URL.create(
+             drivername="bigquery",
+             host=target["project"],
+             database="",
+@@ -156,8 +163,8 @@ def build_snowflake_sqlalchemy_params(target: Dict[str, Any]) -> Dict[str, Any]:
+     query = {"role": target["role"], "warehouse": target["warehouse"]}
+ 
+     parameters = {
+-        "sqlalchemy_uri": str(
+-            URL(
++        "sqlalchemy_uri": render_url(
++            URL.create(
+                 drivername="snowflake",
+                 username=username,
+                 password=password,
+@@ -208,8 +215,7 @@ def create_engine_with_check(url: URL) -> Engine:
+     try:
+         return create_engine(url)
+     except NoSuchModuleError as exc:
+-        string_url = str(url)
+-        dialect = string_url.split("://", maxsplit=1)[0]
++        dialect = url.drivername
+         # TODO: Handle more DB engines that require an additional package
+         if dialect == "snowflake":
+             raise CLIError(
+diff --git a/tests/cli/superset/sync/dbt/lib_test.py b/tests/cli/superset/sync/dbt/lib_test.py
+index 2cdbd22..c17d1bc 100644
+--- a/tests/cli/superset/sync/dbt/lib_test.py
++++ b/tests/cli/superset/sync/dbt/lib_test.py
+@@ -12,7 +12,7 @@ from typing import Any, Dict, List
+ import pytest
+ from pyfakefs.fake_filesystem import FakeFilesystem
+ from pytest_mock import MockerFixture
+-from sqlalchemy.engine.url import URL
++from sqlalchemy.engine.url import make_url
+ 
+ from preset_cli.cli.superset.sync.dbt.lib import (
+     apply_select,
+@@ -263,7 +263,7 @@ def test_create_engine_with_check(mocker: MockerFixture) -> None:
+     Test the ``create_engine_with_check`` method.
+     """
+     mock_engine = mocker.patch("preset_cli.cli.superset.sync.dbt.lib.create_engine")
+-    test = create_engine_with_check(URL("blah://blah"))
++    test = create_engine_with_check(make_url("blah://blah"))
+     assert test == mock_engine.return_value
+ 
+ 
+@@ -273,7 +273,7 @@ def test_create_engine_with_check_missing_snowflake() -> None:
+     not installed.
+     """
+     with pytest.raises(CLIError) as excinfo:
+-        create_engine_with_check(URL("snowflake://blah"))
++        create_engine_with_check(make_url("snowflake://blah"))
+     assert 'run ``pip install "preset-cli[snowflake]"``' in str(excinfo.value)
+ 
+ 
+@@ -283,7 +283,7 @@ def test_create_engine_with_check_missing_unknown_driver() -> None:
+     not installed.
+     """
+     with pytest.raises(NotImplementedError) as excinfo:
+-        create_engine_with_check(URL("mssql+odbc://blah"))
++        create_engine_with_check(make_url("mssql+odbc://blah"))
+     assert "Unable to build a SQLAlchemy Engine for the mssql+odbc connection" in str(
+         excinfo.value,
+     )
+diff --git a/tests/cli/superset/sync/native/command_test.py b/tests/cli/superset/sync/native/command_test.py
+index 85c16f7..2f38369 100644
+--- a/tests/cli/superset/sync/native/command_test.py
++++ b/tests/cli/superset/sync/native/command_test.py
+@@ -906,7 +906,7 @@ def test_verify_db_connectivity(mocker: MockerFixture) -> None:
+     verify_db_connectivity(config)
+ 
+     create_engine.assert_called_with(
+-        URL(
++        URL.create(
+             "postgresql",
+             username="username",
+             password="SECRET",
+@@ -931,7 +931,7 @@ def test_verify_db_connectivity_no_password(mocker: MockerFixture) -> None:
+     verify_db_connectivity(config)
+ 
+     create_engine.assert_called_with(
+-        URL("gsheets"),
++        URL.create("gsheets"),
+     )
+ 
+ 

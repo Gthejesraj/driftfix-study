@@ -1,0 +1,48 @@
+diff --git a/prefect_lakefs/credentials.py b/prefect_lakefs/credentials.py
+index a6995bd..dff2d7e 100644
+--- a/prefect_lakefs/credentials.py
++++ b/prefect_lakefs/credentials.py
+@@ -7,9 +7,14 @@ from lakefs_client.client import LakeFSClient
+ from lakefs_client.configuration import Configuration
+ from prefect.blocks.core import Block
+ from prefect.utilities.collections import listrepr
+-from pydantic import Field, SecretStr
++from pydantic import VERSION as PYDANTIC_VERSION
+ from typing_extensions import Literal
+ 
++if PYDANTIC_VERSION.startswith("2."):
++    from pydantic.v1 import Field, SecretStr
++else:
++    from pydantic import Field, SecretStr
++
+ LAKEFS_CLIENT_TYPES = {
+     "branches": BranchesApi,
+     "commits": CommitsApi,
+diff --git a/prefect_lakefs/storage.py b/prefect_lakefs/storage.py
+index f4713e4..dd26141 100644
+--- a/prefect_lakefs/storage.py
++++ b/prefect_lakefs/storage.py
+@@ -4,7 +4,12 @@ from lakefs_client.exceptions import NotFoundException
+ from lakefs_client.model.commit_creation import CommitCreation
+ from prefect.context import FlowRunContext
+ from prefect_aws import S3Bucket
+-from pydantic import Field
++from pydantic import VERSION as PYDANTIC_VERSION
++
++if PYDANTIC_VERSION.startswith("2."):
++    from pydantic.v1 import Field
++else:
++    from pydantic import Field
+ 
+ from prefect_lakefs.credentials import LakeFSCredentials
+ 
+diff --git a/requirements.txt b/requirements.txt
+index bc71fba..58e8572 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -2,4 +2,4 @@ prefect>=2.0.0
+ prefect-aws>=0.2.4
+ lakefs-client>=1.0.0
+ gitpython>=3.1.31
+-pydantic<2
++pydantic
