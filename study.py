@@ -68,11 +68,17 @@ def install(c: dict) -> str | None:
         code, out = sh(f"uv pip install -q -p {PY} -r {f}", REPO)
         if code and f in c["pinned_in"]:
             return f"requirements {f}: {out[-500:]}"
-    if (REPO / "setup.py").exists() or (REPO / "pyproject.toml").exists():
+    pyproject = REPO / "pyproject.toml"
+    synced = False
+    if pyproject.exists() and "[project]" in pyproject.read_text(errors="ignore"):
+        # PEP 621 project: uv sync also installs dependency groups (dev/test) and honors uv.lock
+        synced = sh(f"UV_PROJECT_ENVIRONMENT={VENV} uv sync -q --all-extras --all-groups -p {PY}", REPO)[0] == 0
+        sh("git checkout -q -- uv.lock 2>/dev/null; true", REPO)  # keep the tree clean for driftfix
+    if not synced and ((REPO / "setup.py").exists() or pyproject.exists()):
         for target in (".[test]", ".[tests]", ".[dev]", "."):
             if sh(f"uv pip install -q -p {PY} -e '{target}'", REPO)[0] == 0:
                 break
-    sh(f"uv pip install -q -p {PY} pytest")
+    sh(f"uv pip install -q -p {PY} pytest pytest-cov pytest-mock pytest-asyncio")
     return None
 
 
@@ -97,6 +103,10 @@ def check(c: dict) -> dict:
     skip = {"ids": [], "files": []}
     first = run_tests(skip)
     if first["code"] == 5 or not first["counts"].get("passed"):
+        if c.get("force_old"):  # maybe the code already targeted the new version before the "fix" commit
+            sh(f"uv pip install -q -p {PY} -U '{c['upgrade']}'")
+            if run_tests(skip)["counts"].get("passed"):
+                return {**r, "status": "already_on_new_version", "baseline": first}
         return {**r, "status": "no_passing_tests", "baseline": first}
     for item in first["failing"]:
         skip["files" if "::" not in item else "ids"].append(item)
