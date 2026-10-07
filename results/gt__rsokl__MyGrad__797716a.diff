@@ -1,0 +1,344 @@
+diff --git a/docs/source/changes.rst b/docs/source/changes.rst
+index 8d04782..7a2bb0e 100644
+--- a/docs/source/changes.rst
++++ b/docs/source/changes.rst
+@@ -6,6 +6,19 @@ This is a record of all past mygrad releases and what went into them,
+ in reverse chronological order. All previous releases should still be available
+ on pip.
+ 
++.. _unreleased:
++
++----------
++Unreleased
++----------
++
++- Adds support for NumPy 2.5
++- The second argument of :func:`~mygrad.reshape` is now named ``shape`` instead of ``newshape``, mirroring
++  ``numpy.reshape``, whose ``newshape`` parameter was deprecated in NumPy 2.1 and removed in NumPy 2.5.
++  Passing the new shape positionally is unaffected.
++- ``float(tensor)`` and ``int(tensor)`` once again work for size-1 tensors of any dimensionality; NumPy 2.0
++  removed support for converting non-0D arrays to Python scalars.
++
+ .. _v2.3.0:
+ 
+ ------------------
+diff --git a/src/mygrad/math/sequential/ops.py b/src/mygrad/math/sequential/ops.py
+index 9db72b4..555ff5b 100644
+--- a/src/mygrad/math/sequential/ops.py
++++ b/src/mygrad/math/sequential/ops.py
+@@ -322,7 +322,7 @@ class CumProd(Sequential):
+             np.nan_to_num(dldx, copy=False)
+ 
+         if axis is None:
+-            dldx.shape = orig_shape
++            dldx = dldx.reshape(orig_shape)
+         return dldx
+ 
+ 
+@@ -334,7 +334,7 @@ class CumSum(Sequential):
+         a = self.variables[index]
+         g = _reverse_cumsum(grad, self.axis)
+         if self.axis is None:
+-            g.shape = a.shape
++            g = g.reshape(a.shape)
+         return g
+ 
+ 
+diff --git a/src/mygrad/tensor_base.py b/src/mygrad/tensor_base.py
+index baec977..a35e465 100644
+--- a/src/mygrad/tensor_base.py
++++ b/src/mygrad/tensor_base.py
+@@ -2129,14 +2129,16 @@ class Tensor:
+         return self.data.item()
+ 
+     def __float__(self) -> float:
+-        if self.size > 1:
++        if self.size != 1:
+             raise TypeError("can only convert a tensor of size 1 to a Python scalar")
+-        return float(self.data)
++        # NumPy >= 2.0 only permits 0D arrays to be converted to Python scalars
++        return float(self.data.reshape(())[()])
+ 
+     def __int__(self) -> int:
+-        if self.size > 1:
++        if self.size != 1:
+             raise TypeError("can only convert a tensor of size 1 to a Python scalar")
+-        return int(self.data)
++        # NumPy >= 2.0 only permits 0D arrays to be converted to Python scalars
++        return int(self.data.reshape(())[()])
+ 
+     def __index__(self) -> int:
+         """Return self converted to an integer, if self is suitable for use as an index
+@@ -2281,14 +2283,14 @@ class Tensor:
+         return self.data.dtype
+ 
+     def reshape(
+-        self, *newshape: Union[int, Shape], constant: Optional[bool] = None
++        self, *shape: Union[int, Shape], constant: Optional[bool] = None
+     ) -> "Tensor":
+         """Returns a tensor with a new shape, without changing its data.
+         This docstring was adapted from ``numpy.reshape``
+ 
+         Parameters
+         ----------
+-        *newshape : Union[int, Tuple[int, ...]]
++        *shape : Union[int, Tuple[int, ...]]
+             The new shape should be compatible with the original shape. If
+             an integer, then the result will be a 1-D tensor of that length.
+             One shape dimension can be -1. In this case, the value is
+@@ -2322,13 +2324,13 @@ class Tensor:
+                 [5, 6]])
+         """
+ 
+-        if not newshape:
++        if not shape:
+             raise TypeError("reshape() takes at least 1 argument (0 given)")
+-        if hasattr(newshape[0], "__iter__"):
+-            if len(newshape) > 1:
++        if hasattr(shape[0], "__iter__"):
++            if len(shape) > 1:
+                 raise TypeError("an integer is required")
+-            newshape = newshape[0]
+-        return Tensor._op(Reshape, self, op_args=(newshape,), constant=constant)
++            shape = shape[0]
++        return Tensor._op(Reshape, self, op_args=(shape,), constant=constant)
+ 
+     @property
+     def T(self) -> "Tensor":
+diff --git a/src/mygrad/tensor_manip/array_shape/funcs.py b/src/mygrad/tensor_manip/array_shape/funcs.py
+index 7dde6bf..7846464 100644
+--- a/src/mygrad/tensor_manip/array_shape/funcs.py
++++ b/src/mygrad/tensor_manip/array_shape/funcs.py
+@@ -21,7 +21,7 @@ _T = TypeVar("_T")
+ 
+ @implements_numpy_override()
+ def reshape(
+-    a: ArrayLike, newshape: Union[int, Shape], *, constant: Optional[bool] = None
++    a: ArrayLike, shape: Union[int, Shape], *, constant: Optional[bool] = None
+ ) -> Tensor:
+     """Returns a tensor with a new shape, without changing its data.
+ 
+@@ -32,7 +32,7 @@ def reshape(
+     a : ArrayLike
+         The tensor to be reshaped
+ 
+-    newshape : Union[int, Tuple[int, ...]]
++    shape : Union[int, Tuple[int, ...]]
+         The new shape should be compatible with the original shape. If
+         an integer, then the result will be a 1-D tensor of that length.
+         One shape dimension can be -1. In this case, the value is
+@@ -64,7 +64,7 @@ def reshape(
+     Tensor([[1, 2],
+             [3, 4],
+             [5, 6]])"""
+-    return Tensor._op(Reshape, a, op_args=(newshape,), constant=constant)
++    return Tensor._op(Reshape, a, op_args=(shape,), constant=constant)
+ 
+ 
+ @implements_numpy_override()
+diff --git a/src/mygrad/tensor_manip/array_shape/ops.py b/src/mygrad/tensor_manip/array_shape/ops.py
+index b7cf5ae..a1b74aa 100644
+--- a/src/mygrad/tensor_manip/array_shape/ops.py
++++ b/src/mygrad/tensor_manip/array_shape/ops.py
+@@ -50,20 +50,20 @@ class AtLeast3D(_AtLeastKD):
+ class Reshape(_PreservesOrder):
+     can_return_view = True
+ 
+-    def __call__(self, a, newshape):
++    def __call__(self, a, shape):
+         """
+         Parameters
+         ----------
+         a : mygrad.Tensor
+ 
+-        newshape : Tuple[int, ...]
++        shape : Tuple[int, ...]
+ 
+         Returns
+         -------
+         reshaped_array : numpy.ndarray
+         """
+         self.variables = (a,)
+-        return np.reshape(a.data, newshape)
++        return np.reshape(a.data, shape)
+ 
+ 
+ class Squeeze(_PreservesOrder):
+diff --git a/src/mygrad/tensor_manip/tiling/ops.py b/src/mygrad/tensor_manip/tiling/ops.py
+index 3b27d91..552db3d 100644
+--- a/src/mygrad/tensor_manip/tiling/ops.py
++++ b/src/mygrad/tensor_manip/tiling/ops.py
+@@ -53,7 +53,7 @@ class Repeat(Operation):
+             grad = grad.sum(axis=tuple(range(-len(window_shape), 0)))
+ 
+             if self._axis is None:
+-                grad.shape = a.shape
++                grad = grad.reshape(a.shape)
+             return grad
+         else:
+             # We will create a grid of flat-indices commensurate with the
+diff --git a/tests/tensor_base/test_replay_view_op.py b/tests/tensor_base/test_replay_view_op.py
+index 39f43f1..4f86c99 100644
+--- a/tests/tensor_base/test_replay_view_op.py
++++ b/tests/tensor_base/test_replay_view_op.py
+@@ -11,25 +11,25 @@ from mygrad.errors import DisconnectedView
+ from ..custom_strategies import basic_indices, tensors, valid_shapes
+ 
+ 
+-def positional_reshape(arr, newshape, **kwargs):
+-    return reshape(arr, newshape, **kwargs)
++def positional_reshape(arr, shape, **kwargs):
++    return reshape(arr, shape, **kwargs)
+ 
+ 
+-def keyword_reshape(arr, newshape, **kwargs):
+-    return reshape(arr, newshape=newshape, **kwargs)
++def keyword_reshape(arr, shape, **kwargs):
++    return reshape(arr, shape=shape, **kwargs)
+ 
+ 
+-def method_tuple_reshape(arr, newshape, **kwargs):
+-    return arr.reshape(newshape, **kwargs)
++def method_tuple_reshape(arr, shape, **kwargs):
++    return arr.reshape(shape, **kwargs)
+ 
+ 
+-def method_unpacked_reshape(arr, newshape, **kwargs):
+-    if newshape == tuple():
+-        newshape = ((),)
++def method_unpacked_reshape(arr, shape, **kwargs):
++    if shape == tuple():
++        shape = ((),)
+     return (
+-        arr.reshape(*newshape, **kwargs)
+-        if isinstance(newshape, tuple)
+-        else arr.reshape(newshape, **kwargs)
++        arr.reshape(*shape, **kwargs)
++        if isinstance(shape, tuple)
++        else arr.reshape(shape, **kwargs)
+     )
+ 
+ 
+@@ -37,7 +37,7 @@ def reshape_args(tensor, data):
+     return (
+         tuple(),
+         dict(
+-            newshape=data.draw(valid_shapes(tensor.size, min_len=0), label="newshape")
++            shape=data.draw(valid_shapes(tensor.size, min_len=0), label="shape")
+         ),
+     )
+ 
+diff --git a/tests/tensor_ops/test_reshape.py b/tests/tensor_ops/test_reshape.py
+index 693fa08..1d7da19 100644
+--- a/tests/tensor_ops/test_reshape.py
++++ b/tests/tensor_ops/test_reshape.py
+@@ -16,36 +16,36 @@ from ..custom_strategies import tensors, valid_shapes
+ from ..wrappers.uber import backprop_test_factory, fwdprop_test_factory
+ 
+ 
+-def positional_reshape(arr, newshape, reshaper, **kwargs):
+-    return reshaper(arr, newshape, **kwargs)
++def positional_reshape(arr, shape, reshaper, **kwargs):
++    return reshaper(arr, shape, **kwargs)
+ 
+ 
+-def keyword_reshape(arr, newshape, reshaper, **kwargs):
+-    return reshaper(arr, newshape=newshape, **kwargs)
++def keyword_reshape(arr, shape, reshaper, **kwargs):
++    return reshaper(arr, shape=shape, **kwargs)
+ 
+ 
+-def method_tuple_reshape(arr, newshape, reshaper, **kwargs):
+-    return arr.reshape(newshape, **kwargs)
++def method_tuple_reshape(arr, shape, reshaper, **kwargs):
++    return arr.reshape(shape, **kwargs)
+ 
+ 
+-def method_unpacked_reshape(arr, newshape, reshaper, **kwargs):
+-    if newshape == tuple():
+-        newshape = ((),)
++def method_unpacked_reshape(arr, shape, reshaper, **kwargs):
++    if shape == tuple():
++        shape = ((),)
+     return (
+-        arr.reshape(*newshape, **kwargs)
+-        if isinstance(newshape, tuple)
+-        else arr.reshape(newshape, **kwargs)
++        arr.reshape(*shape, **kwargs)
++        if isinstance(shape, tuple)
++        else arr.reshape(shape, **kwargs)
+     )
+ 
+ 
+-def in_place_reshape(arr, newshape, reshaper, **kwargs):
++def in_place_reshape(arr, shape, reshaper, **kwargs):
+     to_array = np.asarray if reshaper is np.reshape else Tensor
+     arr = +arr  # "touch" array so we can check gradient
+ 
+     if isinstance(arr, Number):
+         arr = to_array(arr)
+ 
+-    arr.shape = newshape
++    arr.shape = shape
+     if isinstance(arr, Tensor) and kwargs.get("constant", False):
+         arr._constant = True
+     return arr
+@@ -130,11 +130,11 @@ def test_in_place_reshape(tensor: Tensor, data: st.DataObject):
+     assume(tensor.size)
+ 
+     array = tensor.data.copy()
+-    newshape = data.draw(valid_shapes(tensor.size, min_len=0), label="newshape")
++    shape = data.draw(valid_shapes(tensor.size, min_len=0), label="shape")
+ 
+-    tensor.shape = newshape
++    tensor.shape = shape
+ 
+-    array.shape = newshape
++    array.shape = shape
+     assert_array_equal(array, tensor)
+ 
+     assert array.base is None
+@@ -149,13 +149,13 @@ def test_in_place_reshape_post_view(tensor: Tensor, data: st.DataObject):
+     assume(tensor.size)
+ 
+     array = tensor.data.copy()
+-    newshape = data.draw(valid_shapes(tensor.size, min_len=0), label="newshape")
++    shape = data.draw(valid_shapes(tensor.size, min_len=0), label="shape")
+ 
+     t1 = tensor[...]
+-    t1.shape = newshape
++    t1.shape = shape
+ 
+     a1 = array[...]
+-    a1.shape = newshape
++    a1.shape = shape
+     assert_array_equal(array, tensor)
+     assert_array_equal(a1, t1)
+ 
+@@ -174,7 +174,7 @@ def test_reshape_fwd(reshape_type):
+         mygrad_func=partial(reshape_type, reshaper=reshape),
+         true_func=partial(reshape_type, reshaper=np.reshape),
+         num_arrays=1,
+-        kwargs=dict(newshape=lambda arrs: valid_shapes(arrs.size)),
++        kwargs=dict(shape=lambda arrs: valid_shapes(arrs.size)),
+     )
+     def run_fwd():
+         pass
+@@ -191,7 +191,7 @@ def test_method_reshape_fwd(reshape_type):
+         mygrad_func=partial(reshape_type, reshaper=reshape),
+         true_func=partial(reshape_type, reshaper=np.reshape),
+         num_arrays=1,
+-        kwargs=dict(newshape=lambda arrs: valid_shapes(arrs.size)),
++        kwargs=dict(shape=lambda arrs: valid_shapes(arrs.size)),
+         permit_0d_array_as_float=False,
+     )
+     def run_fwd():
+@@ -217,7 +217,7 @@ def test_reshape_bkwd(reshape_type):
+         ),  # exercises __array_function__
+         true_func=partial(reshape_type, reshaper=np.reshape),
+         num_arrays=1,
+-        kwargs=dict(newshape=lambda arrs: valid_shapes(arrs.size, min_len=0)),
++        kwargs=dict(shape=lambda arrs: valid_shapes(arrs.size, min_len=0)),
+         vary_each_element=True,
+     )
+     def run_bkwd():

@@ -1,47 +1,43 @@
 diff --git a/clabe/errors.py b/clabe/errors.py
-index 6ecd610..682b98b 100644
+index 6ecd610..a993cf7 100644
 --- a/clabe/errors.py
 +++ b/clabe/errors.py
-@@ -1,11 +1,34 @@
+@@ -1,11 +1,30 @@
 -from pydantic.errors import PydanticValueError
-+from typing import Any, Dict
++class ClabeError(ValueError):
++    """
++    Base class for the errors raised while validating a CLABE.
  
++    Pydantic v2 no longer provides a custom error base class
++    (`PydanticValueError` was removed), so these errors are plain
++    `ValueError` subclasses. Pydantic wraps them into a `ValidationError`
++    when they are raised inside a validator.
++    """
  
 -class BankCodeValidationError(PydanticValueError):
-+class ClabeValidationError(ValueError):
-+    """
-+    Base class for CLABE validation errors.
-+
-+    Replaces `pydantic.errors.PydanticValueError`, which was removed in
-+    pydantic v2. Raising a plain `ValueError` subclass from within a
-+    validator is the way pydantic v2 expects custom errors to be
-+    signalled, and it keeps these exceptions usable outside of pydantic.
-+    """
-+
-+    code: str = 'clabe.invalid'
++    code: str = 'clabe'
 +    msg_template: str = 'clabe no es válida'
 +
-+    def __init__(self, **ctx: Any) -> None:
-+        self.ctx: Dict[str, Any] = ctx
-+        super().__init__(self.msg_template.format(**ctx))
++    def __init__(self, msg: str = '') -> None:
++        super().__init__(msg or self.msg_template)
 +
 +
-+class NotDigitError(ClabeValidationError):
++class NotDigitError(ClabeError):
 +    code = 'clabe.not_digit'
-+    msg_template = 'el valor no es un string de dígitos'
++    msg_template = 'el valor no es numérico'
 +
 +
-+class BankCodeValidationError(ClabeValidationError):
++class BankCodeValidationError(ClabeError):
      code = 'clabe.bank_code'
      msg_template = 'código de banco no es válido'
  
  
 -class ClabeControlDigitValidationError(PydanticValueError):
-+class ClabeControlDigitValidationError(ClabeValidationError):
++class ClabeControlDigitValidationError(ClabeError):
      code = 'clabe.control_digit'
      msg_template = 'clabe dígito de control no es válido'
 diff --git a/clabe/types.py b/clabe/types.py
-index 08d6052..31d39b9 100644
+index 08d6052..f108c31 100644
 --- a/clabe/types.py
 +++ b/clabe/types.py
 @@ -1,18 +1,15 @@
@@ -71,7 +67,7 @@ index 08d6052..31d39b9 100644
  
  def validate_digits(v: str) -> str:
      if not v.isdigit():
-@@ -35,14 +32,25 @@ class Clabe(str):
+@@ -35,14 +32,24 @@ class Clabe(str):
          self.bank_name = BANK_NAMES[self.bank_code_banxico]
  
      @classmethod
@@ -93,7 +89,6 @@ index 08d6052..31d39b9 100644
 +                min_length=cls.min_length,
 +                max_length=cls.max_length,
 +            ),
-+            serialization=core_schema.to_string_ser_schema(),
 +        )
 +
 +    @classmethod
@@ -106,20 +101,20 @@ index 08d6052..31d39b9 100644
      @classmethod
      def validate_bank_code_abm(cls, clabe: str) -> str:
 diff --git a/clabe/validations.py b/clabe/validations.py
-index d4488c4..7155ff4 100644
+index d4488c4..7dd3af6 100644
 --- a/clabe/validations.py
 +++ b/clabe/validations.py
-@@ -1,7 +1,8 @@
+@@ -1,7 +1,7 @@
  import random
- from typing import List, Union
+-from typing import List, Union
++from typing import Annotated, List, Union
  
 -from pydantic import BaseModel, Field
 +from pydantic import BaseModel, Field, StringConstraints
-+from typing_extensions import Annotated
  
  from .banks import BANK_NAMES, BANKS
  
-@@ -74,14 +75,13 @@ class BankConfigRequest(BaseModel):
+@@ -74,14 +74,14 @@ class BankConfigRequest(BaseModel):
      - Banxico codes are exactly 5 digits
      """
  
@@ -129,7 +124,8 @@ index d4488c4..7155ff4 100644
 -        description="Bank name must have at least 1 character.",
 -    )
 +    bank_name: Annotated[
-+        str, StringConstraints(strip_whitespace=True, min_length=1)
++        str,
++        StringConstraints(min_length=1, strip_whitespace=True),
 +    ] = Field(description="Bank name must have at least 1 character.")
  
      bank_code_banxico: str = Field(
@@ -139,15 +135,22 @@ index d4488c4..7155ff4 100644
      )
  
      @property
+diff --git a/clabe/version.py b/clabe/version.py
+index d2309e3..afced14 100644
+--- a/clabe/version.py
++++ b/clabe/version.py
+@@ -1 +1 @@
+-__version__ = '1.2.17'
++__version__ = '2.0.0'
 diff --git a/requirements.txt b/requirements.txt
-index 62c77cd..3381d93 100644
+index 62c77cd..6411d78 100644
 --- a/requirements.txt
 +++ b/requirements.txt
 @@ -1 +1 @@
 -pydantic==1.9.0
-+pydantic>=2.0
++pydantic>=2.0,<3.0
 diff --git a/setup.py b/setup.py
-index 80d79db..18253a0 100644
+index 80d79db..c754762 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -21,7 +21,7 @@ setuptools.setup(
@@ -155,7 +158,7 @@ index 80d79db..18253a0 100644
      include_package_data=True,
      package_data=dict(clabe=['py.typed']),
 -    install_requires=['pydantic>=1.4,<2.0'],
-+    install_requires=['pydantic>=2.0'],
++    install_requires=['pydantic>=2.0,<3.0'],
      classifiers=[
          'Programming Language :: Python :: 3',
          'License :: OSI Approved :: MIT License',

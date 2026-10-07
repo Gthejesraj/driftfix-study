@@ -1,9 +1,14 @@
-diff --git a/momaland/envs/item_gathering/assets/colored/agent0.png b/momaland/envs/item_gathering/assets/colored/agent0.png
-index e29e33f..4b2f91b 100644
-Binary files a/momaland/envs/item_gathering/assets/colored/agent0.png and b/momaland/envs/item_gathering/assets/colored/agent0.png differ
-diff --git a/momaland/envs/item_gathering/assets/colored/item0.png b/momaland/envs/item_gathering/assets/colored/item0.png
-index a6539b2..a8591bb 100644
-Binary files a/momaland/envs/item_gathering/assets/colored/item0.png and b/momaland/envs/item_gathering/assets/colored/item0.png differ
-diff --git a/momaland/envs/item_gathering/assets/colored/item1.png b/momaland/envs/item_gathering/assets/colored/item1.png
-index d77b69e..cbf6f5e 100644
-Binary files a/momaland/envs/item_gathering/assets/colored/item1.png and b/momaland/envs/item_gathering/assets/colored/item1.png differ
+diff --git a/momaland/envs/gem_mining/gem_mining.py b/momaland/envs/gem_mining/gem_mining.py
+index 62df787..a246141 100644
+--- a/momaland/envs/gem_mining/gem_mining.py
++++ b/momaland/envs/gem_mining/gem_mining.py
+@@ -169,7 +169,8 @@ class MOGemMining(MOParallelEnv, EzPickle):
+ 
+         # determine the number of workers per village (agent):
+         lst = list(range(min_workers, max_workers + 1))
+-        self.workers = {agent: self.random.choices(lst) for agent in self.agents}
++        # random.choices returns a list; take the single element so workers are Python ints
++        self.workers = {agent: self.random.choices(lst)[0] for agent in self.agents}
+ 
+         # determine the base probabilities of finding a gem per type per mine
+         self.base_probabilities = dict()

@@ -12,7 +12,7 @@
    "passed": 18
   },
   "failing": [],
-  "tail": "..................                                                       [100%]\n18 passed in 0.03s",
+  "tail": "..................                                                       [100%]\n18 passed in 0.04s",
   "preexisting_failures": 0
  },
  "new": "2.13.5",
@@ -25,21 +25,22 @@
    "tests/test_clabe.py",
    "tests/test_types.py"
   ],
-  "tail": "\n==================================== ERRORS ====================================\n_____________________ ERROR collecting tests/test_clabe.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_clabe.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_clabe.py:3: in <module>\n    from clabe import (\nclabe/__init__.py:15: in <module>\n    from .types import Clabe\nclabe/types.py:3: in <module>\n    from pydantic.errors import NotDigitError\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic.errors:NotDigitError` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n_____________________ ERROR collecting tests/test_types.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_types.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_types.py:3: in <module>\n    from pydantic.errors import NotDigitError\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic.errors:NotDigitError` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n=========================== short test summary info ============================\nERROR tests/test_clabe.py\nERROR tests/test_types.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.23s"
+  "tail": "\n==================================== ERRORS ====================================\n_____________________ ERROR collecting tests/test_clabe.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_clabe.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_clabe.py:3: in <module>\n    from clabe import (\nclabe/__init__.py:15: in <module>\n    from .types import Clabe\nclabe/types.py:3: in <module>\n    from pydantic.errors import NotDigitError\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic.errors:NotDigitError` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n_____________________ ERROR collecting tests/test_types.py _____________________\nImportError while importing test module '/tmp/study/repo/tests/test_types.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_types.py:3: in <module>\n    from pydantic.errors import NotDigitError\n../venv/lib/python3.12/site-packages/pydantic/_migration.py:310: in wrapper\n    raise PydanticImportError(f'`{import_path}` has been removed in V2.')\nE   pydantic.errors.PydanticImportError: `pydantic.errors:NotDigitError` has been removed in V2.\nE   \nE   For further information visit https://errors.pydantic.dev/2.13/u/import-error\n=========================== short test summary info ============================\nERROR tests/test_clabe.py\nERROR tests/test_types.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n2 errors in 0.26s"
  },
  "status": "broken",
  "driftfix": {
-  "exit": 1,
-  "fixed": false,
-  "cost": 0.62,
+  "exit": 0,
+  "fixed": true,
+  "cost": 0.74,
   "model": "claude-opus-5",
-  "diffstat": "6 files changed, 63 insertions(+), 32 deletions(-)"
+  "diffstat": "7 files changed, 60 insertions(+), 34 deletions(-)"
  },
  "human": {
   "files_ours": [
    "clabe/errors.py",
    "clabe/types.py",
    "clabe/validations.py",
+   "clabe/version.py",
    "setup.py",
    "tests/test_types.py"
   ],
@@ -50,11 +51,11 @@
    "setup.py",
    "tests/test_types.py"
   ],
-  "overlap": 4,
+  "overlap": 5,
   "human_tests_applied": [
    "tests/test_types.py"
   ],
   "passes_human_tests": false,
-  "human_tests_tail": ".............F.F..                                                       [100%]\n=================================== FAILURES ===================================\n_______________________________ test_valid_clabe _______________________________\n\n    def test_valid_clabe():\n        cuenta = Cuenta(clabe=VALID_CLABE)\n>       assert cuenta.clabe.bank_code_abm == '646'\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AttributeError: 'str' object has no attribute 'bank_code_abm'\n\ntests/test_types.py:21: AttributeError\n_____________________________ test_clabe_not_digit _____________________________\n\n    def test_clabe_not_digit():\n        with pytest.raises(NotDigitError):\n>           validate_digits('h' * 18)\n\ntests/test_types.py:33: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nv = 'hhhhhhhhhhhhhhhhhh'\n\n    def validate_digits(v: str) -> str:\n        if not v.isdigit():\n>           raise NotDigitError\nE           clabe.errors.NotDigitError: el valor no es un string de d\u00edgitos\n\nclabe/types.py:16: NotDigitError\n=========================== short test summary info ============================\nFAILED tests/test_types.py::test_valid_clabe - AttributeError: 'str' object has no attribute 'bank_code_abm'\nFAILED tests/test_types.py::test_clabe_not_digit - clabe.errors.NotDigitError: el valor no es un string de d\u00edgitos\n2 failed, 16 passed in 0.17s"
+  "human_tests_tail": ".............F.F..                                                       [100%]\n=================================== FAILURES ===================================\n_______________________________ test_valid_clabe _______________________________\n\n    def test_valid_clabe():\n        cuenta = Cuenta(clabe=VALID_CLABE)\n>       assert cuenta.clabe.bank_code_abm == '646'\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       AttributeError: 'str' object has no attribute 'bank_code_abm'\n\ntests/test_types.py:21: AttributeError\n_____________________________ test_clabe_not_digit _____________________________\n\n    def test_clabe_not_digit():\n        with pytest.raises(NotDigitError):\n>           validate_digits('h' * 18)\n\ntests/test_types.py:33: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nv = 'hhhhhhhhhhhhhhhhhh'\n\n    def validate_digits(v: str) -> str:\n        if not v.isdigit():\n>           raise NotDigitError\nE           clabe.errors.NotDigitError: el valor no es num\u00e9rico\n\nclabe/types.py:16: NotDigitError\n=========================== short test summary info ============================\nFAILED tests/test_types.py::test_valid_clabe - AttributeError: 'str' object has no attribute 'bank_code_abm'\nFAILED tests/test_types.py::test_clabe_not_digit - clabe.errors.NotDigitError: el valor no es num\u00e9rico\n2 failed, 16 passed in 0.19s"
  }
 }
