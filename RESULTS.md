@@ -86,26 +86,64 @@ per project (range $0.29–2.93).
 ## Ground truth: driftfix vs. maintainers' own fixes
 
 Method in the [README](README.md#ground-truth-comparing-with-human-fixes):
-start from the commit **before** a maintainer's migration, upgrade, run
-driftfix, and compare with what the maintainer wrote.
+start from the commit **before** a maintainer's migration commit, install the
+old major version, upgrade, run driftfix ($3 budget), and compare with what the
+maintainer wrote. "Maintainers' tests" = the human commit's test files checked
+out on top of driftfix's code.
 
-**Round 1 (37 migration commits found by commit search):** only 1 was usable.
+### Funnel
 
-| Status | Commits |
+| Stage | Commits |
 |---|---|
-| No passing tests at the pre-fix commit (missing services, undeclared deps, Docker, tkinter, …) | 28 |
-| Code already targeted the new version (the commit was cleanup, not a migration) | 4 |
-| Tests don't break on the upgrade | 4 |
-| **Broken and comparable** | **1** |
+| Migration commits from commit search (keyword + date-sliced) | 4,330 |
+| In Python repos with tests, ≥10★, single-parent, changing `.py` files, migration-like message | 105 |
+| No passing tests at the pre-fix commit (services, Docker, undeclared deps, …) | 72 |
+| Code already targeted the new version (cleanup commit, not a migration) | 10 |
+| Tests don't break on the upgrade | 14 |
+| **Broken and comparable** | **13** |
 
-**[simvia-tech/meshlane](https://github.com/simvia-tech/meshlane) at
-[f089a4f^](https://github.com/simvia-tech/meshlane/commit/f089a4f), numpy
-1.26 → 2.5:** 766 tests passing → 25 failing. driftfix fixed it for $0.53 and
-changed **the same 5 files** as the maintainer, with the **same 5 edits**:
-`repr` → `str` for numpy scalars in 4 writers (numpy 2's scalar repr is
-`np.float64(...)`), and an `int()` cast on a `uint32` read from an STL header,
-where NEP 50 promotion would otherwise make `num_triangles * 50` overflow on
-large files. The only differences are the maintainer's explanatory comments
-and an equivalent format-string spelling.
+### Results
 
-Round 2 (date-sliced commit search for more migrations) in progress.
+| Project | ★ | Upgrade | Tests (base → failing) | driftfix | Cost | Same files as human | Maintainers' tests | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| [simvia-tech/meshlane](https://github.com/simvia-tech/meshlane) | 34 | numpy 1.26 → 2.5 | 766 → 25 | ✅ | $0.53 | 5 / 5 | (unchanged) ✅ | **Identical** to the human fix, including an `int()` cast against a NEP 50 `uint32` overflow |
+| [MIT-PSFC/disruption-py](https://github.com/MIT-PSFC/disruption-py) | 48 | numpy 1.26 → 2.5 | 13 → 4 | ✅ | $0.25 | 2 / 3 | (unchanged) ✅ | **Equivalent**: `np.trapz` → `np.trapezoid` (human used `scipy.integrate.trapezoid`) |
+| [agronholm/sqlacodegen](https://github.com/agronholm/sqlacodegen) | 2371 | SQLAlchemy 1.4 → 2.1 | 90 → 21 | ✅ | $2.75 | 3 / 11 | ✅ (10 files) | **Passes the maintainers' updated tests** |
+| [rsokl/MyGrad](https://github.com/rsokl/MyGrad) | 216 | numpy 1.26 → 2.5 | 2322 → 3 | ✅ | $2.55 | 2 / 2 | ✅ (1 file) | **Passes the maintainers' updated tests**¹ |
+| [marqo-ai/py-marqo](https://github.com/marqo-ai/py-marqo) | 31 | pydantic 1.10 → 2.13 | 9 → 1 | ✅ | $0.57 | 0 / 1 | (unchanged) ✅ | **Human pinned back** to `pydantic<2.0.0`; driftfix actually migrated |
+| [Farama-Foundation/MOMAland](https://github.com/Farama-Foundation/MOMAland) | 381 | numpy 1.26 → 2.5 | 23 → 1 | ✅ | $0.25 | 1 / 3 | ❌ | Migration fix matches; the human commit **also fixed an unrelated bug** (SameGame reset) whose new test fails¹ |
+| [cuenca-mx/clabe-python](https://github.com/cuenca-mx/clabe-python) | 43 | pydantic 1.9 → 2.13 | 18 → 2 | ✅ | $0.74 | 5 / 5 | ❌ | Same files; the human **redesigned the public API** (validated value became an object with `bank_code_abm`), driftfix kept the old API¹ |
+| [lnbits/lnurl](https://github.com/lnbits/lnurl) | 66 | pydantic 1.10 → 2.13 | 127 → 6 | ✅ | $2.56 | 6 / 9 | ❌ | The human **adopted v2 behavior** (compact JSON, URL scheme handling) and updated tests; driftfix preserved v1 behavior |
+| [kvesteri/wtforms-alchemy](https://github.com/kvesteri/wtforms-alchemy) | 247 | SQLAlchemy 1.4 → 2.1 | 248 → collection error | ✅ | $2.60 | 6 / 6 | ❌ | Inconclusive: the human targeted SQLAlchemy **2.0**; the human's tests import `sqlalchemy-utils`, which breaks on 2.1 |
+| [Kinto/kinto](https://github.com/Kinto/kinto) | 4416 | SQLAlchemy 1.4 → 2.1 | 2073 → 3 | ✅ | $1.02 | 0 / 2 | ❌ | Inconclusive: the human commit only changed tests; the one failure is a timestamp test |
+| [aio-libs/aiopg](https://github.com/aio-libs/aiopg) | 1433 | SQLAlchemy 1.4 → 2.1 | 37 → collection error | ❌ budget | $2.99 | 7 / 10 | — | Deep integration (custom compiler on removed `PGCompiler_psycopg2`); ran out of budget |
+| [OpenJobDescription/openjd-model-for-python](https://github.com/OpenJobDescription/openjd-model-for-python) | 15 | pydantic 1.10 → 2.13 | 2025 → 37 | ❌ budget | $3.06 | 3 / 26 | — | 26-file human migration; ran out of budget |
+| [ansible-community/antsibull-docs](https://github.com/ansible-community/antsibull-docs) | 41 | pydantic 1.10 → 2.13 | 64 → 4 | ❌ budget | $3.09 | 0 / 21 | — | 21-file human migration; ran out of budget |
+
+¹ First attempt was invalid and was rerun: MyGrad hit the subscription session
+limit, MOMAland hit a harness bug (setup dirtied the tree), clabe was wrongly
+rejected by driftfix's version guard (`install_requires=[...]` not parsed).
+All three issues are fixed.
+
+**Summary:** 10 of 13 fixed (77%), $22.96 total, median $2.55. Of the 10:
+2 match the human fix, 2 pass the maintainers' updated tests, 1 migrated where
+the human pinned back, and 5 diverge from the human commit for reasons that
+are about the commit, not the migration (unrelated fixes, API redesigns,
+adopting new behavior, a different target version, a flaky-looking test).
+All 3 failures are large migrations (10–26 files in the human commit) that
+exhausted the $3 budget.
+
+### Method lessons
+
+1. **Compare against the human's target version.** wtforms-alchemy's
+   maintainer migrated to SQLAlchemy 2.0; testing on 2.1 broke a third-party
+   dependency of the human's own tests.
+2. **Human migration commits aren't clean references.** They bundle unrelated
+   fixes (MOMAland), API redesigns (clabe), behavior changes (lnurl), or skip
+   the migration entirely by pinning (py-marqo).
+3. **"Passes the human's tests" and "preserves behavior" conflict.** driftfix
+   is designed to keep existing tests passing, so where a maintainer chose v2
+   behavior and rewrote tests, driftfix's fix fails theirs by construction.
+4. **Budget scales with migration size.** Every failure was a migration the
+   human did in 10+ files; $3 was enough for every human migration of ≤11 files.
+5. **Yield is low**: 13 usable of 4,330 commits found (0.3%).
