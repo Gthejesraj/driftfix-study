@@ -130,6 +130,8 @@ def fix(c: dict, budget: str, model: str) -> dict:
     untracked = sh("git ls-files --others --exclude-standard --directory", REPO)[1]
     with open(REPO / ".git" / "info" / "exclude", "a") as f:
         f.write(untracked)
+    # Some setups rewrite tracked files (generated versions, lock refreshes): commit those separately.
+    sh("git -c user.name=study -c user.email=study@example.com commit -qam 'study: setup changes' || true", REPO)
     report = WORK / "report.md"
     code, out = sh(f"driftfix fix --package {c['package']} --from {r['old']} --to {r['new']} "
                    f"--test \"{TEST}\" --model {model} --budget {budget} --timeout 900 --summary {report}",
