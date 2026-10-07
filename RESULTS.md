@@ -99,7 +99,7 @@ out on top of driftfix's code.
 | In Python repos with tests, ≥10★, single-parent, changing `.py` files, migration-like message | 105 |
 | No passing tests at the pre-fix commit (services, Docker, undeclared deps, …) | 72 |
 | Code already targeted the new version (cleanup commit, not a migration) | 10 |
-| Tests don't break on the upgrade | 14 |
+| Tests don't break on the upgrade | 10 |
 | **Broken and comparable** | **13** |
 
 ### Results
